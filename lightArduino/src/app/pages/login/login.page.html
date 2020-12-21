@@ -1,0 +1,36 @@
+<ion-header no-border>
+  <div class="login-header ion-header">
+    <img src="assets/icon/logo.png" class="logo-img">
+
+  </div>
+  
+</ion-header>
+
+<ion-content>
+  <div class="center">
+    <div heading-column-lr>
+      <h1 big-heading>Login</h1>
+      <h2 small-heading>Registrarse</h2>
+    </div>
+    <ion-label>
+      Sistema para la medicion de energia
+    </ion-label>
+    <ion-item transparent>
+      <img icon-small src="../../../assets/icon/favicon.png"/>
+      <ion-input [(ngModel)]="Email" placeholder="Usuario" type="text"></ion-input>
+    </ion-item>
+    <ion-item transparent>
+      <img icon-small src="../../../assets/icon/favicon.png"/>
+      <ion-input [(ngModel)]="Email" placeholder="Contraseña" type="Password"></ion-input>
+    </ion-item>
+    <ion-label class="forget-password">¿Olvidaste tu Contraseña?</ion-label>
+    <div linespace></div>
+    <ion-button color="primary" class="ion-button-class" shape="round"
+    fill="solid" size="large" expand="block"
+    > Iniciar Sesión</ion-button>
+    <ion-label class="ion-text-center"> ¿No tienes una cuenta?<span class="link-button" (click)="Register()">!Regístrate¡</span></ion-label>
+
+
+  </div>
+
+</ion-content>

@@ -20,6 +20,10 @@ const routes: Routes = [
     path: 'action-sheet',
     loadChildren: () => import('./pages/action-sheet/action-sheet.module').then( m => m.ActionSheetPageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
 ];
 
 @NgModule({
