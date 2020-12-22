@@ -1,6 +1,6 @@
-<ion-header no-border>
+<ion-header class="ion-no-border">
   <div class="login-header ion-header">
-    <img src="assets/icon/logo.png" class="logo-img">
+    <img src="../../../assets/icon/lighting3.png" class="logo-img">
 
   </div>
   
@@ -10,25 +10,26 @@
   <div class="center">
     <div heading-column-lr>
       <h1 big-heading>Login</h1>
-      <h2 small-heading>Registrarse</h2>
+     <h2 small-heading routerLink="/register">Registrarse</h2>
+     <!-- <ion-button class="small-heading" routerLink="/register"> Registrarse</ion-button> -->
     </div>
     <ion-label>
       Sistema para la medicion de energia
     </ion-label>
     <ion-item transparent>
-      <img icon-small src="../../../assets/icon/favicon.png"/>
+      <img icon-small src="../../../assets/icon/userIcon.png"/>
       <ion-input [(ngModel)]="Email" placeholder="Usuario" type="text"></ion-input>
     </ion-item>
     <ion-item transparent>
-      <img icon-small src="../../../assets/icon/favicon.png"/>
-      <ion-input [(ngModel)]="Email" placeholder="Contraseña" type="Password"></ion-input>
+      <img icon-small src="../../../assets/icon/password.png"/>
+      <ion-input [(ngModel)]="Password" placeholder="Contraseña" type="Password"></ion-input>
     </ion-item>
     <ion-label class="forget-password">¿Olvidaste tu Contraseña?</ion-label>
     <div linespace></div>
     <ion-button color="primary" class="ion-button-class" shape="round"
     fill="solid" size="large" expand="block"
     > Iniciar Sesión</ion-button>
-    <ion-label class="ion-text-center"> ¿No tienes una cuenta?<span class="link-button" (click)="Register()">!Regístrate¡</span></ion-label>
+    <ion-label class="ion-text-center">¿No tienes una cuenta?<span class="link-button" (click)="Register()">!Regístrate¡</span></ion-label>
 
 
   </div>
