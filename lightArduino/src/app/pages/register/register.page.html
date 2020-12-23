@@ -22,6 +22,7 @@
      <h2 small-heading routerLink="/login">Login</h2>
      <!-- <ion-button class="small-heading" routerLink="/register"> Registrarse</ion-button> -->
     </div>
+    
     <ion-item transparent>
       <img icon-small src="../../../assets/icon/FIrstName.png" />
       <ion-input [(ngModel)] = "userFirstName" placeholder="Nombre" type="text"></ion-input>
@@ -43,11 +44,10 @@
       <img icon-small src="../../../assets/icon/password.png" />
       <ion-input [(ngModel)]="userPassword" placeholder="Contraseña" type="password"></ion-input>
     </ion-item>
-    <ion-button color="secondary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
+    <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
       Registrase
     </ion-button>
     <ion-label class="ion-text-center"> ¿Tiene una Cuenta Registrada? <span> Inicia Sesión</span></ion-label>
-
   </div>
  
   
