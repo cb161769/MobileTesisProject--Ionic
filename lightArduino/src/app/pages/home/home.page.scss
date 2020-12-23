@@ -1,0 +1,23 @@
+ion-slide{
+    display: block;
+}
+.slide-img-padding{
+    padding: 40px;
+}
+img{
+    width: 70%;
+    max-height: 400px;
+}
+h3{
+    font-size: 30px;
+    font-weight: lighter;
+    margin-bottom: 60px;
+}
+.btn-primary{
+    height: 60px;
+}
+@media screen and (max-height: 775px){
+    img{
+        width: 70%;
+    }
+}
