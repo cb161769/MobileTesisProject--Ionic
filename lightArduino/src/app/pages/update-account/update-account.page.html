@@ -1,0 +1,61 @@
+<ion-toolbar color="darkbar ion-no-border">
+  <ion-buttons slot="start">
+    <ion-button fill="solid" class="ion-button icon-only">
+     <ion-icon slot="start" name="close"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title>Actualizar Mi Cuenta</ion-title>
+ <ion-buttons slot="end">
+   <ion-button color="danger" (click)="singOut()">
+     Cerrar Sesión
+   </ion-button>
+ </ion-buttons>
+</ion-toolbar>
+<ion-content class="ion-padding">
+  <form>
+    <ion-list>
+      <ion-item >
+        <img icon-small src="../../../assets/icon/userIcon.png" alt="">
+        <ion-input [disabled]="true" placeholder="Usuario" type="text" name="uName"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/FIrstName.png" />
+          <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/FIrstName.png" >
+        <ion-input [disabled]="true" placeholder="Apellido" name="lastName"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/email.png" />
+        <ion-input [disabled]="true" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/password.png" />
+          <ion-input  placeholder="Contraseña" type="password" name="contra"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/password.png" />
+          <ion-input  placeholder="Confirmar Contraseña" type="password" name="contra"></ion-input>
+      </ion-item>
+      <ion-button color="succes" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
+        Actualizar
+      </ion-button>
+
+    </ion-list>
+  </form>
+</ion-content>
+<ion-tabs class="ion-no-border" color="dark">
+  <ion-tab-bar slot="bottom" class="ion-no-border">
+    <ion-tab-button tab="schedule">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label>Mi Cuenta</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="speakers">
+      <ion-icon name="construct-outline"></ion-icon>
+      <ion-label>Mi dispositivo</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>
