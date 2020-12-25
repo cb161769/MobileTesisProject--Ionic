@@ -1,0 +1,76 @@
+
+ <ion-toolbar color="darkbar ion-no-border">
+   <ion-buttons slot="start">
+     <ion-button fill="solid" class="ion-button icon-only">
+      <ion-icon slot="start" name="close"></ion-icon>
+     </ion-button>
+   </ion-buttons>
+   <ion-title>Mi cuenta</ion-title>
+  <ion-buttons slot="end">
+    <ion-button color="danger" (click)="singOut()">
+      Cerrar Sesión
+    </ion-button>
+  </ion-buttons>
+ </ion-toolbar>
+<ion-content class="ion-padding">
+  <form>
+    <ion-list>
+      <ion-item >
+        <img icon-small src="../../../assets/icon/userIcon.png" alt="">
+        <ion-input [disabled]="true" placeholder="Usuario" type="text" name="uName"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/FIrstName.png" />
+          <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/FIrstName.png" >
+        <ion-input [disabled]="true" placeholder="Apellido" name="lastName"></ion-input>
+
+      </ion-item>
+      
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/email.png" />
+        <ion-input [disabled]="true" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+
+</ion-content>
+<!-- <ion-footer >
+  <ion-toolbar color="darkbar">
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <button  class="ion-button block clear icon-left">
+          <ion-icon name="person-outline"></ion-icon> Actualizar Perfil
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block clear icon-left color="primary-alt">
+          <ion-icon name="exit"></ion-icon> Move
+        </button>
+
+      </ion-col>
+      <ion-col no-padding>
+        <button ion-button block clear icon-left color="primary-alt">
+          <ion-icon name="trash"></ion-icon> Delete
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+
+</ion-footer> -->
+<ion-tabs class="ion-no-border" color="dark">
+  <ion-tab-bar slot="bottom" class="ion-no-border">
+    <ion-tab-button tab="schedule">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label>Actualizar mi cuenta</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="speakers">
+      <ion-icon name="construct-outline"></ion-icon>
+      <ion-label>Mi dispositivo</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>

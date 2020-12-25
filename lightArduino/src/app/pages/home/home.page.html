@@ -15,7 +15,7 @@
   <ion-grid fixed>
     <ion-row>
       <ion-col size="10 " offset="1">
-        <ion-button color="primary" expand="full" shape="round" mode="ios" class="btn-primary">
+        <ion-button color="primary" expand="full" shape="round" mode="ios" class="btn-primary" (click) ="goSingUpPage()">
           Registrarse
         </ion-button>
 
@@ -23,10 +23,9 @@
     </ion-row>
     <ion-row>
       <ion-col size="10 " offset="1">
-        <ion-button color="secondary" expand="full" shape="round" mode="ios" class="btn-primary">
+        <ion-button color="secondary" expand="full" shape="round" mode="ios" class="btn-primary" (click)="goLoginPage()">
          <ion-label color="dark">Inicar Sesion</ion-label>
         </ion-button>
-
       </ion-col>
     </ion-row>
   </ion-grid>

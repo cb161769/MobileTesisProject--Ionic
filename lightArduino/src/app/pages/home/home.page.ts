@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -25,9 +26,21 @@ export class HomePage implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor(private router : Router) { }
 
   ngOnInit() {
+  }
+  /**
+   * this methods redirects to the SingUp page
+   */
+  goSingUpPage():void{
+    this.router.navigate(['register']);
+  }
+  /**
+   * this methods redirects to the Login Page
+   */
+  goLoginPage():void{
+    this.router.navigate(['login']);
   }
 
 }

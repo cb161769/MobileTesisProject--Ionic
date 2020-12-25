@@ -1,35 +1,35 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
+  <!-- <ion-toolbar color="primary">
     <ion-title color="secondary">Inicio de Sesión</ion-title>
-  </ion-toolbar>
+  </ion-toolbar> -->
+  <div class="login-header ion-header">
+    <img src="../../../assets/icon/lighting3.png" alt="logo-img" class="logo-img"></div>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- <div class="center">
-    <div heading-column-lr>
-      <h1 big-heading>Login</h1>
-     <h2 small-heading routerLink="/register">Registrarse</h2>
-    </div>
-    <ion-label>
-      Sistema para la medicion de energia
-    </ion-label>
-    
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/userIcon.png"/>
-      <ion-input [(ngModel)]="Email" placeholder="Usuario" type="text"></ion-input>
-    </ion-item>
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/password.png"/>
-      <ion-input [(ngModel)]="Password" placeholder="Contraseña" type="Password"></ion-input>
-    </ion-item>
-    <ion-label class="forget-password">¿Olvidaste tu Contraseña?</ion-label>
-    <div linespace></div>
-    <ion-button color="primary" class="ion-button-class" shape="round"
-    fill="solid" size="large" expand="block"
-    > Iniciar Sesión</ion-button>
-    <ion-label class="ion-text-center">¿No tienes una cuenta?<span class="link-button" (click)="Register()">!Regístrate¡</span></ion-label>
-
-  </div> -->
-
+  <div class="center2">
+      <div heading-column-lr>
+        <h1 big-heading>Iniciar Sesión</h1>
+        <h2 small-heading routerLink="/register">Registrarse</h2>
+      </div>
+  </div>
+  <form>
+    <ion-list>
+      <ion-item  lines="none" transparent>
+        <img icon-small src="../../../assets/icon/FIrstName.png" />
+        <ion-input [(ngModel)]="Email" type="text" aria-autocomplete="off" placeholder="Usuario" name="UseraName"></ion-input>
+      </ion-item>
+      <ion-item  lines="none" transparent>
+        <img icon-small src="../../../assets/icon/password.png" />
+        <ion-input [(ngModel)] ="Password" type="text" aria-autocomplete="off" placeholder="Contraseña" name="passwordName"></ion-input>
+      </ion-item>
+      <ion-button color="tertiary" class="ion-button-class" shape="round" mode="ios" fill="solid" size="large" expand="block">
+        <ion-label class="ion-text-center"><h1>Iniciar Sesión</h1></ion-label>
+      </ion-button>
+      <ion-item lines='none' transparent>
+        <ion-text class="ion-text-center"> ¿No Tiene una Cuenta Registrada? <span routerLink="/register"> ¡Regístrate!</span></ion-text>
+      </ion-item>
+    </ion-list>
+  </form>
 
 </ion-content>

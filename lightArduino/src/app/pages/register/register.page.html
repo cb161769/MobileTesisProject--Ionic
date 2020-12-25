@@ -1,53 +1,45 @@
 <ion-header class="ion-no-border">
- <!-- <ion-toolbar color="primary">
-   <ion-buttons slot="start">
-     <ion-button color="terciary">
-       <ion-icon slot="icon-only" name="arrow-black"></ion-icon>
-     </ion-button>
-   </ion-buttons>
-   
- </ion-toolbar> -->
  <div class="login-header ion-header">
   <img src="../../../assets/icon/lighting3.png" class="logo-img">
 
 </div>
-
-
 </ion-header>
 
-<ion-content >
+<ion-content class="ion-padding" >
   <div class="center">
     <div heading-column-lr>
       <h1 big-heading>Registrarse</h1>
-     <h2 small-heading routerLink="/login">Login</h2>
-     <!-- <ion-button class="small-heading" routerLink="/register"> Registrarse</ion-button> -->
+     <h2 small-heading routerLink="/login">Iniciar Sesión</h2>
     </div>
+    <form >
+      <ion-list>
+        <ion-item transparent>
+          <img icon-small src="../../../assets/icon/FIrstName.png" />
+          <ion-input [(ngModel)] = "userFirstName" placeholder="Nombre" type="text" name="Namme"></ion-input>
+        </ion-item>
+        <ion-item transparent>
+          <img  icon-small src="../../../assets/icon/FIrstName.png"/>
+          <ion-input [(ngModel)] ="userLastName" placeholder="Apellido" type="text" name="lastName"></ion-input>
+        </ion-item>
     
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/FIrstName.png" />
-      <ion-input [(ngModel)] = "userFirstName" placeholder="Nombre" type="text"></ion-input>
-    </ion-item>
-    <ion-item transparent>
-      <img  icon-small src="../../../assets/icon/FIrstName.png"/>
-      <ion-input [(ngModel)] ="userLastName" placeholder="Apellido" type="text"></ion-input>
-    </ion-item>
-
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/userIcon.png" />
-      <ion-input [(ngModel)]="userName" placeholder="Usuario" type="text"></ion-input>
-    </ion-item>
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/email.png" />
-      <ion-input [(ngModel)]="userEmail" placeholder="Correo Electronico" type="email" ></ion-input>
-    </ion-item>
-    <ion-item transparent>
-      <img icon-small src="../../../assets/icon/password.png" />
-      <ion-input [(ngModel)]="userPassword" placeholder="Contraseña" type="password"></ion-input>
-    </ion-item>
-    <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
-      Registrase
-    </ion-button>
-    <ion-label class="ion-text-center"> ¿Tiene una Cuenta Registrada? <span> Inicia Sesión</span></ion-label>
+        <ion-item transparent>
+          <img icon-small src="../../../assets/icon/userIcon.png" />
+          <ion-input [(ngModel)]="userName" placeholder="Usuario" type="text" name="user"></ion-input>
+        </ion-item>
+        <ion-item transparent>
+          <img icon-small src="../../../assets/icon/email.png" />
+          <ion-input [(ngModel)]="userEmail" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
+        </ion-item>
+        <ion-item transparent>
+          <img icon-small src="../../../assets/icon/password.png" />
+          <ion-input [(ngModel)]="userPassword" placeholder="Contraseña" type="password" name="contra"></ion-input>
+        </ion-item>
+        <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
+          Registrase
+        </ion-button>
+        <ion-label class="ion-text-center"> ¿Tiene una Cuenta Registrada? <span routerLink="/login"> Inicia Sesión</span></ion-label>
+      </ion-list>
+    </form>
   </div>
  
   

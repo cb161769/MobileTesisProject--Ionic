@@ -32,6 +32,26 @@ const routes: Routes = [
     path: 'forget-password',
     loadChildren: () => import('./pages/forget-password/forget-password.module').then( m => m.ForgetPasswordPageModule)
   },
+  {
+    path: 'confirm-registration',
+    loadChildren: () => import('./pages/confirm-registration/confirm-registration.module').then( m => m.ConfirmRegistrationPageModule)
+  },
+  {
+    path: 'your-account',
+    loadChildren: () => import('./pages/your-account/your-account.module').then( m => m.YourAccountPageModule)
+  },
+  {
+    path: 'update-account',
+    loadChildren: () => import('./pages/update-account/update-account.module').then( m => m.UpdateAccountPageModule)
+  },
+  {
+    path: 'home-tabs',
+    loadChildren: () => import('./pages/home-tabs/home-tabs.module').then( m => m.HomeTabsPageModule)
+  },
+  {
+    path: 'home-device-page',
+    loadChildren: () => import('./pages/home-device-page/home-device-page.module').then( m => m.HomeDevicePagePageModule)
+  },
 ];
 
 @NgModule({
