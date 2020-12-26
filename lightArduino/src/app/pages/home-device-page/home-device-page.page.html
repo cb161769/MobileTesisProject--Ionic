@@ -17,27 +17,31 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-slides mode="md" pager="md" scrollbar="false">
-    <ion-slide>
-      <ion-card class="card-title">
-        <ion-card-header>
-          <ion-card-title>Resumen del consumo del día</ion-card-title>
-        </ion-card-header>
-        <!--Contenido -->
-        <ion-card-content>
-        </ion-card-content>
-      </ion-card>
-    </ion-slide>
-    <ion-slide>
-      <ion-card class="card-title">
-        <ion-card-header>
-          <ion-card-subtitle></ion-card-subtitle>
-          <ion-card-title>Resumen detallado del día</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <canvas id="detailsGraph"></canvas>
-        </ion-card-content>
-      </ion-card>
-    </ion-slide>
-  </ion-slides>
+  <div class="ion-padding">
+    
+
+    <ion-card>
+      <ion-card-header>
+        Consumo del día
+      </ion-card-header>
+      <ion-card-content>
+        <ngx-gauge [type]="gaugeType" 
+           [value]="gaugeValue" 
+           [label]="gaugeLabel"  
+           [append]="gaugeAppendText">
+          </ngx-gauge>
+      </ion-card-content>
+    </ion-card>
+    <br>
+    
+
+    <ion-card>
+      <ion-card-header>
+        Consumo durante la semana
+      </ion-card-header>
+      <ion-card-content>
+        <canvas id="lineCanvas"></canvas>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

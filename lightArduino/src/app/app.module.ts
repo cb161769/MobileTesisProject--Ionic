@@ -9,11 +9,11 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RegisterPipe } from './pages/register.pipe';
-
+import { NgxGaugeModule } from 'ngx-gauge';
 @NgModule({
   declarations: [AppComponent, RegisterPipe],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule],
   providers: [
     StatusBar,
     SplashScreen,
