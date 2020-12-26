@@ -1,9 +1,43 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title></ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
+<ion-toolbar color="light" class="ion-no-border">
+  <ion-buttons>
+  </ion-buttons>
+  <ion-title>Inicio</ion-title>
+  <ion-buttons slot="end">
+    <ion-button color="danger" (click)="singOut()">
+      Cerrar Sesión
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="center2">
+    <div heading-column-lr>
+      <h1 big-heading>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</h1>
+    </div>
+  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-slides mode="md" pager="md" scrollbar="false">
+    <ion-slide>
+      <ion-card class="card-title">
+        <ion-card-header>
+          <ion-card-title>Resumen del consumo del día</ion-card-title>
+        </ion-card-header>
+        <!--Contenido -->
+        <ion-card-content>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+    <ion-slide>
+      <ion-card class="card-title">
+        <ion-card-header>
+          <ion-card-subtitle></ion-card-subtitle>
+          <ion-card-title>Resumen detallado del día</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas id="detailsGraph"></canvas>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
 </ion-content>
