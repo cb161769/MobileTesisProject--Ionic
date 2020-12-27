@@ -52,6 +52,22 @@ const routes: Routes = [
     path: 'home-device-page',
     loadChildren: () => import('./pages/home-device-page/home-device-page.module').then( m => m.HomeDevicePagePageModule)
   },
+  {
+    path: 'statistics-page',
+    loadChildren: () => import('./pages/statistics-page/statistics-page.module').then( m => m.StatisticsPagePageModule)
+  },
+  {
+    path: 'my-device',
+    loadChildren: () => import('./pages/my-device/my-device.module').then( m => m.MyDevicePageModule)
+  },
+  {
+    path: 'config-device',
+    loadChildren: () => import('./pages/config-device/config-device.module').then( m => m.ConfigDevicePageModule)
+  },
+  {
+    path: 'connect-device',
+    loadChildren: () => import('./pages/connect-device/connect-device.module').then( m => m.ConnectDevicePageModule)
+  },
 ];
 
 @NgModule({

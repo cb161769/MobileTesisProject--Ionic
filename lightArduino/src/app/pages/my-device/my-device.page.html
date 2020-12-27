@@ -1,0 +1,54 @@
+<ion-toolbar color="light" class="ion-no-border">
+ 
+
+  <ion-title>Mi Dispositivo</ion-title>
+  <ion-buttons slot="end">
+    <ion-button color="danger" (click)="singOut()">
+      Cerrar Sesión
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="ion-padding cards-bg" [fullscreen]="true">
+<div class="center2">
+  <div heading-column-lr></div>
+</div>
+
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+  <ion-refresher-content>
+  </ion-refresher-content>
+</ion-refresher>
+<ion-card class="adv-map">
+  <div style="position: relative">
+    <img src="../../../assets/images/chip.png">
+    <ion-fab vertical="top" horizontal="end" slot="fixed" color="light">
+    <ion-fab-button color="light">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  </div>
+  <ion-card-content>
+
+    <ion-item>
+    <ion-icon large item-start name="wifi-outline"></ion-icon>
+    <h6>Señal Wi-fi</h6>
+    <small>90%</small>
+  </ion-item>
+  <ion-item>
+    <ion-icon color="subtle" large item-start name='wine'></ion-icon>
+    <h2>Institute of Fine Cocktails</h2>
+    <p>14 S. Hop Avenue, Madison, WI 53703</p>
+  </ion-item>
+  <ion-item actions>
+    <span ion-text item-start color="secondary" class="item-bold">18 min</span>
+    <span ion-text item-start color="subtle">(2.6 mi)</span>
+    <button ion-button color="primary" clear item-end icon-start>
+      <ion-icon name='navigate'></ion-icon>
+      Start
+    </button>
+  </ion-item>
+  </ion-card-content>
+ 
+
+</ion-card>
+
+</ion-content>
