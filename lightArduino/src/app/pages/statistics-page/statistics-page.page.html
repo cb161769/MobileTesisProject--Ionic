@@ -1,0 +1,16 @@
+<ion-toolbar color="light" class="ion-no-border">
+  <ion-title>Estadísticos de consumo</ion-title>
+  <ion-buttons slot="end">
+    <ion-button color="danger" (click)="singOut()">
+      Cerrar Sesión
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="ion-padding" [fullscreen]="true">
+<div class="center2">
+  <div heading-column-lr></div>
+</div>
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+</ion-content>
