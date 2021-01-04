@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  Region:"",
+  Region:"us-west-2",
   COGNITO_POOL: {
-    UserPoolId: "",
-    ClientId: ""
+    UserPoolId: "us-west-2_YWl5moYi4",
+    ClientId: "1d3qr4vt4b7e9hukpkc53tc4l1"
   }
 };
 /*

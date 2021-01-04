@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
-
+//import {AwsCognitoServiceService} from '../../data-services/aws-cognito-service.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,6 +17,7 @@ import { LoginPage } from './login.page';
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [LoginPage]
+  declarations: [LoginPage],
+  providers:[]
 })
 export class LoginPageModule {}
