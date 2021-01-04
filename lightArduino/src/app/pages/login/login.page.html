@@ -20,9 +20,12 @@
       </ion-item>
       <ion-item  lines="none" transparent>
         <img icon-small src="../../../assets/icon/password.png" />
-        <ion-input [(ngModel)] ="Password" type="text" aria-autocomplete="off" placeholder="Contraseña" name="passwordName"></ion-input>
+        <ion-input [(ngModel)] ="Usrpassword" type="Password" aria-autocomplete="off" placeholder="Contraseña" name="passwordName"></ion-input>
       </ion-item>
-      <ion-button color="tertiary" class="ion-button-class" shape="round" mode="ios" fill="solid" size="large" expand="block">
+      <ion-item *ngIf="this.LoginError !=null || this.LoginError != undefined">
+        <ion-label> <strong style="color: red;">{{this.LoginError}}</strong></ion-label>
+      </ion-item>
+      <ion-button color="tertiary" class="ion-button-class" shape="round" mode="ios" fill="solid" size="large" expand="block" (click)="singIn()">
         <ion-label class="ion-text-center"><h1>Iniciar Sesión</h1></ion-label>
       </ion-button>
       <ion-item lines='none' transparent>

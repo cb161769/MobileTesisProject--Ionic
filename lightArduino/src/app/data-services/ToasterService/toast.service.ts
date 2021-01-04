@@ -11,7 +11,7 @@ export class ToastService {
    * This Method Presents a Toaster Message
    * @param message the toaster Message
    */
-  async PresentToast(message:string){
+  async PresentToast(message:any){
     const toast = await this.ToastController.create({
       message:message,
       duration:2000,

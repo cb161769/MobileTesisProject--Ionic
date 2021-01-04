@@ -31,10 +31,14 @@
           <ion-input [(ngModel)]="userEmail" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
         </ion-item>
         <ion-item transparent>
+          <img icon-small src="../../../assets/icon/email.png" />
+          <ion-input [(ngModel)]="userPhoneNumber" placeholder="Numero telefonico" type="text" name="emails"></ion-input>
+        </ion-item>
+        <ion-item transparent>
           <img icon-small src="../../../assets/icon/password.png" />
           <ion-input [(ngModel)]="userPassword" placeholder="Contraseña" type="password" name="contra"></ion-input>
         </ion-item>
-        <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block">
+        <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block" (click)="singIn()">
           Registrase
         </ion-button>
         <ion-label class="ion-text-center"> ¿Tiene una Cuenta Registrada? <span routerLink="/login"> Inicia Sesión</span></ion-label>
