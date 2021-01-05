@@ -18,4 +18,7 @@ export class ToastService {
     });
     toast.present();
   }
+  async DismissToast(){
+    this.ToastController.dismiss();
+  }
 }

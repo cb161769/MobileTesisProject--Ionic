@@ -11,35 +11,52 @@
       <h1 big-heading>Registrarse</h1>
      <h2 small-heading routerLink="/login">Iniciar Sesión</h2>
     </div>
-    <form >
+    <form (ngSubmit)="singIn()" [formGroup] ="registerForm" >
       <ion-list>
         <ion-item transparent>
           <img icon-small src="../../../assets/icon/FIrstName.png" />
-          <ion-input [(ngModel)] = "userFirstName" placeholder="Nombre" type="text" name="Namme"></ion-input>
+          <ion-input [(ngModel)] = "registerModel.name" placeholder="Nombre" type="text" autocomplete="off" formControlName="firstName" clearInput></ion-input>
+        </ion-item>
+        <ion-item *ngIf="registerForm.controls['firstName'].touched &&  registerForm.controls['firstName'].invalid">
+          <ion-label><strong style="color: red;">El nombre es requerido</strong></ion-label>
         </ion-item>
         <ion-item transparent>
-          <img  icon-small src="../../../assets/icon/FIrstName.png"/>
-          <ion-input [(ngModel)] ="userLastName" placeholder="Apellido" type="text" name="lastName"></ion-input>
+          <img  icon-small src="../../../assets/icon/lastName.png"/>
+          <ion-input [(ngModel)] ="registerModel.lastName" placeholder="Apellido" type="text" autocomplete="off" formControlName="lastName" clearInput></ion-input>
         </ion-item>
-    
+        <ion-item *ngIf="registerForm.controls['lastName'].touched &&  registerForm.controls['lastName'].invalid">
+          <ion-label><strong style="color: red;">El apellido es requerido</strong></ion-label>
+        </ion-item>
         <ion-item transparent>
           <img icon-small src="../../../assets/icon/userIcon.png" />
-          <ion-input [(ngModel)]="userName" placeholder="Usuario" type="text" name="user"></ion-input>
+          <ion-input [(ngModel)]="registerModel.userName" placeholder="Usuario" type="text" autocomplete="off"  formControlName="userName" clearInput></ion-input>
+        </ion-item>
+        <ion-item *ngIf="registerForm.controls['userName'].touched &&  registerForm.controls['userName'].invalid">
+          <ion-label><strong style="color: red;">El usuario es requerido</strong></ion-label>
         </ion-item>
         <ion-item transparent>
           <img icon-small src="../../../assets/icon/email.png" />
-          <ion-input [(ngModel)]="userEmail" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
+          <ion-input [(ngModel)]="registerModel.userEmail" placeholder="Correo electrónico" autocomplete="off" type="email" formControlName="email" clearInput></ion-input>
+        </ion-item>
+        <ion-item *ngIf="registerForm.controls['email'].touched &&  registerForm.controls['email'].invalid">
+          <ion-label><strong style="color: red;">El email no es válido </strong></ion-label>
         </ion-item>
         <ion-item transparent>
-          <img icon-small src="../../../assets/icon/email.png" />
-          <ion-input [(ngModel)]="userPhoneNumber" placeholder="Numero telefonico" type="text" name="emails"></ion-input>
+          <img icon-small src="../../../assets/icon/phone-call.png" />
+          <ion-input [(ngModel)]="registerModel.userPhoneNumber" placeholder="Numero telefónico" autocomplete="off" type="tel" formControlName="phoneNumber" clearInput></ion-input>
+        </ion-item>
+        <ion-item *ngIf="registerForm.controls['phoneNumber'].touched &&  registerForm.controls['phoneNumber'].invalid">
+          <ion-label><strong style="color: red;">El email no es válido </strong></ion-label>
         </ion-item>
         <ion-item transparent>
           <img icon-small src="../../../assets/icon/password.png" />
-          <ion-input [(ngModel)]="userPassword" placeholder="Contraseña" type="password" name="contra"></ion-input>
+          <ion-input [(ngModel)]="registerModel.userPassword" placeholder="Contraseña" autocomplete="off"  type="password" formControlName="password" clearInput></ion-input>
         </ion-item>
-        <ion-button color="primary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block" (click)="singIn()">
-          Registrase
+        <ion-item *ngIf="registerForm.controls['password'].touched &&  registerForm.controls['password'].invalid">
+          <ion-label><strong style="color: red;">La contraseña no es válida </strong></ion-label>
+        </ion-item>
+        <ion-button color="tertiary" class="ion-button-class" shape="round" fill="solid" size="large" expand="block" type="submit" [disabled]="!registerForm.valid">
+         <ion-label class="ion-text-center"><h1>Registrase</h1></ion-label>
         </ion-button>
         <ion-label class="ion-text-center"> ¿Tiene una Cuenta Registrada? <span routerLink="/login"> Inicia Sesión</span></ion-label>
       </ion-list>
