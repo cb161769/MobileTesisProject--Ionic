@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Auth} from 'aws-amplify';
 import {environment} from '../../environments/environment';
-import {Amplify} from 'aws-amplify'
+import {Amplify} from 'aws-amplify';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +25,13 @@ export class AwsAmplifyService {
 
   }
   /**
-   * this method is to SingUp or 
+   * This method's is for the User SingIn
    * @param username 
    * @param password 
+   * @param email 
+   * @param name 
+   * @param familyName 
+   * @param phone 
    */
    async singUp(username:any,password:any,email?:any,name?:any,familyName?:any,phone?:any){
      try {
@@ -58,10 +62,18 @@ export class AwsAmplifyService {
      this.error = error;
     
    }
+   /**  
+    * this method get's the current Error
+    */
    getErrors(){
      return this.error;
 
    }
+   /**
+    * this method confirms the User's Sing up
+    * @param username userName
+    * @param confirmationCode user's confirmation code
+    */
     confirmSingUp(username:any,confirmationCode:any) {
     try {
       const userConfirmed = Auth.confirmSignUp(username,confirmationCode);
@@ -72,6 +84,11 @@ export class AwsAmplifyService {
       console.log(error);
     } 
    }
+   /**
+    * This method's is to Sing in to the System
+    * @param userName the UserName
+    * @param password the Password
+    */
    async singIn(userName:any,password:any){
      try {
        const userSingedIn = await Auth.signIn(userName,password);
@@ -83,6 +100,24 @@ export class AwsAmplifyService {
        
      }
 
+   }
+   /**
+    * this method get's the current Logged User
+    */
+   async getCurrentUser(){
+     try {
+       const currentUser = await Auth.currentAuthenticatedUser();
+       return currentUser;
+     } catch (error) {
+       this.returnErrors(error.message);
+     }
+   }
+   async singOut(){
+     try {
+       await Auth.signOut();
+     } catch (error) {
+       
+     }
    }
 
 }

@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   Region:"us-west-2",
   COGNITO_POOL: {
-    UserPoolId: "us-west-2_YWl5moYi4",
-    ClientId: "1d3qr4vt4b7e9hukpkc53tc4l1"
+    UserPoolId: "us-west-2_wRXy19WSY",
+    ClientId: "6g9akdsjfgemksj9scbrfcma1o"
   }
 };
 /*

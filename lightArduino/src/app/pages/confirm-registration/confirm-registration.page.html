@@ -30,7 +30,7 @@
         <ion-label style="color: red;"> Error AWS : {{this.confirmRegistrationError}}</ion-label>
       </ion-item>
     </ion-list>
-    <ion-button color="tertiary"  class="ion-button-class" shape="round" fill="solid" size="large" expand="block" type="submit" >
+    <ion-button color="tertiary"  class="ion-button-class" shape="round" fill="solid" size="large" expand="block" type="submit" [disabled]="!confirmRegistrationForm.valid" >
       <ion-label class="ion-text-center"><h1>Verificar Mi cuenta</h1></ion-label> 
     </ion-button>
   </form>
