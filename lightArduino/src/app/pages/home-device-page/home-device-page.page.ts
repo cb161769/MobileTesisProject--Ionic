@@ -1,5 +1,8 @@
+import { LoadingController } from '@ionic/angular';
+import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit } from '@angular/core';
 import {  Chart} from 'chart.js';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
@@ -12,13 +15,29 @@ export class HomeDevicePagePage implements OnInit {
   gaugeValue = 28.3;
   gaugeLabel = "Speed";
   gaugeAppendText = "km/hr";
+  loading:any;
+  currentUserError:any;
 
-  constructor() { }
+  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router) { }
 
   ngOnInit() {
-    this.showDetailedChart();
+    
+    this.validateLoggedUser();
   }
-  singOut():void{
+  async singOut(){
+    await this.presentLoading();
+    this.awsAmplifyService.singOut().then((result) => {
+      if (result != undefined) {
+        this.redirectToLoginPage();
+        
+      }else{
+        this.redirectToLoginPage();
+      }
+    }).catch((error) => {
+
+    }).finally(() => {
+      this.loading.dismiss();
+    });
     
   }
   /**
@@ -33,6 +52,9 @@ export class HomeDevicePagePage implements OnInit {
       event.target.complete();
     }, 2000);
   }
+  /**
+   * this method shows a Detailed Chart
+   */
   showDetailedChart():void{
     var ctx = (<any>document.getElementById('lineCanvas')).getContext('2d');
     this.lineChart = new Chart(ctx, {
@@ -73,5 +95,44 @@ export class HomeDevicePagePage implements OnInit {
     });
     
   }
+  /**
+   * this method validates if the user is loggedIn
+   * if not, then gets redirected to the LoginPage
+   */
+  async  validateLoggedUser(){
+    await this.presentLoading();
+    this.awsAmplifyService.getCurrentUser().then((result) => {
+      if (result != undefined) {
+        this.showDetailedChart();
+        
+      } else {
+        this.currentUserError = this.awsAmplifyService.getErrors();
+       this.redirectToLoginPage(); 
+      }
+
+    }).catch((error) => {
+      console.log(error);
+
+    }).finally(() => {
+      this.loading.dismiss();
+
+    });
+    
+      
+  }
+  async presentLoading(){
+    this.loading = await this.loadingIndicator.create({
+      message:'Cargando ...',
+      spinner:'dots',
+    });
+    await this.loading.present();
+
+  }
+  redirectToLoginPage(){
+    this.router.navigateByUrl('/login');
+
+  }
+
+
 
 }

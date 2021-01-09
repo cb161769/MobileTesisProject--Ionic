@@ -24,7 +24,6 @@ export class RegisterPage implements OnInit {
     this.registerForm = new FormGroup({
       'firstName': new FormControl(this.registerModel.name,[Validators.required]),
       'lastName': new FormControl(this.registerModel.lastName,[Validators.required]),
-      'userName': new FormControl(this.registerModel.userName,[Validators.required]),
       'email': new FormControl(this.registerModel.userEmail,[Validators.email,Validators.required]),
       'phoneNumber': new FormControl(this.registerModel.userPhoneNumber,[Validators.required,Validators.nullValidator]),
       'password': new FormControl(this.registerModel.userPassword,[Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'),Validators.minLength(8)])
@@ -38,6 +37,7 @@ export class RegisterPage implements OnInit {
    */
   async singIn(){
     await this.PresentLoading();
+    this.registerModel.userName = this.registerModel.userEmail;
     await this.awsAmplifyService.singUp(this.registerModel.userName,this.registerModel.userPassword,this.registerModel.userEmail,this.registerModel.name,this.registerModel.lastName,this.registerModel.userPhoneNumber)
     .then((result) => {
       if (result !=undefined) {
