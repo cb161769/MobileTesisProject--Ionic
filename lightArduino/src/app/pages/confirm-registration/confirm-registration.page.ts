@@ -52,8 +52,7 @@ export class ConfirmRegistrationPage implements OnInit {
 
     }).finally(() => {
       this.loading.dismiss();
-      this.toaster.dismiss();
-    })
+    });
 
   }
   /**
@@ -76,6 +75,7 @@ export class ConfirmRegistrationPage implements OnInit {
     });
     this.toaster.present();
     this.router.navigateByUrl('/home-device-page');
+    
     
 
   }

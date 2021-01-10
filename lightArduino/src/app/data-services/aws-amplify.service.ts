@@ -48,7 +48,7 @@ export class AwsAmplifyService {
        return singUpResponse;
        
      } catch (error) {
-       this.returnErrors(error);
+       this.returnErrors(error.message);
        // console.log(error);
 
      }
@@ -80,7 +80,7 @@ export class AwsAmplifyService {
       return userConfirmed;
       
     } catch (error) {
-      this.returnErrors(error);
+      this.returnErrors(error.message);
       console.log(error);
     } 
    }
@@ -112,12 +112,43 @@ export class AwsAmplifyService {
        this.returnErrors(error.message);
      }
    }
+   /**
+    * this method is to the User Sing out
+    */
    async singOut(){
      try {
        await Auth.signOut();
      } catch (error) {
-       
+       this.returnErrors(error.message);
      }
    }
+   /**
+    * this method is for the user's Forgot Password
+    * @param userName user's Name name
+    */
+   async forgotPassword(userName:any){
+     await Auth.forgotPassword(userName).then((data) => {
+       const userData = data;
+       return userData;
+     }).catch((err) => {
+       this.returnErrors(err.message);
+     });
+   }
+   /**
+    * this method is for the Forgot Password Submit
+    * @param userName userName
+    * @param code userName code
+    * @param new_password new Password
+    */
+   async forgotPasswordSubmit(userName:any,code:any,new_password:any){
+     await Auth.forgotPasswordSubmit(userName,code,new_password).then((data) => {
+       const userData = data;
+       return userData;
+     }).catch((error) => {
+       this.returnErrors(error.message);
+     });
+   }
+
+
 
 }
