@@ -1,5 +1,7 @@
 {
   "name": "lightArduino",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

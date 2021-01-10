@@ -6,8 +6,11 @@ export const environment = {
   production: false,
   Region:"us-west-2",
   COGNITO_POOL: {
-    UserPoolId: "us-west-2_wRXy19WSY",
-    ClientId: "6g9akdsjfgemksj9scbrfcma1o"
+    UserPoolId: "us-west-2_3lc9ZdUlh",
+    ClientId: "6jltfo4vb4io1lc1keksao3fmn"
+  },
+  DynamoBDEndPoints:{
+    ULR:"https://avpk59c6a6.execute-api.us-west-2.amazonaws.com/dev/"
   }
 };
 /*

@@ -4,6 +4,7 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { LoadingController, NavController,ToastController } from '@ionic/angular';
 import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -25,7 +26,7 @@ export class LoginPage implements OnInit {
    * @param ToastController 
    */
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
-    public ToastController : ToastController)
+    public ToastController : ToastController, public router:Router)
      {
         this.loginForm = new FormGroup({
           'email': new FormControl(this.loginModel.userEmail,[Validators.required]),
@@ -44,8 +45,7 @@ export class LoginPage implements OnInit {
     
     this.awsAmplifyService.singIn(this.loginModel.userEmail,this.loginModel.userPassword).then((result) => {
       if (result != undefined) { 
-        
-
+        this.router.navigateByUrl("/home-device-page");
       }
       else{
         this.LoginError = this.awsAmplifyService.getErrors();
@@ -59,8 +59,7 @@ export class LoginPage implements OnInit {
         this.LoginError = this.awsAmplifyService.getErrors();
         
       }
-      
-
+  
     }).finally(() =>{
       this.loading.dismiss();
       this.loginForm.reset();
