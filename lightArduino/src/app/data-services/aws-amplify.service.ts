@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Auth} from 'aws-amplify';
 import {environment} from '../../environments/environment';
 import {Amplify} from 'aws-amplify';
+import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -148,6 +149,14 @@ export class AwsAmplifyService {
        this.returnErrors(error.message);
      });
    }
+    async retrieveCurrentSesion():Promise<any>
+   {
+     const userToken = (await Auth.currentSession()).getAccessToken().getJwtToken();
+     console.log(userToken);
+     return userToken;
+
+   }
+
 
 
 

@@ -41,7 +41,7 @@ export class ConfirmRegistrationPage implements OnInit {
     await this.PresentLoading();
     this.awsAmplifyService.confirmSingUp(this.confirRegistrationModel.username,this.confirRegistrationModel.verificationCode).then((result) => {
       if (result != undefined) {
-        this.redirectToHomePage();
+        this.redirectToRegisterDevice();
 
         
       } else {
@@ -68,14 +68,13 @@ export class ConfirmRegistrationPage implements OnInit {
   /**
    * this method redirects to the HomePage
    */
-  async redirectToHomePage(){
+  async redirectToRegisterDevice(){
     this.toaster = await this.toast.create({
       message:'su cuenta ha sido verificada con éxito',
       duration:2000
     });
     this.toaster.present();
-    this.router.navigateByUrl('/home-device-page');
-    
+    this.router.navigateByUrl('/register-device');
     
 
   }

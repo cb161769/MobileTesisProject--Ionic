@@ -10,9 +10,10 @@ export const environment = {
     ClientId: "7qh1iesvf4okovs0kb3dkmjupu"
   },
   DynamoBDEndPoints:{
-    ULR:"https://sigjhdpn54.execute-api.us-west-2.amazonaws.com/dev/",
+    ULR:"https://sigjhdpn54.execute-api.us-west-2.amazonaws.com/dev",
     API_PATHS:{
-      getDeviceReadings:"/IotDevice/getDeviceByUserName"
+      getDeviceReadings:"/IotDevice/getDeviceByUserName",
+      createDevice: "/IotDevice/createDevice"
     }
   }
 };
