@@ -1,7 +1,8 @@
+
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+ 
 import { IonicModule } from '@ionic/angular';
 
 import { HomeDevicePagePageRoutingModule } from './home-device-page-routing.module';
@@ -17,12 +18,13 @@ registerLocaleData(localeEs);
     FormsModule,
     IonicModule,
     HomeDevicePagePageRoutingModule,
-    NgxGaugeModule
+    NgxGaugeModule,
+    
     
   ],
   declarations: [HomeDevicePagePage],
   providers:[
-    {provide:LOCALE_ID,useValue:'es-ES'}
+    {provide:LOCALE_ID,useValue:'es-ES'},
   ]
 })
 export class HomeDevicePagePageModule {}

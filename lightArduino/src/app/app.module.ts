@@ -26,10 +26,10 @@ Amplify.configure({
 @NgModule({
   declarations: [AppComponent, RegisterPipe],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule,HttpClientModule],
   providers: [
     StatusBar,
-    SplashScreen,
+    SplashScreen,HttpClientModule,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

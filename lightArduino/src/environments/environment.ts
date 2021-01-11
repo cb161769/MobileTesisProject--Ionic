@@ -6,11 +6,14 @@ export const environment = {
   production: false,
   Region:"us-west-2",
   COGNITO_POOL: {
-    UserPoolId: "us-west-2_3lc9ZdUlh",
-    ClientId: "6jltfo4vb4io1lc1keksao3fmn"
+    UserPoolId: "us-west-2_06rfGtXrz",
+    ClientId: "7qh1iesvf4okovs0kb3dkmjupu"
   },
   DynamoBDEndPoints:{
-    ULR:"https://avpk59c6a6.execute-api.us-west-2.amazonaws.com/dev/"
+    ULR:"https://sigjhdpn54.execute-api.us-west-2.amazonaws.com/dev/",
+    API_PATHS:{
+      getDeviceReadings:"/IotDevice/getDeviceByUserName"
+    }
   }
 };
 /*
