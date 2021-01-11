@@ -9,6 +9,28 @@
       <h1 big-heading>Registro de Dispositivo Inteligente</h1>
     </div>
   </div>
+  <form (ngSubmit)="registerDevice()" [formGroup]="registerDeviceForm" >
+    <ion-list>
+      <ion-item>
+        <img icon-small src="../../../assets/icon/FIrstName.png" />
+        <ion-input required formControlName="deviceName" type="text" [(ngModel)]="iotDeviceModel.deviceName" placeholder="Nombre del Dispositivo" aria-autocomplete="off" clearInput aria-autocomplete="off"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="registerDeviceForm.controls['deviceName'].touched && registerDeviceForm.controls['deviceName'].invalid">
+        <ion-label style="color: red;">El nombre del dispositivo es requerido</ion-label>
+      </ion-item>
+      <ion-item>
+       <img icon-small src="../../../assets/icon/ipAddres.png" alt="" />
+       <ion-input placeholder="Dirección IP del dispositivo" required formControlName="deviceIpAddress" type="text" [(ngModel)]="iotDeviceModel.deviceIp" aria-autocomplete="off" clearInput aria-autocomplete="off"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="registerDeviceForm.controls['deviceIpAddress'].touched && registerDeviceForm.controls['deviceIpAddress'].invalid">
+        <ion-label style="color: red;">la direccion IP del dispositivo es requerido</ion-label>
+      </ion-item>
+      <ion-button color="tertiary" class="ion-button-class" shape="round" mode="ios" fill="solid" size="large" expand="block" type="submit" [disabled]="!registerDeviceForm.valid">
+        <ion-label class="ion-text-center"><h1>Registrar Dispositivo</h1></ion-label>
+      </ion-button>
+      
+    </ion-list>
+  </form>
   
 
 </ion-content>
