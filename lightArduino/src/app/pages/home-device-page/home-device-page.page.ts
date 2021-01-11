@@ -1,3 +1,4 @@
+import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { LoadingController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit } from '@angular/core';
@@ -18,7 +19,7 @@ export class HomeDevicePagePage implements OnInit {
   loading:any;
   currentUserError:any;
 
-  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router) { }
+  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService) { }
 
   ngOnInit() {
     
@@ -101,6 +102,7 @@ export class HomeDevicePagePage implements OnInit {
    */
   async  validateLoggedUser(){
     await this.presentLoading();
+    // await this.validateUserDevice();
     this.awsAmplifyService.getCurrentUser().then((result) => {
       if (result != undefined) {
         this.showDetailedChart();
@@ -132,6 +134,7 @@ export class HomeDevicePagePage implements OnInit {
     this.router.navigateByUrl('/login');
 
   }
+  
 
 
 
