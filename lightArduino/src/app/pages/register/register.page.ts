@@ -25,8 +25,8 @@ export class RegisterPage implements OnInit {
       'firstName': new FormControl(this.registerModel.name,[Validators.required]),
       'lastName': new FormControl(this.registerModel.lastName,[Validators.required]),
       'email': new FormControl(this.registerModel.userEmail,[Validators.email,Validators.required]),
-      'phoneNumber': new FormControl(this.registerModel.userPhoneNumber,[Validators.required,Validators.nullValidator]),
-      'password': new FormControl(this.registerModel.userPassword,[Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'),Validators.minLength(8)])
+      'phoneNumber': new FormControl(this.registerModel.userPhoneNumber,[Validators.required,Validators.minLength(14)]),
+      'password': new FormControl(this.registerModel.userPassword,[Validators.required,Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'),Validators.minLength(8)])
     });
     }
 
