@@ -17,6 +17,8 @@ export class RegisterDevicePage implements OnInit {
   iotDeviceModel:IOTDevice = new IOTDevice();
   loading:any;
   registerDeviceError:any;
+  userName;
+
 
   constructor(public awsAmplifyService:AwsAmplifyService,
               public loadingIndicator:LoadingController,
@@ -26,9 +28,12 @@ export class RegisterDevicePage implements OnInit {
                   'deviceName': new FormControl(this.iotDeviceModel.deviceName,[Validators.required]),
                   'deviceIpAddress': new FormControl(this.iotDeviceModel.deviceIp,[Validators.required,Validators.pattern('^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$')]),
                 });
+
               }
 
   ngOnInit() {
+    this.getUserName();
+
   }
 
   async registerDevice(){
@@ -37,11 +42,16 @@ export class RegisterDevicePage implements OnInit {
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.createDevice;
     const urlFullPath = `${url}` + `${urlPath}`;
     
-    this.dynamoDBService.genericPostMethod(urlFullPath,this.iotDeviceModel).subscribe((data) => {
+    
+    await this.dynamoDBService.genericPostMethod(urlFullPath,this.iotDeviceModel).subscribe((data) => {
       if (data != undefined || data != null) {
         console.log(data);
         this.registerDeviceForm.reset();
         this.loading.dismiss();
+      }
+      else{
+        this.loading.dismiss();
+
       }
     })
 
@@ -55,6 +65,10 @@ export class RegisterDevicePage implements OnInit {
       spinner:'dots',
     });
     await this.loading.present();
+  }
+  async getUserName(){
+   const user =  await this.awsAmplifyService.getCurrentUser();
+   console.log(user);
   }
   
 

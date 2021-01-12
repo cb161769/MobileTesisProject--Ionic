@@ -74,7 +74,7 @@ export class ConfirmRegistrationPage implements OnInit {
       duration:2000
     });
     this.toaster.present();
-    this.router.navigateByUrl('/register-device');
+    this.router.navigateByUrl('/login');
     
 
   }

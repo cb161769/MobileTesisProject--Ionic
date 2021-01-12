@@ -152,10 +152,12 @@ export class AwsAmplifyService {
     async retrieveCurrentSesion():Promise<any>
    {
      const userToken = (await Auth.currentSession()).getAccessToken().getJwtToken();
-     console.log(userToken);
+     // console.log(userToken);
+     
      return userToken;
 
    }
+    
 
 
 

@@ -2,9 +2,10 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders,HttpRequest,HttpResponse } from  '@angular/common/http';
-import { Observable,throwError  } from 'rxjs';
+import { Observable,throwError, from  } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ErrorService } from './error.service';
+import { Auth } from 'aws-amplify';
 
 environment
 @Injectable({
@@ -13,8 +14,11 @@ environment
 export class DynamoDBAPIService {
   url:any = environment.DynamoBDEndPoints.ULR;
   getDeviceReadingsEndPoint:any = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
+  token:any;
+  constructor(public httpClient: HttpClient, public AwsAmplifyService:AwsAmplifyService, public ErrorService:ErrorService) {
 
-  constructor(public httpClient: HttpClient, public AwsAmplifyService:AwsAmplifyService, public ErrorService:ErrorService) { }
+   
+   }
   
   /**
    * this method is 
@@ -33,20 +37,24 @@ export class DynamoDBAPIService {
     );
     
   }
+  
   /**
    * This is a generic method to Post all data regarding to register rows to a DynamoDB Table
    * @param ulrPost the url from the REST API
    * @param bodyPost the body to register the Information
    */
-  genericPostMethod(ulrPost:string,bodyPost:any):Observable<any[]>{
-    
-    return this.httpClient.post(ulrPost,bodyPost, {headers: this.genericGetHeaders()}).pipe(
+  async genericPostMethod(ulrPost:string,bodyPost:any):Observable<any[]>{
+    return this.httpClient.post(ulrPost,bodyPost).pipe(
       map((data: any[]) => {
         return data;
       }), catchError(error => {
         return this.ErrorService.handleError(error);
       })
     );
+
+   
+    
+    
   }
   /**
    * this is a generic PATCH method
@@ -62,17 +70,18 @@ export class DynamoDBAPIService {
       })
     )
   }
-  genericGetHeaders():HttpHeaders {
+  async genericGetHeaders():Promise<HttpHeaders> {
     let headers = new HttpHeaders();
-    
-    headers = headers.append('Authorization', this.obtainCurrentTOken());
+    const userToken = (await Auth.currentSession()).getAccessToken().getJwtToken();
+    console.log(userToken); 
+    headers = headers.append('Authorization', userToken);
     return headers;
     
   }
-  obtainCurrentTOken ():any{
-    this.AwsAmplifyService.getCurrentUser().then((data) => {
-      return data;
-    })
+  async obtainCurrentToken (){
+
+    
   }
+  
 
 }
