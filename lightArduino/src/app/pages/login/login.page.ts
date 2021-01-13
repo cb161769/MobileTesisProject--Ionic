@@ -1,3 +1,4 @@
+import { MessageService } from './../../data-services/messageService/message.service';
 import { Login } from './../../models/login';
 import { Component, OnInit } from '@angular/core';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
@@ -26,7 +27,7 @@ export class LoginPage implements OnInit {
    * @param ToastController 
    */
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
-    public ToastController : ToastController, public router:Router)
+    public ToastController : ToastController, public router:Router, public messageService:MessageService)
      {
         this.loginForm = new FormGroup({
           'email': new FormControl(this.loginModel.userEmail,[Validators.required]),
@@ -43,18 +44,33 @@ export class LoginPage implements OnInit {
   async singIn(){
     await this.PresentLoading();
     
-    this.awsAmplifyService.singIn(this.loginModel.userEmail,this.loginModel.userPassword).then((result) => {
+    this.awsAmplifyService.singIn(this.loginModel.userEmail,this.loginModel.userPassword).then( async (result) => {
       if (result != undefined) { 
+        console.log(result);
+        this.messageService.setUserEmail(this.loginModel.userEmail);
+        
         this.router.navigateByUrl("/home-device-page");
       }
+      
       else{
         this.LoginError = this.awsAmplifyService.getErrors();
-        console.log(this.LoginError);
+        const toast = await this.ToastController.create({
+          message: 'Ha ocurrido un error, intentelo nuevamente',
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+        
       }
+      console.log(result);
 
       
      
-    }).catch((error) => {
+    }).catch( async (error) => {
+      if (this.LoginError !=undefined || error !=undefined) {
+        
+      }
       if (error != undefined) {
         this.LoginError = this.awsAmplifyService.getErrors();
         
