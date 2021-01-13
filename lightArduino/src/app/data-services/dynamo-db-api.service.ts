@@ -24,10 +24,7 @@ export class DynamoDBAPIService {
    * this method is 
    * @param ulrRoot the specified URL
    */
-   genericGetMethods(ulrRoot:string): Observable<any[]>{
-    const attributes =  this.AwsAmplifyService.getCurrentUser();
-    console.log(attributes);
-    
+   genericGetMethods(ulrRoot:string): Observable<any>{
     return this.httpClient.get(ulrRoot).pipe(
       map((data: any[]) => {
         return data;
@@ -43,7 +40,7 @@ export class DynamoDBAPIService {
    * @param ulrPost the url from the REST API
    * @param bodyPost the body to register the Information
    */
-  async genericPostMethod(ulrPost:string,bodyPost:any):Observable<any[]>{
+   genericPostMethod(ulrPost:string,bodyPost:any):Observable<any[]>{
     return this.httpClient.post(ulrPost,bodyPost).pipe(
       map((data: any[]) => {
         return data;

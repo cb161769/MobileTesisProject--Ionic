@@ -1,9 +1,11 @@
+import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
-import { LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit } from '@angular/core';
 import {  Chart} from 'chart.js';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
@@ -19,7 +21,19 @@ export class HomeDevicePagePage implements OnInit {
   loading:any;
   currentUserError:any;
 
-  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService) { }
+  /**
+   * this is the Home - device page Constructor
+   * @param awsAmplifyService 
+   * @param loadingIndicator 
+   * @param router 
+   * @param DynamoDBService 
+   * @param ToastController 
+   * @param messageService message service
+   * @param alertController alert' controller class
+   */
+
+  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
+              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController) { }
 
   ngOnInit() {
     
@@ -41,6 +55,7 @@ export class HomeDevicePagePage implements OnInit {
     });
     
   }
+
   /**
    * 
    * @param event evento para refrescar la pantalla
@@ -103,12 +118,21 @@ export class HomeDevicePagePage implements OnInit {
   async  validateLoggedUser(){
     await this.presentLoading();
     // await this.validateUserDevice();
-    this.awsAmplifyService.getCurrentUser().then((result) => {
+    this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         this.showDetailedChart();
+        this.validateUserDevice(result.attributes.email);
         
       } else {
         this.currentUserError = this.awsAmplifyService.getErrors();
+        const toast = await this.ToastController.create({
+          message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+
        this.redirectToLoginPage(); 
       }
 
@@ -134,6 +158,51 @@ export class HomeDevicePagePage implements OnInit {
     this.router.navigateByUrl('/login');
 
   }
+  async validateUserDevice(userEmail:any){
+    // let userEmail:string = this.messageService.getUserEmail();
+    var url = environment.DynamoBDEndPoints.ULR;
+    var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
+    const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}2`;
+    this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(async (data) =>{
+      if (data != null || data != undefined) {
+        if (data.readings.Count > 0) {
+          
+          
+        }
+        else{
+          const alert = await this.alertController.create({
+            header:'Advertencia',
+            subHeader:'no tiene dispositivos registrados',
+            message:'es necesario que registre un dispositivo para acceder a esta pagina',
+            buttons: [
+              {
+                text:'Aceptar',
+                handler: () => {
+                  this.redirectToRegisterDevicePage();
+
+                }
+              }
+            ]
+          });
+          await alert.present();
+
+        }
+        
+      } else {
+        
+        
+      }
+    });
+    
+
+  }
+  /**
+   * this method redirects to the Register-Device page
+   */
+  redirectToRegisterDevicePage(){
+    this.router.navigateByUrl('/register-device');
+  }
+
   
 
 
