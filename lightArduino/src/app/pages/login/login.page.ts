@@ -79,6 +79,7 @@ export class LoginPage implements OnInit {
     }).finally(() =>{
       this.loading.dismiss();
       this.loginForm.reset();
+      // this.LoginError = undefined;
       
       
       
