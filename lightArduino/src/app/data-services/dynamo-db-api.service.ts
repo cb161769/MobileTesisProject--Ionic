@@ -40,7 +40,7 @@ export class DynamoDBAPIService {
    * @param ulrPost the url from the REST API
    * @param bodyPost the body to register the Information
    */
-   genericPostMethod(ulrPost:string,bodyPost:any):Observable<any[]>{
+   genericPostMethod(ulrPost:string,bodyPost:any):Observable<any>{
     return this.httpClient.post(ulrPost,bodyPost).pipe(
       map((data: any[]) => {
         return data;

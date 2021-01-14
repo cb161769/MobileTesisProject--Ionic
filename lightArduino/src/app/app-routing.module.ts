@@ -76,6 +76,10 @@ const routes: Routes = [
     path: 'register-device',
     loadChildren: () => import('./pages/register-device/register-device.module').then( m => m.RegisterDevicePageModule)
   },
+  {
+    path: 'configure-device',
+    loadChildren: () => import('./pages/configure-device/configure-device.module').then( m => m.ConfigureDevicePageModule)
+  },
 ];
 
 @NgModule({

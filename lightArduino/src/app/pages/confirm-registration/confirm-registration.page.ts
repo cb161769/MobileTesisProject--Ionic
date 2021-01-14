@@ -24,7 +24,8 @@ export class ConfirmRegistrationPage implements OnInit {
    * @param navController nav Controller
    * @param toast toast
    */
-  constructor(public router:Router,public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastController,
+  constructor(public router:Router,public awsAmplifyService:AwsAmplifyService,
+    public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastController
     ) { 
 
       this.confirmRegistrationForm = new FormGroup({

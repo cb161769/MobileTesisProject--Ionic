@@ -1,0 +1,22 @@
+<ion-header class="ion-no-border">
+<div class="login-header ion-header">
+  <img src="../../../assets/icon/lighting3.png" />
+</div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="center">
+    <div heading-column-lr>
+      <h1 big-heading>Configurar Dispositivo</h1>
+    </div>
+  </div>
+  <form (ngSubmit)="deviceConfiguration()" [formGroup]="configureDeviceForm">
+    <ion-list>
+      <ion-item transparent>
+        <img src="../../../assets/icon/password.png" />
+        
+      </ion-item>
+    </ion-list>
+  </form>
+
+</ion-content>
