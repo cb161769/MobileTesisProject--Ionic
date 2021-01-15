@@ -9,5 +9,5 @@ export class IOTDevice {
     updateDeviceDate?:Date;
     deviceStatus:string;
     relays?:IOTRelays[];
-    configuration?:IOTDeviceConfig;
+    configuration:IOTDeviceConfig = new IOTDeviceConfig();
 }
