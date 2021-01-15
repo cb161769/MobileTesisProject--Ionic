@@ -9,14 +9,31 @@
     <div heading-column-lr>
       <h1 big-heading>Configurar Dispositivo</h1>
     </div>
-  </div>
   <form (ngSubmit)="deviceConfiguration()" [formGroup]="configureDeviceForm">
     <ion-list>
       <ion-item transparent>
-        <img src="../../../assets/icon/password.png" />
-        
+        <img icon-small src="../../../assets/icon/money-stack.png" />
+        <ion-select multiple="false" placeholder="Seleccione una tarifa" [(ngModel)] = "iotDeviceModel.configuration.deviceTarifConfiguration" formControlName="deviceTarifConfig">
+          <ion-select-option value="1">Taste</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item transparent>
+       <img icon-small src="../../../assets/icon/calendar.png" alt="" />
+       <ion-datetime placeholder="Inicio" [(ngModel)]="iotDeviceModel.configuration.facturationStarterDat" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/calendar.png" alt="" />
+        <ion-datetime placeholder="Día final de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationEndDay" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/calendar.png" alt="" />
+        <ion-datetime placeholder="Día límite de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationLimitPayDay" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
       </ion-item>
     </ion-list>
+    <ion-button color="tertiary"  class="ion-button-class" shape="round" fill="solid" size="large" expand="block" type="submit" [disabled]="!configureDeviceForm.valid" >
+      <ion-label class="ion-text-center"><h1>Verificar Mi cuenta</h1></ion-label> 
+    </ion-button>
   </form>
+</div>
 
 </ion-content>
