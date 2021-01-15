@@ -1,11 +1,11 @@
 <ion-header class="ion-no-border">
 <div class="login-header ion-header">
-  <img src="../../../assets/icon/lighting3.png" />
+  <img src="../../../assets/icon/lighting3.png" class="logo-img" />
 </div>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="center">
+  <div class="center2">
     <div heading-column-lr>
       <h1 big-heading>Configurar Dispositivo</h1>
     </div>
@@ -17,21 +17,33 @@
           <ion-select-option value="1">Taste</ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-item *ngIf="configureDeviceForm.controls['deviceTarifConfig'].invalid && configureDeviceForm.controls['deviceTarifConfig'].touched">
+        <ion-label>Awesome Label</ion-label>
+      </ion-item>
       <ion-item transparent>
        <img icon-small src="../../../assets/icon/calendar.png" alt="" />
        <ion-datetime placeholder="Inicio" [(ngModel)]="iotDeviceModel.configuration.facturationStarterDat" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
       </ion-item>
-      <ion-item transparent>
-        <img icon-small src="../../../assets/icon/calendar.png" alt="" />
-        <ion-datetime placeholder="Día final de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationEndDay" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+      <ion-item *ngIf="configureDeviceForm.controls['startingDay'].invalid && configureDeviceForm.controls['startingDay'].touched">
+        <ion-label>La fecha de inicio es requerida</ion-label>
       </ion-item>
       <ion-item transparent>
         <img icon-small src="../../../assets/icon/calendar.png" alt="" />
-        <ion-datetime placeholder="Día límite de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationLimitPayDay" formControlName="startingDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+        <ion-datetime placeholder="Día final de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationEndDay" formControlName="endFacturationDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="configureDeviceForm.controls['endFacturationDay'].invalid && configureDeviceForm.controls['endFacturationDay'].touched">
+        <ion-label>La fecha de final es requerida</ion-label>
+      </ion-item>
+      <ion-item transparent>
+        <img icon-small src="../../../assets/icon/calendar.png" alt="" />
+        <ion-datetime placeholder="Día límite de facturación" [(ngModel)]="iotDeviceModel.configuration.facturationLimitPayDay" formControlName="facturationLimitPayDay" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="configureDeviceForm.controls['facturationLimitPayDay'].invalid && configureDeviceForm.controls['facturationLimitPayDay'].touched">
+        <ion-label>La fecha limite de pago es requerida</ion-label>
       </ion-item>
     </ion-list>
     <ion-button color="tertiary"  class="ion-button-class" shape="round" fill="solid" size="large" expand="block" type="submit" [disabled]="!configureDeviceForm.valid" >
-      <ion-label class="ion-text-center"><h1>Verificar Mi cuenta</h1></ion-label> 
+      <ion-label class="ion-text-center"><h1>Configurar Dispositivo</h1></ion-label> 
     </ion-button>
   </form>
 </div>
