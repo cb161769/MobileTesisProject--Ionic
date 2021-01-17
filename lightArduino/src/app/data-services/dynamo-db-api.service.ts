@@ -30,6 +30,7 @@ export class DynamoDBAPIService {
         return data;
       }), catchError(error => {
         return this.ErrorService.handleError(error);
+        
       })
     );
     

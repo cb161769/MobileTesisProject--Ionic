@@ -162,7 +162,7 @@ export class HomeDevicePagePage implements OnInit {
     // let userEmail:string = this.messageService.getUserEmail();
     var url = environment.DynamoBDEndPoints.ULR;
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
-    const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}2`;
+    const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(async (data) =>{
       if (data != null || data != undefined) {
         if (data.readings.Count > 0) {
