@@ -1,3 +1,4 @@
+import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
@@ -33,11 +34,19 @@ export class HomeDevicePagePage implements OnInit {
    */
 
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController) { }
+              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      this.validateLoggedUser();
+      const data = await this.energyService.getReadingsStatistics();
+      console.log('DATA' + data);
+      
+    } catch (error) {
+      
+    }
     
-    this.validateLoggedUser();
+    // this.validateLoggedUser();
   }
   async singOut(){
     await this.presentLoading();
