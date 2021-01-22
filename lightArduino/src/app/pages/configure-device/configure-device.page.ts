@@ -68,6 +68,7 @@ export class ConfigureDevicePage implements OnInit {
             color: 'dark'
           });
           toast.present();
+          this.redirectToHomeDevicePage();
 
           
         } else {
@@ -170,7 +171,7 @@ export class ConfigureDevicePage implements OnInit {
 
   }
   redirectToHomeDevicePage(){
-    this.router.navigateByUrl('/HomeDevicePage');
+    this.router.navigateByUrl('/home-device-page');
 
   }
 
