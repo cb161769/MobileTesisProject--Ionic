@@ -1,26 +1,36 @@
+import { RealtimeData } from './../../models/realtime-data';
 import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy } from '@angular/core';
 import {  Chart} from 'chart.js';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { Apollo,gql } from 'apollo-angular';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
   styleUrls: ['./home-device-page.page.scss'],
 })
-export class HomeDevicePagePage implements OnInit {
+export class HomeDevicePagePage implements OnInit, OnDestroy {
   now = Date.now();
   private lineChart:Chart;
   gaugeType = "semi";
-  gaugeValue = 28.3;
-  gaugeLabel = "Speed";
-  gaugeAppendText = "km/hr";
+  gaugeValue = 21000;
+  gaugeLabel = "Amperaje de la instalacion";
+  thresholdConfig = {
+    '0': {color: 'orange'},
+    '40': {color: 'orange'},
+    '75.5': {color: 'red'}
+  };
+  gaugeAppendText = "Watts";
   loading:any;
   currentUserError:any;
+  private querySubscription: Subscription;
+  public realtimeDataModel : RealtimeData = new RealtimeData();
 
   /**
    * this is the Home - device page Constructor
@@ -34,16 +44,16 @@ export class HomeDevicePagePage implements OnInit {
    */
 
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService) { }
+              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo) { }
 
   async ngOnInit() {
     try {
       this.validateLoggedUser();
-      const data = await this.energyService.getReadingsStatistics();
-      console.log('DATA' + data);
-      
+      // const data = await this.energyService.getReadingsStatistics();
+      // console.log('DATA' + data);
+       this.refreshDeviceReadings();
     } catch (error) {
-      
+      console.log(error);
     }
     
     // this.validateLoggedUser();
@@ -71,7 +81,7 @@ export class HomeDevicePagePage implements OnInit {
    */
   doRefresh(event) {
     
-    
+    this.refreshDeviceReadings();
     setTimeout(() => {
       
       event.target.complete();
@@ -154,6 +164,61 @@ export class HomeDevicePagePage implements OnInit {
     });
     
       
+  }
+  public async  refreshDeviceReadings(){
+   // let data =  this.energyService.getReadingsStatistics();
+   // console.log(data);
+    // date.setHours(date.getHours() - 6);
+    // let since;
+    // since = date.getTime();
+    // console.log(since / 1000);
+    const beginning =1612130544;
+    try {
+      this.querySubscription =  this.apolloClient.watchQuery<any>({
+        query: gql`
+        {
+          device(timeStamp:${beginning}){
+            device_amps,
+            device_name,
+            device_UserName,
+            device_watts,
+            wifi_IP,
+            wifi_name,
+            wifi_strength
+          }
+        }
+        `
+      }).valueChanges
+      .subscribe(({data,loading}) =>{
+        if (!loading) 
+        {
+          console.log(data);
+          if ( Object.keys(data).length >0) {
+          this.realtimeDataModel.device_amps = data.device.device_amps;
+          this.realtimeDataModel.device_name = data.device.device_name;
+          this.realtimeDataModel.device_UserName = data.device.device_UserName;
+          this.realtimeDataModel.device_watts = Math.abs(data.device.device_watts);
+          this.realtimeDataModel.wifi_Ip = data.device.wifi_IP;
+          this.realtimeDataModel.wifi_Name = data.device.wifi_name;
+          this.realtimeDataModel.wifi_strength = data.device.wifi_strength;
+          }
+          else{
+           // this.realtimeDataModel = new RealtimeData();
+          }
+          
+          console.log(this.realtimeDataModel);
+        }
+        console.log(loading);
+        console.log(data);
+      })
+      } catch (error) {
+      console.log(error);
+    }
+  }
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.querySubscription.unsubscribe();
   }
   async presentLoading(){
     this.loading = await this.loadingIndicator.create({

@@ -3,33 +3,89 @@
   <ion-title>Inicio</ion-title>
   <ion-buttons slot="end">
     <ion-button color="danger" (click)="singOut()">
+      <ion-icon slot="end" name="log-out-outline"></ion-icon>
       Cerrar Sesión
     </ion-button>
   </ion-buttons>
 </ion-toolbar>
 <ion-content class="ion-padding" [fullscreen]="true">
-  <div class="center2">
+  <!-- <div class="center2">
     <div heading-column-lr>
       <h1 big-heading>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</h1>
     </div>
-  </div>
+  </div> -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <div class="ion-padding">
-    
-
     <ion-card>
       <ion-card-header>
-        Consumo del día
+        <h5>Lecturas del dispositivo registrado en tiempo real</h5>
       </ion-card-header>
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img src="../../../assets/icon/cpu.svg" />
+        </ion-avatar>
+        <ion-label class="ion-no-border"><h1>{{realtimeDataModel.device_name|| 'Cargando...'}}</h1>
+        <small>Lecturas del <strong>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</strong></small>
+        </ion-label>
+      </ion-item>
       <ion-card-content>
-        <ngx-gauge [type]="gaugeType" 
-           [value]="gaugeValue" 
-           [label]="gaugeLabel"  
-           [append]="gaugeAppendText">
-          </ngx-gauge>
+        <ion-item lines="none">
+          
+          <ngx-gauge [type]="gaugeType" 
+          [value]="this.realtimeDataModel.device_watts || 0"   
+          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="300">
+         </ngx-gauge>
+        </ion-item>
+        
+          <ion-item lines="none" >
+            <ion-row>
+              <ion-col  center text-center col6>
+                <ion-item lines="none">
+                  <ion-icon name="wifi-outline" slot="start"></ion-icon>
+                  <ion-label>Porcentaje de Señal Wi-fi <strong>{{realtimeDataModel.wifi_strength || 0}}</strong> %</ion-label>
+                </ion-item>
+                <!-- <ion-button color="light">
+                  <ion-icon name="cellular-outline"></ion-icon>
+                  
+                  
+                </ion-button> -->
+              </ion-col>
+              <ion-col center text-center col6>
+                <ion-item lines="none">
+                  <ion-icon name="earth-outline" slot="start"></ion-icon>
+                  <ion-label>Conectado a la red <strong>{{realtimeDataModel.wifi_Name || 'Cargando...'}}</strong></ion-label>
+                </ion-item>
+              </ion-col>
+              <ion-col center text-center col6>
+                <ion-item lines="none">
+                  <ion-icon name="battery-full-outline" slot="start"></ion-icon>
+                  <ion-label>Porcentaje de batería <strong>{{realtimeDataModel.device_amps || 0}}%</strong></ion-label>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+           
+          </ion-item>
       </ion-card-content>
+      <!-- <ion-footer>
+        <ion-toolbar>
+          <ion-title>Footer</ion-title>
+        </ion-toolbar>
+      </ion-footer> -->
+      <!-- <ion-row class="icons">
+        <ion-col>
+        <button class="ion-button ion-start clear small">
+          <ion-icon  name="cellular-outline"></ion-icon>
+          <div>&nbsp;932 reposts</div>
+        </button>
+        </ion-col>
+        <ion-col>
+          <button ion-button ion-start clear small color="danger">
+            <ion-icon name="heart"></ion-icon>
+            <div>&nbsp;12k likes</div>
+          </button>
+        </ion-col>
+      </ion-row> -->
     </ion-card>
     <br>
     
@@ -42,5 +98,4 @@
         <canvas id="lineCanvas"></canvas>
       </ion-card-content>
     </ion-card>
-  </div>
 </ion-content>

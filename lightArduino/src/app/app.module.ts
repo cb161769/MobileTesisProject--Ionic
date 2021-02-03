@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RegisterPipe } from './pages/register.pipe';
 import { NgxGaugeModule } from 'ngx-gauge';
 import Amplify from 'aws-amplify';
+import { GraphQLModule } from './graphql.module';
 
 /**configure AWS_amplify */
 Amplify.configure({
@@ -26,7 +27,7 @@ Amplify.configure({
 @NgModule({
   declarations: [AppComponent, RegisterPipe],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule,HttpClientModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule,HttpClientModule, GraphQLModule],
   providers: [
     StatusBar,
     SplashScreen,HttpClientModule,

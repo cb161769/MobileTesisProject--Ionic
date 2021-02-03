@@ -1,7 +1,7 @@
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders,HttpRequest,HttpResponse } from  '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable,throwError, from  } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ErrorService } from './error.service';
@@ -25,6 +25,13 @@ export class DynamoDBAPIService {
    * @param ulrRoot the specified URL
    */
    genericGetMethods(ulrRoot:string): Observable<any>{
+    // const headers = new HttpHeaders();
+    // headers.append('Access-Control-Allow-Headers', 'Content-Type');
+    // headers.append('Access-Control-Allow-Methods', 'GET');
+    // headers.append('Access-Control-Allow-Origin', '*');
+    // let options = {
+    //   headers: headers
+    // }
     return this.httpClient.get(ulrRoot).pipe(
       map((data: any[]) => {
         return data;

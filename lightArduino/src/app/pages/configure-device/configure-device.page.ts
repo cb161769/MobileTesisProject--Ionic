@@ -114,12 +114,11 @@ export class ConfigureDevicePage implements OnInit {
     var url = environment.DynamoBDEndPoints.ULR;
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.getAllFares;
     const urlFullPath = `${url}` + `${urlPath}`;
-    console.log(urlFullPath);
     
     await this.dynamoDBService.genericGetMethods(urlFullPath).subscribe(async (data) => {
       if (data.readings.Count != null || data.readings.Count != undefined) {
         this.loading.dismiss();
-        if (data.readings.Count > 1) {
+        if (data.readings.Count >= 1) {
           this.listOfFares = data.readings.Items;
         }
         
