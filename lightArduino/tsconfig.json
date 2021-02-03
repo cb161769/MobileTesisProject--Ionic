@@ -3,7 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -14,8 +13,10 @@
     "target": "es2015",
     "lib": [
       "es2018",
-      "dom"
-    ]
+      "dom",
+      "esnext.asynciterable"
+    ],
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

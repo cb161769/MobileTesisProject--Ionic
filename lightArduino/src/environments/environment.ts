@@ -6,18 +6,19 @@ export const environment = {
   production: false,
   Region:"us-west-2",
   COGNITO_POOL: {
-    UserPoolId: "us-west-2_bq37iVUw7",
-    ClientId: "32acgtdjbojl2s4f0q7k36l4ca"
+    UserPoolId: "us-west-2_XdKA6T2aU",
+    ClientId: "7sk5eptvdnktubqjh2edeisi8h"
   },
   DynamoBDEndPoints:{
-    ULR:"https://b7k0fh82si.execute-api.us-west-2.amazonaws.com/dev",
+    ULR:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev",
     API_PATHS:{
       getDeviceReadings:"/IotDevice/getDeviceByUserName",
       createDevice: "/IotDevice/createDevice",
       getFares:"/IotDevice/fareConfiguration/getFares",
       getAllFares:"/IotDevice/fareConfiguration/getAllFares",
       configureDevice:"/IotDevice/configureDevice",
-      graphQL:"https://b7k0fh82si.execute-api.us-west-2.amazonaws.com/dev/graphql"
+      graphQL:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/graphQL",
+      graphQlQuery:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query"
     }
   }
 };
