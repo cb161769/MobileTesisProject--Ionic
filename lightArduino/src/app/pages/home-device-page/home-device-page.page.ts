@@ -9,7 +9,7 @@ import {  Chart} from 'chart.js';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Apollo,gql } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
@@ -30,7 +30,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   loading:any;
   currentUserError:any;
   private querySubscription: Subscription;
+  subscription: Subscription;
   public realtimeDataModel : RealtimeData = new RealtimeData();
+  intervalId:number;
 
   /**
    * this is the Home - device page Constructor
@@ -51,7 +53,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       this.validateLoggedUser();
       // const data = await this.energyService.getReadingsStatistics();
       // console.log('DATA' + data);
-       this.refreshDeviceReadings();
+        const source = interval(1000);
+        this.subscription = source.subscribe(val => this.refreshDeviceReadings());
+       
     } catch (error) {
       console.log(error);
     }
@@ -172,7 +176,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     // let since;
     // since = date.getTime();
     // console.log(since / 1000);
-    const beginning =1612130544;
+    let beginning = Math.floor(Date.now() );
+    
+
     try {
       this.querySubscription =  this.apolloClient.watchQuery<any>({
         query: gql`
@@ -186,7 +192,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             wifi_name,
             wifi_strength
           }
-        }
+        },
+        
         `
       }).valueChanges
       .subscribe(({data,loading}) =>{
@@ -219,6 +226,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     this.querySubscription.unsubscribe();
+    this.subscription && this.subscription.unsubscribe();
+    
   }
   async presentLoading(){
     this.loading = await this.loadingIndicator.create({

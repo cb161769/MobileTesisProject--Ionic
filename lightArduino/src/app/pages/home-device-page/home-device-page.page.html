@@ -40,6 +40,13 @@
         
           <ion-item lines="none" >
             <ion-row>
+              <ion-col center text-center col6>
+                <ion-item lines="none">
+                  <ion-icon name="bulb-outline" slot="start"></ion-icon>
+                  
+                  <ion-label>Amperaje <strong>{{realtimeDataModel.device_amps || 0}} Amps</strong></ion-label>
+                </ion-item>
+              </ion-col>
               <ion-col  center text-center col6>
                 <ion-item lines="none">
                   <ion-icon name="wifi-outline" slot="start"></ion-icon>
@@ -57,12 +64,7 @@
                   <ion-label>Conectado a la red <strong>{{realtimeDataModel.wifi_Name || 'Cargando...'}}</strong></ion-label>
                 </ion-item>
               </ion-col>
-              <ion-col center text-center col6>
-                <ion-item lines="none">
-                  <ion-icon name="battery-full-outline" slot="start"></ion-icon>
-                  <ion-label>Porcentaje de batería <strong>{{realtimeDataModel.device_amps || 0}}%</strong></ion-label>
-                </ion-item>
-              </ion-col>
+              
             </ion-row>
            
           </ion-item>
