@@ -2,7 +2,7 @@ import { RealtimeData } from './../../models/realtime-data';
 import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import {  Chart} from 'chart.js';
@@ -34,6 +34,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   public realtimeDataModel : RealtimeData = new RealtimeData();
   intervalId:number;
 
+
   /**
    * this is the Home - device page Constructor
    * @param awsAmplifyService 
@@ -46,15 +47,15 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    */
 
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo) { }
+              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { }
 
   async ngOnInit() {
     try {
       this.validateLoggedUser();
       // const data = await this.energyService.getReadingsStatistics();
       // console.log('DATA' + data);
-        const source = interval(1000);
-        this.subscription = source.subscribe(val => this.refreshDeviceReadings());
+        // const source = interval(1000);
+        // this.subscription = source.subscribe(val => this.refreshDeviceReadings());
        
     } catch (error) {
       console.log(error);
@@ -66,9 +67,13 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     await this.presentLoading();
     this.awsAmplifyService.singOut().then((result) => {
       if (result != undefined) {
+        this.subscription && this.subscription.unsubscribe();
+        this.querySubscription.unsubscribe();
         this.redirectToLoginPage();
         
       }else{
+        this.subscription && this.subscription.unsubscribe();
+        this.querySubscription.unsubscribe();
         this.redirectToLoginPage();
       }
     }).catch((error) => {
@@ -134,6 +139,12 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     });
     
   }
+  async ionViewDidEnter(){
+    console.log('cargandooo..');
+     const source = interval(1000);
+     this.subscription = source.subscribe(val => this.refreshDeviceReadings());
+   
+  }
   /**
    * this method validates if the user is loggedIn
    * if not, then gets redirected to the LoginPage
@@ -176,7 +187,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     // let since;
     // since = date.getTime();
     // console.log(since / 1000);
-    let beginning = Math.floor(Date.now() );
+    let beginning = Math.floor(Date.now()/1000 );
+    // console.log(beginning);
     
 
     try {
@@ -196,11 +208,23 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         
         `
       }).valueChanges
-      .subscribe(({data,loading}) =>{
+      .subscribe(async ({data,loading}) =>{
         if (!loading) 
         {
-          console.log(data);
+          // console.log(data);
           if ( Object.keys(data).length >0) {
+            if (data.device.wifi_strength == 0 || data.device.wifi_strength == null ||data.device.wifi_strength == undefined  ) {
+              const toast = await this.ToastController.create({
+                message: 'Dispositivo No Conectado',
+                duration: 2000,
+                position: 'bottom',
+                color: 'dark'
+              });
+              toast.present();
+              this.subscription.unsubscribe();
+              // this.querySubscription.unsubscribe();
+              
+            }
           this.realtimeDataModel.device_amps = data.device.device_amps;
           this.realtimeDataModel.device_name = data.device.device_name;
           this.realtimeDataModel.device_UserName = data.device.device_UserName;
@@ -210,24 +234,35 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           this.realtimeDataModel.wifi_strength = data.device.wifi_strength;
           }
           else{
-           // this.realtimeDataModel = new RealtimeData();
+          //   console.log(data);
+          //   this.realtimeDataModel.device_amps = data.device.device_amps;
+          //   this.realtimeDataModel.device_name = data.device.device_name;
+          //   this.realtimeDataModel.device_UserName = data.device.device_UserName;
+          //   this.realtimeDataModel.device_watts = Math.abs(data.device.device_watts);
+          //   this.realtimeDataModel.wifi_Ip = data.device.wifi_IP;
+          //   this.realtimeDataModel.wifi_Name = data.device.wifi_name;
+          //   this.realtimeDataModel.wifi_strength = data.device.wifi_strength;
+          //  // this.realtimeDataModel = new RealtimeData();
           }
           
-          console.log(this.realtimeDataModel);
+         // console.log(this.realtimeDataModel);
         }
-        console.log(loading);
-        console.log(data);
+
       })
       } catch (error) {
       console.log(error);
     }
   }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     this.querySubscription.unsubscribe();
     this.subscription && this.subscription.unsubscribe();
     
+  }
+  async ionViewWillEnter(){
+   this.refreshDeviceReadings();
   }
   async presentLoading(){
     this.loading = await this.loadingIndicator.create({
@@ -238,7 +273,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
 
   }
   redirectToLoginPage(){
-    this.router.navigateByUrl('/login');
+    this.navController.navigateBack('/login');
 
   }
   async validateUserDevice(userEmail:any){
@@ -247,7 +282,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
     const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(async (data) =>{
-      if (data != null || data != undefined) {
+      if (data != null || data != undefined || data.readings ==undefined) {
+      
         if (data.readings.Count > 0) {
           
           
@@ -283,7 +319,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * this method redirects to the Register-Device page
    */
   redirectToRegisterDevicePage(){
-    this.router.navigateByUrl('/register-device');
+    this.navController.navigateBack('/register-device');
   }
 
   
