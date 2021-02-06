@@ -8,7 +8,7 @@
     </ion-button>
   </ion-buttons>
 </ion-toolbar>
-<ion-content class="ion-padding" [fullscreen]="true">
+<ion-content class="ion-padding" [fullscreen]="false">
   <!-- <div class="center2">
     <div heading-column-lr>
       <h1 big-heading>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</h1>
@@ -34,7 +34,7 @@
           
           <ngx-gauge [type]="gaugeType" 
           [value]="this.realtimeDataModel.device_watts || 0"   
-          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="300">
+          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="220">
          </ngx-gauge>
         </ion-item>
         

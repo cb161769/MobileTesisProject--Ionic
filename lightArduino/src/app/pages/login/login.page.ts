@@ -48,8 +48,8 @@ export class LoginPage implements OnInit {
       if (result != undefined) { 
         console.log(result);
         this.messageService.setUserEmail(this.loginModel.userEmail);
-        
-        this.router.navigateByUrl("/home-device-page");
+        this.navController.navigateForward('/home-tabs');
+        //this.router.navigateByUrl("/home-device-page");
       }
       
       else{
