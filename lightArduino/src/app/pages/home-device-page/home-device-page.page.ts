@@ -10,19 +10,46 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Apollo,gql } from 'apollo-angular';
 import { interval, Subscription } from 'rxjs';
+import Highcharts from 'highcharts';
+// import * as Highcharts from "highcharts/highstock";
+// import { Options } from "highcharts/highstock";
+
+
+// import IndicatorsCore from "highcharts/indicators/indicators";
+// import IndicatorZigzag from "highcharts/indicators/zigzag";
+// IndicatorsCore(Highcharts);
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
   styleUrls: ['./home-device-page.page.scss'],
 })
 export class HomeDevicePagePage implements OnInit, OnDestroy {
+  Highcharts: typeof Highcharts = Highcharts;
+  updateFlag = false;
+  data:any = [];
+  chartOptions: Highcharts.Options = {
+    chart:{
+      borderWidth: 1,
+      plotBackgroundColor: 'rgba(255, 255, 255, .9)',
+      plotBorderWidth: 1
+    },
+    
+    series: [
+      
+      {
+        type: 'line',
+        data: this.data
+      }
+    ],
+    
+  };
   now = Date.now();
   private lineChart:Chart;
   gaugeType = "semi";
   gaugeValue = 21000;
   gaugeLabel = "Amperaje de la instalacion";
   thresholdConfig = {
-    '0': {color: 'orange'},
+    '0': {color: 'green'},
     '40': {color: 'orange'},
     '75.5': {color: 'red'}
   };
@@ -91,59 +118,75 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   doRefresh(event) {
     
     this.refreshDeviceReadings();
+    this.showDetailedChart();
     setTimeout(() => {
       
       event.target.complete();
     }, 2000);
   }
-  /**
-   * this method shows a Detailed Chart
-   */
-  showDetailedChart():void{
-    var ctx = (<any>document.getElementById('lineCanvas')).getContext('2d');
-    this.lineChart = new Chart(ctx, {
-      type:'bar',
-      data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
+  
+
+
+  async showDetailedChart(){
+    let urlRoot = environment.DynamoBDEndPoints.ULR;
+    let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceWeekly;
+
+    var curr = new Date; // get current date
+    var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+    var last = first + 6; // last day is the first day + 6
+
+    var firstday = new Date(curr.setDate(first));
+    firstday.setHours(0,0,0);
+
+    var lastday = new Date(curr.setDate(last));
+    lastday.setHours(24,59,59);
+    
+    
+    let initialDateEpoch = Math.floor(firstday.getTime()/1000);
+    let finalDateEpoch = Math.floor(lastday.getTime()/1000);
+    let fullUrl = urlRoot + urlEndpoint + `${initialDateEpoch}/${finalDateEpoch}`;
+    try {
+      let finalData = [];
+      let mondayData =0;
+      let tuesdayData = 0;
+      let thursdayData = 0;
+      let wednesdayData = 0;
+      let fridayData = 0;
+      let saturdayData = 0;
+      let sundayData = 0;
+      this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
+        // this.data = response.usage[0];
+        console.log(response);
+        mondayData = response.usage[0].lunes.watts;
+        tuesdayData = response.usage[0].martes.watts;
+        wednesdayData = response.usage[0].miercoles.watts;
+        // thursdayData = response.usage[0].jueves.watts;
+        thursdayData = 100;
+        fridayData = response.usage[0].viernes.watts;
+        saturdayData = response.usage[0].sabado.watts;
+        sundayData = response.usage[0].domingo.watts;
+        finalData.push(mondayData,tuesdayData,wednesdayData,thursdayData,fridayData,saturdayData,sundayData);
+        console.log(finalData);
+        this.chartOptions.series[0] = {
+          type: 'line',
+          data: finalData
         }
+        this.updateFlag = true;
+
+      })
+      
+    } catch (error) {
+      console.log(error);
     }
-    });
+    
+    
     
   }
   async ionViewDidEnter(){
-    console.log('cargandooo..');
+    //  console.log('cargandooo..');
      const source = interval(1000);
      this.subscription = source.subscribe(val => this.refreshDeviceReadings());
-   
+    this.showDetailedChart();
   }
   /**
    * this method validates if the user is loggedIn

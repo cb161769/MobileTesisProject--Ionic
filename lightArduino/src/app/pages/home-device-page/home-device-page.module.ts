@@ -11,6 +11,8 @@ import { HomeDevicePagePage } from './home-device-page.page';
 import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 import { NgxGaugeModule } from 'ngx-gauge';
+import { HighchartsChartModule } from 'highcharts-angular';
+
 registerLocaleData(localeEs);
 @NgModule({
   imports: [
@@ -19,7 +21,7 @@ registerLocaleData(localeEs);
     IonicModule,
     HomeDevicePagePageRoutingModule,
     NgxGaugeModule,
-    
+    HighchartsChartModule
     
   ],
   declarations: [HomeDevicePagePage],

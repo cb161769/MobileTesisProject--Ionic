@@ -97,7 +97,16 @@
         Consumo durante la semana
       </ion-card-header>
       <ion-card-content>
-        <canvas id="lineCanvas"></canvas>
+        <ion-item lines="none">
+          <highcharts-chart 
+        [Highcharts]="Highcharts"
+        [options]="chartOptions"
+        [(update)]="updateFlag"
+        
+        >
+      </highcharts-chart>
+        </ion-item>
+        
       </ion-card-content>
     </ion-card>
 </ion-content>
