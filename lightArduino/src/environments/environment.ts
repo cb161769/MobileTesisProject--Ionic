@@ -18,7 +18,8 @@ export const environment = {
       getAllFares:"/IotDevice/fareConfiguration/getAllFares",
       configureDevice:"/IotDevice/configureDevice",
       graphQL:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/graphQL",
-      graphQlQuery:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query"
+      graphQlQuery:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query",
+      getDeviceWeekly: "/IotDevice/getDeviceWeekly/"
     }
   }
 };

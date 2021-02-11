@@ -13,6 +13,7 @@ import { RegisterPipe } from './pages/register.pipe';
 import { NgxGaugeModule } from 'ngx-gauge';
 import Amplify from 'aws-amplify';
 import { GraphQLModule } from './graphql.module';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 /**configure AWS_amplify */
 Amplify.configure({
@@ -27,7 +28,7 @@ Amplify.configure({
 @NgModule({
   declarations: [AppComponent, RegisterPipe],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule,HttpClientModule, GraphQLModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,NgxGaugeModule,HighchartsChartModule,HttpClientModule, GraphQLModule],
   providers: [
     StatusBar,
     SplashScreen,HttpClientModule,
