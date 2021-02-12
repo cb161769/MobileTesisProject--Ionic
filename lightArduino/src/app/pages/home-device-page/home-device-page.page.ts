@@ -4,7 +4,7 @@ import { MessageService } from './../../data-services/messageService/message.ser
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
-import { Component, OnInit,OnDestroy } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
 import {  Chart} from 'chart.js';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -24,27 +24,30 @@ import Highcharts from 'highcharts';
   styleUrls: ['./home-device-page.page.scss'],
 })
 export class HomeDevicePagePage implements OnInit, OnDestroy {
-  Highcharts: typeof Highcharts = Highcharts;
-  updateFlag = false;
-  data:any = [];
-  chartOptions: Highcharts.Options = {
-    chart:{
-      borderWidth: 1,
-      plotBackgroundColor: 'rgba(255, 255, 255, .9)',
-      plotBorderWidth: 1
-    },
+  // Highcharts: typeof Highcharts = Highcharts;
+  // updateFlag = false;
+  // data:any = [];
+  // chartOptions: Highcharts.Options = {
+  //   chart:{
+  //     borderWidth: 1,
+  //     plotBackgroundColor: 'rgba(255, 255, 255, .9)',
+  //     plotBorderWidth: 1
+  //   },
     
-    series: [
+  //   series: [
       
-      {
-        type: 'line',
-        data: this.data
-      }
-    ],
+  //     {
+  //       type: 'line',
+  //       data: this.data
+  //     }
+  //   ],
     
-  };
+  // };
   now = Date.now();
   private lineChart:Chart;
+  @ViewChild('barChart') barChart;
+  bars: any;
+  colorArray: any;
   gaugeType = "semi";
   gaugeValue = 21000;
   gaugeLabel = "Amperaje de la instalacion";
@@ -60,6 +63,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   subscription: Subscription;
   public realtimeDataModel : RealtimeData = new RealtimeData();
   intervalId:number;
+  Amps:number = 0;
+  Watts:number = 0;
 
 
   /**
@@ -147,6 +152,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     let fullUrl = urlRoot + urlEndpoint + `${initialDateEpoch}/${finalDateEpoch}`;
     try {
       let finalData = [];
+      let ampsData = [];
       let mondayData =0;
       let tuesdayData = 0;
       let thursdayData = 0;
@@ -154,6 +160,13 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let fridayData = 0;
       let saturdayData = 0;
       let sundayData = 0;
+      let mondayDataAmps =0;
+      let tuesdayDataAmps = 0;
+      let thursdayDataAmps = 0;
+      let wednesdayDataAmps = 0;
+      let fridayDataAmps = 0;
+      let saturdayDataAmps = 0;
+      let sundayDataAmps = 0;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
         // this.data = response.usage[0];
         console.log(response);
@@ -166,12 +179,61 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         saturdayData = response.usage[0].sabado.watts;
         sundayData = response.usage[0].domingo.watts;
         finalData.push(mondayData,tuesdayData,wednesdayData,thursdayData,fridayData,saturdayData,sundayData);
-        console.log(finalData);
-        this.chartOptions.series[0] = {
-          type: 'line',
-          data: finalData
-        }
-        this.updateFlag = true;
+        mondayDataAmps = response.usage[0].lunes.amperios;
+        tuesdayDataAmps = response.usage[0].martes.amperios;
+        thursdayDataAmps = response.usage[0].miercoles.amperios;
+        wednesdayDataAmps = response.usage[0].jueves.amperios;
+        fridayDataAmps = response.usage[0].viernes.amperios;
+        saturdayDataAmps = response.usage[0].sabado.amperios;
+        sundayDataAmps = response.usage[0].domingo.amperios;
+        ampsData.push(mondayDataAmps,tuesdayDataAmps,wednesdayDataAmps,thursdayDataAmps,fridayDataAmps,saturdayDataAmps,sundayDataAmps);
+
+        this.Watts = parseInt(response.usage[0].totalWatts);
+        this.Amps = response.usage[0].totalAmps;
+        let ctx = this.barChart.nativeElement;
+        ctx.height = 200;
+        ctx.width = 200;
+        this.bars = new Chart(ctx,{
+          type:'line',
+          data:{
+            labels:['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'],
+            datasets:[{
+              label:'Cantidad Consumida en Watts',
+              data:finalData,
+              backgroundColor: 'rgba(0,0,0,0)', // array should have same number of elements as number of dataset
+              borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
+              borderWidth: 3,
+              fill:false
+            },
+          {
+            label:'Cantidad Consumida en Amperios',
+            data:ampsData,
+            backgroundColor: 'rgba(0,0,0,0)',
+            borderColor: '#dd1144',
+            borderWidth: 3
+
+          }]
+
+          },
+          options:{
+            scales:{
+              yAxes:[{
+                ticks:{
+                  beginAtZero:true
+                },
+                
+              }],
+              xAxes:[{
+                barPercentage:0.9
+              }]
+            }
+          }
+        })
+        // this.chartOptions.series[0] = {
+        //   type: 'line',
+        //   data: finalData
+        // }
+        // this.updateFlag = true;
 
       })
       
