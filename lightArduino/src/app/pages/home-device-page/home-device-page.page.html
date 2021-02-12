@@ -19,7 +19,8 @@
   </ion-refresher>
     <ion-card>
       <ion-card-header>
-        <h5>Lecturas del dispositivo registrado en tiempo real</h5>
+        <ion-card-title>Lecturas del dispositivo registrado en tiempo real</ion-card-title>
+        
       </ion-card-header>
       <ion-item lines="none">
         <ion-avatar slot="start">
@@ -34,7 +35,7 @@
           
           <ngx-gauge [type]="gaugeType" 
           [value]="this.realtimeDataModel.device_watts || 0"   
-          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="220">
+          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250">
          </ngx-gauge>
         </ion-item>
         
@@ -98,13 +99,48 @@
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
-          <highcharts-chart 
+          <canvas #barChart>
+            
+          </canvas>
+          
+         
+          <!-- <highcharts-chart 
         [Highcharts]="Highcharts"
         [options]="chartOptions"
         [(update)]="updateFlag"
         
         >
-      </highcharts-chart>
+      </highcharts-chart> -->
+
+        </ion-item>
+        <ion-item lines="none">
+          <ion-row>
+            <ion-col center text-center col6>
+              <ion-item lines="none">
+                <ion-icon name="calculator-outline" slot="start"></ion-icon>
+                
+                <ion-label>Total de Watts Consumidos <strong>{{this.Watts || 0}}</strong></ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col  center text-center col6>
+              <ion-item lines="none">
+                <ion-icon name="calculator-outline" slot="start"></ion-icon>
+                <ion-label>Total Amperios Consumidos<strong>{{this.Amps || 0}}</strong></ion-label>
+              </ion-item>
+              <!-- <ion-button color="light">
+                <ion-icon name="cellular-outline"></ion-icon>
+                
+                
+              </ion-button> -->
+            </ion-col>
+            <!-- <ion-col center text-center col6>
+              <ion-item lines="none">
+                <ion-icon name="earth-outline" slot="start"></ion-icon>
+                <ion-label>Conectado a la red <strong>{{realtimeDataModel.wifi_Name || 'Cargando...'}}</strong></ion-label>
+              </ion-item>
+            </ion-col> -->
+            
+          </ion-row>
         </ion-item>
         
       </ion-card-content>
