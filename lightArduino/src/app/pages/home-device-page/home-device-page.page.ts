@@ -61,6 +61,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   currentUserError:any;
   private querySubscription: Subscription;
   subscription: Subscription;
+  weeklySubscription:Subscription;
+
   public realtimeDataModel : RealtimeData = new RealtimeData();
   intervalId:number;
   Amps:number = 0;
@@ -149,6 +151,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     
     let initialDateEpoch = Math.floor(firstday.getTime()/1000);
     let finalDateEpoch = Math.floor(lastday.getTime()/1000);
+    console.log(initialDateEpoch);
+    console.log(finalDateEpoch);
     let fullUrl = urlRoot + urlEndpoint + `${initialDateEpoch}/${finalDateEpoch}`;
     try {
       let finalData = [];
@@ -169,26 +173,27 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let sundayDataAmps = 0;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
         // this.data = response.usage[0];
-        console.log(response);
-        mondayData = response.usage[0].lunes.watts;
-        tuesdayData = response.usage[0].martes.watts;
-        wednesdayData = response.usage[0].miercoles.watts;
-        // thursdayData = response.usage[0].jueves.watts;
-        thursdayData = 100;
-        fridayData = response.usage[0].viernes.watts;
-        saturdayData = response.usage[0].sabado.watts;
-        sundayData = response.usage[0].domingo.watts;
+        console.log(fullUrl);
+        // console.log(response);
+        mondayData = response.usage[0].lunes.watts || 0;
+        tuesdayData = response.usage[0].martes.watts || 0;
+        wednesdayData = response.usage[0].miercoles.watts || 0;
+         thursdayData = response.usage[0].jueves.watts || 0;
+        //thursdayData = 100;
+        fridayData = response.usage[0].viernes.watts || 0;
+        saturdayData = response.usage[0].sabado.watts || 0;
+        sundayData = response.usage[0].domingo.watts || 0;
         finalData.push(mondayData,tuesdayData,wednesdayData,thursdayData,fridayData,saturdayData,sundayData);
-        mondayDataAmps = response.usage[0].lunes.amperios;
-        tuesdayDataAmps = response.usage[0].martes.amperios;
-        thursdayDataAmps = response.usage[0].miercoles.amperios;
-        wednesdayDataAmps = response.usage[0].jueves.amperios;
-        fridayDataAmps = response.usage[0].viernes.amperios;
-        saturdayDataAmps = response.usage[0].sabado.amperios;
-        sundayDataAmps = response.usage[0].domingo.amperios;
+        mondayDataAmps = response.usage[0].lunes.amperios || 0;
+        tuesdayDataAmps = response.usage[0].martes.amperios || 0;
+        thursdayDataAmps = response.usage[0].miercoles.amperios || 0;
+        wednesdayDataAmps = response.usage[0].jueves.amperios || 0;
+        fridayDataAmps = response.usage[0].viernes.amperios || 0;
+        saturdayDataAmps = response.usage[0].sabado.amperios || 0;
+        sundayDataAmps = response.usage[0].domingo.amperios || 0;
         ampsData.push(mondayDataAmps,tuesdayDataAmps,wednesdayDataAmps,thursdayDataAmps,fridayDataAmps,saturdayDataAmps,sundayDataAmps);
 
-        this.Watts = parseInt(response.usage[0].totalWatts);
+        this.Watts = parseInt(response.usage[0].totalWatts || 0);
         this.Amps = response.usage[0].totalAmps;
         let ctx = this.barChart.nativeElement;
         ctx.height = 200;
@@ -244,11 +249,24 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     
     
   }
+  /**
+   * this method is called one when the view is entered
+   */
   async ionViewDidEnter(){
     //  console.log('cargandooo..');
      const source = interval(1000);
      this.subscription = source.subscribe(val => this.refreshDeviceReadings());
-    this.showDetailedChart();
+     const cond = interval(10000);
+    this.weeklySubscription = cond.subscribe(val => this.showDetailedChart());
+   // this.showDetailedChart();
+  }
+  /**
+   * this method is called once when the view is gone
+   */
+  async ionViewDidLeave(){
+    this.querySubscription.unsubscribe();
+    this.subscription && this.subscription.unsubscribe();
+    this.weeklySubscription && this.weeklySubscription.unsubscribe();
   }
   /**
    * this method validates if the user is loggedIn
@@ -285,6 +303,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     
       
   }
+  /**
+   * this method syncs the device readings
+   */
   public async  refreshDeviceReadings(){
    // let data =  this.energyService.getReadingsStatistics();
    // console.log(data);
@@ -364,10 +385,12 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     this.querySubscription.unsubscribe();
     this.subscription && this.subscription.unsubscribe();
+    this.weeklySubscription && this.weeklySubscription.unsubscribe();
     
   }
   async ionViewWillEnter(){
    this.refreshDeviceReadings();
+   this.showDetailedChart();
   }
   async presentLoading(){
     this.loading = await this.loadingIndicator.create({
