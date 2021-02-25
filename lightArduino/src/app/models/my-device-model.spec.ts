@@ -1,7 +1,7 @@
-import { MyDeviceModel } from './my-device-model';
+import { MyAccount } from './my-account-model';
 
 describe('MyDeviceModel', () => {
   it('should create an instance', () => {
-    expect(new MyDeviceModel()).toBeTruthy();
+    expect(new MyAccount()).toBeTruthy();
   });
 });
