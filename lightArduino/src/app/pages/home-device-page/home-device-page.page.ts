@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Apollo,gql } from 'apollo-angular';
 import { interval, Subscription } from 'rxjs';
-import Highcharts from 'highcharts';
 // import * as Highcharts from "highcharts/highstock";
 // import { Options } from "highcharts/highstock";
 
@@ -44,7 +43,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     
   // };
   now = Date.now();
-  private lineChart:Chart;
   @ViewChild('barChart') barChart;
   bars: any;
   colorArray: any;
@@ -110,7 +108,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         this.querySubscription.unsubscribe();
         this.redirectToLoginPage();
       }
-    }).catch((error) => {
+    }).catch(() => {
 
     }).finally(() => {
       this.loading.dismiss();
@@ -151,8 +149,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     
     let initialDateEpoch = Math.floor(firstday.getTime()/1000);
     let finalDateEpoch = Math.floor(lastday.getTime()/1000);
-    console.log(initialDateEpoch);
-    console.log(finalDateEpoch);
     let fullUrl = urlRoot + urlEndpoint + `${initialDateEpoch}/${finalDateEpoch}`;
     try {
       let finalData = [];
@@ -255,9 +251,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   async ionViewDidEnter(){
     //  console.log('cargandooo..');
      const source = interval(1000);
-     this.subscription = source.subscribe(val => this.refreshDeviceReadings());
+     this.subscription = source.subscribe(() => this.refreshDeviceReadings());
      const cond = interval(10000);
-    this.weeklySubscription = cond.subscribe(val => this.showDetailedChart());
+    this.weeklySubscription = cond.subscribe(() => this.showDetailedChart());
    // this.showDetailedChart();
   }
   /**

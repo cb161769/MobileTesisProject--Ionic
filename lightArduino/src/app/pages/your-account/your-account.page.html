@@ -13,26 +13,26 @@
   </ion-buttons>
  </ion-toolbar>
 <ion-content class="ion-padding">
-  <form>
+  <form [formGroup] = "myAccountForm">
     <ion-list>
-      <ion-item >
+      <ion-item transparent >
         <img icon-small src="../../../assets/icon/userIcon.png" alt="">
-        <ion-input [disabled]="true" placeholder="Usuario" type="text" name="uName"></ion-input>
+        <ion-input [disabled]="true" placeholder="Usuario" type="text" name="UserName" [ngModel]="myAccountModel.email" formControlName="userName"></ion-input>
       </ion-item>
       <ion-item transparent>
         <img icon-small src="../../../assets/icon/FIrstName.png" />
-          <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme"></ion-input>
+          <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme" [ngModel] = "myAccountModel.name" formControlName="lastName"></ion-input>
       </ion-item>
-      <ion-item transparent>
+      <!-- <ion-item transparent>
         <img icon-small src="../../../assets/icon/FIrstName.png" >
-        <ion-input [disabled]="true" placeholder="Apellido" name="lastName"></ion-input>
+        <ion-input [disabled]="true" placeholder="Apellido" type="text"  [ngModel]="myAccountModel.family_name"></ion-input>
 
-      </ion-item>
+      </ion-item> -->
       
-      <ion-item transparent>
+      <!-- <ion-item transparent>
         <img icon-small src="../../../assets/icon/email.png" />
         <ion-input [disabled]="true" placeholder="Correo Electronico" type="email" name="emails"></ion-input>
-      </ion-item>
+      </ion-item> -->
     </ion-list>
   </form>
 
