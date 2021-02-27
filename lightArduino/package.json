@@ -33,6 +33,7 @@
     "highcharts": "^9.0.0",
     "highcharts-angular": "^2.10.0",
     "ngx-gauge": "^1.1.0",
+    "ngx-ion-simple-mask": "^0.8.8",
     "rxjs": "~6.5.5",
     "save": "^2.4.0",
     "tslib": "^2.0.0",
