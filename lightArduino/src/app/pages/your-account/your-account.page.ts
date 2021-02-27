@@ -24,7 +24,9 @@ export class YourAccountPage implements OnInit,OnDestroy {
     public DynamoDBService: DynamoDBAPIService, public ToastController : ToastController,public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { 
       this.myAccountForm = new FormGroup({
         'userName': new FormControl(this.myAccountModel.email),
-        'lastName': new FormControl(this.myAccountModel.family_name)
+        'lastName': new FormControl(this.myAccountModel.family_name),
+        'phone_number': new FormControl(this.myAccountModel.phone_number),
+        'email_verified': new FormControl(this.myAccountModel.email_verified)
       });
     }
 
@@ -49,6 +51,8 @@ export class YourAccountPage implements OnInit,OnDestroy {
         this.myAccountModel.email = result.attributes.email;
         this.myAccountModel.email_verified = result.attributes.email_verified;
         this.myAccountModel.name = result.attributes.name;
+        this.myAccountModel.family_name = result.attributes.family_name;
+        this.myAccountModel.phone_number = result.attributes.phone_number;
 
         console.log(result.attributes);
 

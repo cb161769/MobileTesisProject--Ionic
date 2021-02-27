@@ -14,14 +14,27 @@
  </ion-toolbar>
 <ion-content class="ion-padding">
   <form [formGroup] = "myAccountForm">
-    <ion-list>
+    <ion-list class="ion-padding">
       <ion-item transparent >
-        <img icon-small src="../../../assets/icon/userIcon.png" alt="">
-        <ion-input [disabled]="true" placeholder="Usuario" type="text" name="UserName" [ngModel]="myAccountModel.email" formControlName="userName"></ion-input>
+        <ion-label position="floating" color="black">Usuario</ion-label>
+        <!-- <img icon-small src="../../../assets/icon/userIcon.png" alt=""> -->
+        <ion-input [disabled]="true" type="text" name="UserName" [ngModel]="myAccountModel.email" formControlName="userName"></ion-input>
       </ion-item>
       <ion-item transparent>
-        <img icon-small src="../../../assets/icon/FIrstName.png" />
-          <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme" [ngModel] = "myAccountModel.name" formControlName="lastName"></ion-input>
+        <ion-label position="floating" color="black">Nombre</ion-label>
+        <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme" [ngModel] = "myAccountModel.name" formControlName="lastName"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <ion-label position="floating">Apellido</ion-label>
+        <ion-input [disabled]="true" type="text" name="Apellido" [ngModel] = "myAccountModel.family_name" formControlName="lastName"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <ion-label>Email Verificado?</ion-label>
+        <ion-checkbox slot="end" disabled="true" [ngModel]="myAccountModel.email_verified || false" formControlName="email_verified" ></ion-checkbox>
+      </ion-item>
+      <ion-item transparent>
+        <ion-label>Telefono Movil</ion-label>
+        <ion-input [disabled]="true" type="text" name="Telefono" [ngModel] = "myAccountModel.phone_number" formControlName="phone_number"></ion-input>
       </ion-item>
       <!-- <ion-item transparent>
         <img icon-small src="../../../assets/icon/FIrstName.png" >
@@ -60,17 +73,4 @@
   </ion-toolbar>
 
 </ion-footer> -->
-<ion-tabs class="ion-no-border" color="dark">
-  <ion-tab-bar slot="bottom" class="ion-no-border">
-    <ion-tab-button tab="schedule">
-      <ion-icon name="person-circle-outline"></ion-icon>
-      <ion-label>Actualizar mi cuenta</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="speakers">
-      <ion-icon name="construct-outline"></ion-icon>
-      <ion-label>Mi dispositivo</ion-label>
-    </ion-tab-button>
-
-  </ion-tab-bar>
-</ion-tabs>
+<!-- C:\Users\claud\OneDrive\Documentos\GitHub\MobileTesisProject--Ionic\lightArduino\src\assets\icon -->
