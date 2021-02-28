@@ -18,23 +18,39 @@
       <ion-item transparent >
         <ion-label position="floating" color="black">Usuario</ion-label>
         <!-- <img icon-small src="../../../assets/icon/userIcon.png" alt=""> -->
-        <ion-input [disabled]="true" type="text" name="UserName" [ngModel]="myAccountModel.email" formControlName="userName"></ion-input>
+        <ion-input [disabled]="disableAllFormsControls" type="text" name="UserName" [ngModel]="myAccountModel.email" formControlName="userName"></ion-input>
       </ion-item>
       <ion-item transparent>
         <ion-label position="floating" color="black">Nombre</ion-label>
-        <ion-input [disabled]="true" placeholder="Nombre" type="text" name="Namme" [ngModel] = "myAccountModel.name" formControlName="lastName"></ion-input>
+        <ion-input disabled="{{disableAllFormsControls}}" placeholder="Nombre" type="text" name="Namme" [ngModel] = "myAccountModel.name" formControlName="lastName"></ion-input>
       </ion-item>
       <ion-item transparent>
         <ion-label position="floating">Apellido</ion-label>
-        <ion-input [disabled]="true" type="text" name="Apellido" [ngModel] = "myAccountModel.family_name" formControlName="lastName"></ion-input>
+        <ion-input [disabled]="disableAllFormsControls" type="text" name="Apellido" [ngModel] = "myAccountModel.family_name" formControlName="lastName"></ion-input>
       </ion-item>
       <ion-item transparent>
-        <ion-label>Email Verificado?</ion-label>
-        <ion-checkbox slot="end" disabled="true" [ngModel]="myAccountModel.email_verified || false" formControlName="email_verified" ></ion-checkbox>
+        <ion-label >Email Verificado?</ion-label>
+        <ion-checkbox slot="end" [disabled]="disableAllFormsControls" [ngModel]="myAccountModel.email_verified || false" formControlName="email_verified" ></ion-checkbox>
       </ion-item>
       <ion-item transparent>
-        <ion-label>Telefono Movil</ion-label>
-        <ion-input [disabled]="true" type="text" name="Telefono" [ngModel] = "myAccountModel.phone_number" formControlName="phone_number"></ion-input>
+        <ion-label position="floating">Telefono Movil</ion-label>
+        <ion-input [disabled]="disableAllFormsControls" type="text" name="Telefono" [ngModel] = "myAccountModel.phone_number" formControlName="phone_number"></ion-input>
+      </ion-item>
+      <ion-item transparent>
+        <ion-row>
+          <ion-col size="6" *ngIf="showSaveButton == true">
+            <ion-button color="warning" (click)="saveEdit()">
+              <ion-icon slot="start" expand="full" name="save-outline"  ></ion-icon>
+              Guardar
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" *ngIf="showEditButton == true">
+            <ion-button  color="tertiary" (click)="editData()" >
+              <ion-icon slot="start" expand="full" name="create-outline" ></ion-icon>
+              Editar
+            </ion-button>
+          </ion-col>
+        </ion-row>
       </ion-item>
       <!-- <ion-item transparent>
         <img icon-small src="../../../assets/icon/FIrstName.png" >

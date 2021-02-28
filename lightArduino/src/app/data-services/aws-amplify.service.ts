@@ -27,12 +27,13 @@ export class AwsAmplifyService {
   }
   /**
    * This method's is for the User SingIn
-   * @param username 
+   * @param username the username 
    * @param password 
    * @param email 
    * @param name 
    * @param familyName 
    * @param phone 
+   * @returns user;
    */
    async singUp(username:any,password:any,email?:any,name?:any,familyName?:any,phone?:any){
      try {
@@ -149,13 +150,27 @@ export class AwsAmplifyService {
        this.returnErrors(error.message);
      });
    }
+   /**
+    * this function returns the userSession
+    */
     async retrieveCurrentSesion():Promise<any>
    {
      const userToken = (await Auth.currentSession()).getAccessToken().getJwtToken();
      // console.log(userToken);
-     
      return userToken;
 
+   }
+   async UpdateUserAttributes(username?:any,password?:any,email?:any,name?:any,familyName?:any,phone?:any){
+    let currentUser = await Auth.currentAuthenticatedUser();
+    await Auth.updateUserAttributes(currentUser,{
+      'family_name':familyName,
+      'name':name
+    }).then((data) => {
+      console.log(data)
+      return data;
+    }).catch(error => {
+      console.log(error);
+    })
    }
     
 
