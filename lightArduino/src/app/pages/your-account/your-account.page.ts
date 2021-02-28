@@ -20,6 +20,10 @@ export class YourAccountPage implements OnInit,OnDestroy {
   loading:any;
   myAccountModel: MyAccount = new MyAccount();
   myAccountForm:FormGroup;
+  showSaveButton:boolean = false;
+  showEditButton:boolean = true;
+  private disableAllFormsControls:boolean = true;
+  private disableEditButton:boolean = true;
   constructor(public awsAmplifyService: AwsAmplifyService,public loadingIndicator:LoadingController,public router:Router,
     public DynamoDBService: DynamoDBAPIService, public ToastController : ToastController,public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { 
       this.myAccountForm = new FormGroup({
@@ -47,14 +51,16 @@ export class YourAccountPage implements OnInit,OnDestroy {
     this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         //his.showDetailedChart();
-        this.validateUserDevice(result.attributes.email);
-        this.myAccountModel.email = result.attributes.email;
-        this.myAccountModel.email_verified = result.attributes.email_verified;
-        this.myAccountModel.name = result.attributes.name;
-        this.myAccountModel.family_name = result.attributes.family_name;
-        this.myAccountModel.phone_number = result.attributes.phone_number;
+        this.validateUserDevice(result.attributes.email).then(() => {
+          this.myAccountModel.email = result.attributes.email;
+          this.myAccountModel.email_verified = result.attributes.email_verified;
+          this.myAccountModel.name = result.attributes.name;
+          this.myAccountModel.family_name = result.attributes.family_name;
+          this.myAccountModel.phone_number = result.attributes.phone_number;
+        }).catch((error) => {console.log(error);})
+        
 
-        console.log(result.attributes);
+        //console.log(result.attributes);
 
         
       } else {
@@ -78,6 +84,14 @@ export class YourAccountPage implements OnInit,OnDestroy {
 
     });
   }
+  async saveEdit(){
+    
+    await this.awsAmplifyService.UpdateUserAttributes('','','',this.myAccountModel.name,this.myAccountModel.family_name,this.myAccountModel.phone_number).then((result) => {
+      console.log(result);
+    });
+    
+
+  }
   ionViewDidLeave(){}
   /**
    * this method presents a loading indicator
@@ -88,6 +102,14 @@ export class YourAccountPage implements OnInit,OnDestroy {
       spinner:'dots',
     });
     await this.loading.present();
+  }
+  /**
+   * this method edits the Forms
+   */
+  editData(){
+    this.showSaveButton = true;
+    this.disableAllFormsControls = false;
+
   }
   /**
    * this method redirects the user to the login page
@@ -131,7 +153,7 @@ export class YourAccountPage implements OnInit,OnDestroy {
       complete: () => {
         console.log('completed')
       }
-    })
+    });
 
   }
   /**
