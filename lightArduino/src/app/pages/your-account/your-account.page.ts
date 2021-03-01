@@ -57,6 +57,8 @@ export class YourAccountPage implements OnInit,OnDestroy {
           this.myAccountModel.name = result.attributes.name;
           this.myAccountModel.family_name = result.attributes.family_name;
           this.myAccountModel.phone_number = result.attributes.phone_number;
+          
+          
         }).catch((error) => {console.log(error);})
         
 
@@ -85,9 +87,26 @@ export class YourAccountPage implements OnInit,OnDestroy {
     });
   }
   async saveEdit(){
-    
-    await this.awsAmplifyService.UpdateUserAttributes('','','',this.myAccountModel.name,this.myAccountModel.family_name,this.myAccountModel.phone_number).then((result) => {
+    await this.presentLoading();
+    await this.awsAmplifyService.UpdateUserAttributes('','','',this.myAccountModel.name,this.myAccountModel.family_name,this.myAccountModel.phone_number).then(async (result) => {
       console.log(result);
+      await this.awsAmplifyService.getCurrentUser().then(async (result) => {
+        if (result != undefined) {
+          this.validateUserDevice(result.attributes.email).then(() => {
+            this.myAccountModel.email = result.attributes.email;
+            this.myAccountModel.email_verified = result.attributes.email_verified;
+            this.myAccountModel.name = result.attributes.name;
+            this.myAccountModel.family_name = result.attributes.family_name;
+            this.myAccountModel.phone_number = result.attributes.phone_number;
+            this.disableAllFormsControls = true;
+            this.showSaveButton = false;
+          }).catch((error) => {console.log(error);})
+        }
+      });
+    }).catch((error) =>{
+      console.log(error);
+    }).finally(() =>{
+      this.loading.dismiss();
     });
     
 
