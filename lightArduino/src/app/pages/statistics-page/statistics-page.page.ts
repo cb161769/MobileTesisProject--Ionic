@@ -8,7 +8,7 @@ import { EnergyService } from 'src/app/data-services/energyService/energy.servic
 import { MessageService } from 'src/app/data-services/messageService/message.service';
 import { RelaysModel } from 'src/app/models/relays-model';
 import { environment } from 'src/environments/environment';
-
+import { Observable, of } from "rxjs";
 @Component({
   selector: 'app-statistics-page',
   templateUrl: './statistics-page.page.html',
@@ -19,6 +19,7 @@ export class StatisticsPagePage implements OnInit {
   loading:any;
   relaysList = [];
   currentUserError:any;
+  relays: Observable<RelaysModel[]>;
   constructor(public awsAmplifyService: AwsAmplifyService,public loadingIndicator:LoadingController,public router:Router,
     public DynamoDBService: DynamoDBAPIService, public ToastController : ToastController,public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { }
 
@@ -63,13 +64,19 @@ export class StatisticsPagePage implements OnInit {
               // console.log(data.data);
               //this.relaysModel.push(data.data as RelaysModel);
               this.relaysList = data.data;
+              
+              console.log(this.relays);
+              let relays$:Observable<RelaysModel[]>;
               // console.log(this.relaysList);
               for (let index = 0; index < this.relaysList.length; index++) {
                //const element = array[index];
                 this.relaysModel.push(this.relaysList[index]);
+                relays$ = of([{Name:this.relaysList[index].Name}])
                // this.relaysModel[index].Name = this.relaysList[index].Name;
                 
               }
+              this.relays = relays$;
+              // this.relays = of([this.relaysModel]);
               
               // this.relaysList.forEach(index => {
               //   this.relaysModel[index].Name = index.Name;
@@ -130,6 +137,9 @@ export class StatisticsPagePage implements OnInit {
     }).finally(() => {
       this.loading.dismiss();
     });
+    
+  }
+  async openPage(page){
     
   }
   async  validateLoggedUser(){
