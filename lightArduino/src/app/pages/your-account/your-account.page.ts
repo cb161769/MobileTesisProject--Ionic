@@ -2,7 +2,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { async } from '@angular/core/testing';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController,ToastController,AlertController,NavController } from '@ionic/angular';
+import { LoadingController, ToastController, AlertController, NavController } from '@ionic/angular';
 import { Apollo } from 'apollo-angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
@@ -16,57 +16,59 @@ import { MyAccount } from 'src/app/models/my-account-model';
   templateUrl: './your-account.page.html',
   styleUrls: ['./your-account.page.scss'],
 })
-export class YourAccountPage implements OnInit,OnDestroy {
-  loading:any;
+export class YourAccountPage implements OnInit, OnDestroy {
+  loading: any;
   myAccountModel: MyAccount = new MyAccount();
-  myAccountForm:FormGroup;
-  showSaveButton:boolean = false;
-  showEditButton:boolean = true;
-  private disableAllFormsControls:boolean = true;
-  private disableEditButton:boolean = true;
-  constructor(public awsAmplifyService: AwsAmplifyService,public loadingIndicator:LoadingController,public router:Router,
-    public DynamoDBService: DynamoDBAPIService, public ToastController : ToastController,public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { 
+  myAccountForm: FormGroup;
+  showSaveButton = false;
+  showEditButton = true;
+  public disableAllFormsControls = true;
+  public disableEditButton = true;
+  constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router,
+              public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController, 
+              public messageService: MessageService, public alertController: AlertController,
+              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController) {
       this.myAccountForm = new FormGroup({
-        'userName': new FormControl(this.myAccountModel.email),
-        'lastName': new FormControl(this.myAccountModel.family_name),
-        'phone_number': new FormControl(this.myAccountModel.phone_number),
-        'email_verified': new FormControl(this.myAccountModel.email_verified)
+        userName: new FormControl(this.myAccountModel.email),
+        lastName: new FormControl(this.myAccountModel.family_name),
+        phone_number: new FormControl(this.myAccountModel.phone_number),
+        email_verified: new FormControl(this.myAccountModel.email_verified)
       });
     }
 
   ngOnInit() {
-    
+
   }
   ngOnDestroy(){
 
   }
-  singOut():void{
+  singOut(): void{
 
   }
-  dismiss():void{
-    
+  dismiss(): void{
+
   }
   async ionViewDidEnter(){
     await this.presentLoading();
     this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
-        //his.showDetailedChart();
+        // his.showDetailedChart();
         this.validateUserDevice(result.attributes.email).then(() => {
           this.myAccountModel.email = result.attributes.email;
           this.myAccountModel.email_verified = result.attributes.email_verified;
           this.myAccountModel.name = result.attributes.name;
           this.myAccountModel.family_name = result.attributes.family_name;
           this.myAccountModel.phone_number = result.attributes.phone_number;
-          
-          
-        }).catch((error) => {console.log(error);})
-        
 
-        //console.log(result.attributes);
 
-        
+        }).catch((error) => {console.log(error); });
+
+
+        // console.log(result.attributes);
+
+
       } else {
-        //this.currentUserError = this.awsAmplifyService.getErrors();
+        // this.currentUserError = this.awsAmplifyService.getErrors();
         const toast = await this.ToastController.create({
           message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
           duration: 2000,
@@ -75,7 +77,7 @@ export class YourAccountPage implements OnInit,OnDestroy {
         });
         toast.present();
 
-       this.redirectToLoginPage(); 
+        this.redirectToLoginPage();
       }
 
     }).catch((error) => {
@@ -88,7 +90,8 @@ export class YourAccountPage implements OnInit,OnDestroy {
   }
   async saveEdit(){
     await this.presentLoading();
-    await this.awsAmplifyService.UpdateUserAttributes('','','',this.myAccountModel.name,this.myAccountModel.family_name,this.myAccountModel.phone_number).then(async (result) => {
+    await this.awsAmplifyService.UpdateUserAttributes
+    ('', '', '', this.myAccountModel.name, this.myAccountModel.family_name, this.myAccountModel.phone_number).then(async (result) => {
       console.log(result);
       await this.awsAmplifyService.getCurrentUser().then(async (result) => {
         if (result != undefined) {
@@ -100,15 +103,15 @@ export class YourAccountPage implements OnInit,OnDestroy {
             this.myAccountModel.phone_number = result.attributes.phone_number;
             this.disableAllFormsControls = true;
             this.showSaveButton = false;
-          }).catch((error) => {console.log(error);})
+          }).catch((error) => {console.log(error); });
         }
       });
-    }).catch((error) =>{
+    }).catch((error) => {
       console.log(error);
-    }).finally(() =>{
+    }).finally(() => {
       this.loading.dismiss();
     });
-    
+
 
   }
   ionViewDidLeave(){}
@@ -117,8 +120,8 @@ export class YourAccountPage implements OnInit,OnDestroy {
    */
   async presentLoading(){
     this.loading = await this.loadingIndicator.create({
-      message:'Cargando ...',
-      spinner:'dots',
+      message: 'Cargando ...',
+      spinner: 'dots',
     });
     await this.loading.present();
   }
@@ -136,28 +139,28 @@ export class YourAccountPage implements OnInit,OnDestroy {
   redirectToLoginPage(){
     this.navController.navigateBack('/login');
   }
-  async validateUserDevice(userEmail:any){
-    var url = environment.DynamoBDEndPoints.ULR;
-    var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
+  async validateUserDevice(userEmail: any){
+    let url = environment.DynamoBDEndPoints.ULR;
+    let urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
     const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
-      next: async(data) => {
+      next: async (data) => {
         console.log(data);
-        if (data != null || data != undefined || data.readings ==undefined) {
+        if (data != null || data != undefined || data.readings == undefined) {
           if (data.readings.Count > 0) {
             return true;
           }
           else{
             const alert = await this.alertController.create({
-              header:'Advertencia',
-              subHeader:'no tiene dispositivos registrados',
-              message:'es necesario que registre un dispositivo para acceder a esta pagina',
+              header: 'Advertencia',
+              subHeader: 'no tiene dispositivos registrados',
+              message: 'es necesario que registre un dispositivo para acceder a esta pagina',
               buttons: [
                 {
-                  text:'Aceptar',
+                  text: 'Aceptar',
                   handler: () => {
                     this.redirectToRegisterDevicePage();
-  
+
                   }
                 }
               ]
@@ -170,7 +173,7 @@ export class YourAccountPage implements OnInit,OnDestroy {
         console.log(err);
       },
       complete: () => {
-        console.log('completed')
+        console.log('completed');
       }
     });
 
@@ -181,6 +184,6 @@ export class YourAccountPage implements OnInit,OnDestroy {
   redirectToRegisterDevicePage(){
     this.navController.navigateBack('/register-device');
   }
-  
+
 
 }
