@@ -80,6 +80,14 @@ const routes: Routes = [
     path: 'configure-device',
     loadChildren: () => import('./pages/configure-device/configure-device.module').then( m => m.ConfigureDevicePageModule)
   },
+  {
+    path: 'connexion1',
+    loadChildren: () => import('./pages/connexion1/connexion1.module').then( m => m.Connexion1PageModule)
+  },
+  {
+    path: 'connection-one-tabs',
+    loadChildren: () => import('./pages/connection-one-tabs/connection-one-tabs.module').then( m => m.ConnectionOneTabsPageModule)
+  },
 ];
 
 @NgModule({
