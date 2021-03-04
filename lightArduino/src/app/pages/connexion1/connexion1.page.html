@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>Conexion 1</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="options()">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="selectTime()">
+        <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+      </ion-button>
+      <ion-buttons slot="end">
+        <ion-back-button icon="close-outline"></ion-back-button>
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="container" [fullscreen] ="true" [scrollEvents] ="true" (ionScroll)="logScroll($event)">
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <ion-refresher-content
+    pullingIcon="arrow-dropdown"
+    pullingText="Pull to refresh"
+    refreshingSpinner="bubbles"
+    refreshingText="Refreshing...">
+  </ion-refresher-content>
+</ion-refresher>
+<ion-grid fixed="true" class="intro">
+  <ion-row>
+    <ion-col size="12" class="centered-text">Consumo Total</ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12" class="centered-text">
+      <h3>0w</h3>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>
+
+
