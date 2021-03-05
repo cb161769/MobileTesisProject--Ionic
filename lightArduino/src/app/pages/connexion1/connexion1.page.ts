@@ -14,6 +14,17 @@ import { MessageService } from 'src/app/data-services/messageService/message.ser
 })
 export class Connexion1Page {
   loading:any;
+  selected_time:any;
+  colorArray: any;
+  gaugeType = "semi";
+  gaugeValue = 21000;
+  gaugeLabel = "Amperaje de la instalacion";
+  thresholdConfig = {
+    '0': {color: 'green'},
+    '40': {color: 'orange'},
+    '75.5': {color: 'red'}
+  };
+  gaugeAppendText = "Watts";
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router,
               public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController, 
               public messageService: MessageService, public alertController: AlertController,

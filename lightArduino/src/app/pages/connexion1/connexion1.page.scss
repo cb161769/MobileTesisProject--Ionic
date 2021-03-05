@@ -15,3 +15,44 @@ h3{
 .centered-text{
     text-align: center;
 }
+.arrow-up{
+    padding-top: 3%;
+    padding-right: 3%;
+    padding-left: 3%;
+    color: green;
+    font-size: 48px; //Size of the icon
+}
+.arrow-down{
+    padding-top: 3%;
+    padding-right: 3%;
+    padding-left: 3%;
+    color: red;
+    font-size: 48px; //Size of the icon
+}
+
+.card{
+    margin-top: 5%;
+    border-radius: 15px;
+    background-color: white;
+}
+.account{
+    border-bottom: 1px solid grey;
+}
+
+.account-details{
+    margin-top: 2.5%;
+}
+.account-name{
+    font-size: 16px;
+    color: black;
+}
+.account-balance{
+    font-weight: 500;
+    font-size: 20px;
+    color: black;
+}
+
+.add-account-button{
+    margin-top: 4%;
+    margin-bottom: 0;
+}

@@ -34,7 +34,53 @@
       <h3>0w</h3>
     </ion-col>
   </ion-row>
+  <ion-row>
+    <ion-col size="2">
+      <ion-icon slot="start" name="arrow-up-circle" class="arrow-up"></ion-icon>
+    </ion-col >
+    <ion-col size="6">
+      Watts
+    </ion-col>
+    <ion-col size="2">
+      <ion-icon slot="start" name="arrow-down-circle" class="arrow-down"></ion-icon>
+    </ion-col>
+    <ion-col >
+      Amps
+    </ion-col>
+  </ion-row>
 </ion-grid>
+<ion-card class="card" fixed="true">
+<ion-card-header>
+  <ion-card-title>Consumo en tiempo real</ion-card-title>
+</ion-card-header>
+<ion-card-content>
+ <ion-grid>
+   <ion-row class="account">
+     <ion-col size="12">
+      <ion-item lines="none">
+        <ngx-gauge [type]="gaugeType" 
+        [value]="0"   
+        [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250">
+       </ngx-gauge>
+       </ion-item>
+     </ion-col>
+     <ion-col size="3" class="account-details">
+      <ion-icon name="bulb-outline" slot="start" class="cuenta"></ion-icon>
+      <span class="account-name">Watts</span>       
+     </ion-col>
+     
+   </ion-row>
+ </ion-grid>
+</ion-card-content>  
+</ion-card>
+<ion-card>
+  <ion-card-subtitle *ngIf="selected_time=='Mensual'">Este mes</ion-card-subtitle>
+  <ion-card-subtitle *ngIf="selected_time=='Trimestral'">Este trimestre</ion-card-subtitle>
+  <ion-card-subtitle *ngIf="selected_time=='Anual'">Este año</ion-card-subtitle>
+  <ion-card-subtitle *ngIf="selected_time=='Semanal'">Ultimos 7 dias</ion-card-subtitle>
+  <ion-card-title>Consumo</ion-card-title>
+  
+</ion-card>
 </ion-content>
 
 
