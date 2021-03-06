@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="secondary">
     <ion-title>Conexion 1</ion-title>
-    <ion-buttons slot="start">
+    <ion-buttons slot="primary">
       <ion-button (click)="options()">
         <ion-icon slot="icon-only" name="options-outline"></ion-icon>
       </ion-button>
@@ -56,30 +56,73 @@
 <ion-card-content>
  <ion-grid>
    <ion-row class="account">
-     <ion-col size="12">
-      <ion-item lines="none">
+     <ion-col size="12" >
+      <ion-item lines="none" >
         <ngx-gauge [type]="gaugeType" 
         [value]="0"   
-        [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250">
+        [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250" >
        </ngx-gauge>
        </ion-item>
      </ion-col>
-     <ion-col size="3" class="account-details">
-      <ion-icon name="bulb-outline" slot="start" class="cuenta"></ion-icon>
-      <span class="account-name">Watts</span>       
-     </ion-col>
+     <!-- <ion-col size="3">
+       <ion-item lines="none">
+        <ion-icon name="bulb-outline"></ion-icon>
+        <span class="account-name">Watts</span> 
+       </ion-item>         
+     </ion-col> -->
      
+   </ion-row>
+   <ion-row>
+     <ion-col size="12">
+      <ion-item lines="none">
+        <ion-icon name="bulb-outline"></ion-icon>
+        <span class="account-name">Watts</span> 
+       </ion-item>
+     </ion-col>
+   </ion-row>
+   <ion-row>
+     <ion-col size="12">
+      <ion-item lines="none">
+        <ion-icon name="bulb-outline"></ion-icon>
+        <span class="account-name">Amps</span> 
+       </ion-item>
+     </ion-col>
    </ion-row>
  </ion-grid>
 </ion-card-content>  
 </ion-card>
-<ion-card>
-  <ion-card-subtitle *ngIf="selected_time=='Mensual'">Este mes</ion-card-subtitle>
-  <ion-card-subtitle *ngIf="selected_time=='Trimestral'">Este trimestre</ion-card-subtitle>
-  <ion-card-subtitle *ngIf="selected_time=='Anual'">Este año</ion-card-subtitle>
-  <ion-card-subtitle *ngIf="selected_time=='Semanal'">Ultimos 7 dias</ion-card-subtitle>
-  <ion-card-title>Consumo</ion-card-title>
-  
+<ion-card class="card" fixed="true">
+
+  <ion-card-header>
+      <ion-card-subtitle *ngIf="selected_time=='Mensual'">Este mes</ion-card-subtitle>
+      <ion-card-subtitle *ngIf="selected_time=='Trimestral'">Este trimestre</ion-card-subtitle>
+      <ion-card-subtitle *ngIf="selected_time=='Anual'">Este año</ion-card-subtitle>
+      <ion-card-subtitle *ngIf="selected_time=='Semanal'">Ultimos 7 dias</ion-card-subtitle>
+      <ion-card-title>Graficos de consumo</ion-card-title>
+    </ion-card-header>
+  <ion-card-content>
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="12" class="ion-align-self-center">
+          <ion-item lines="none">
+            <canvas>
+
+            </canvas>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6"></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5" class="ion-align-self-center">
+          Estudio ..
+        </ion-col>
+        <ion-col size="7" class="ion-align-self-center">
+          <p>AAAAAAA</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
+  </ion-card-content>
 </ion-card>
 </ion-content>
 

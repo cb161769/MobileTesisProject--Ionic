@@ -38,8 +38,8 @@ export class Connexion1Page {
     async dismissModal(){
 
     }
-    async options(){
-
+    async options(url?:string){
+      this.router.navigate([url]);
     }
     async selectTime(){
 

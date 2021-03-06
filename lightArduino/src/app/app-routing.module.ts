@@ -87,7 +87,11 @@ const routes: Routes = [
   {
     path: 'connection-one-tabs',
     loadChildren: () => import('./pages/connection-one-tabs/connection-one-tabs.module').then( m => m.ConnectionOneTabsPageModule)
+  },  {
+    path: 'options-conection-one',
+    loadChildren: () => import('./pages/options-conection-one/options-conection-one.module').then( m => m.OptionsConectionOnePageModule)
   },
+
 ];
 
 @NgModule({
