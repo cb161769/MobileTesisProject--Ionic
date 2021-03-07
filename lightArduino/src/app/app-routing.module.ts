@@ -91,6 +91,26 @@ const routes: Routes = [
     path: 'options-conection-one',
     loadChildren: () => import('./pages/options-conection-one/options-conection-one.module').then( m => m.OptionsConectionOnePageModule)
   },
+  {
+    path: 'edit-consumo-connection-one',
+    loadChildren: () => import('./pages/edit-consumo-connection-one/edit-consumo-connection-one.module').then( m => m.EditConsumoConnectionOnePageModule)
+  },
+  {
+    path: 'connection-one-statistics',
+    loadChildren: () => import('./pages/connection-one-statistics/connection-one-statistics.module').then( m => m.ConnectionOneStatisticsPageModule)
+  },
+  {
+    path: 'connection-one-consumptions',
+    loadChildren: () => import('./pages/connection-one-consumptions/connection-one-consumptions.module').then( m => m.ConnectionOneConsumptionsPageModule)
+  },
+  {
+    path: 'connection-one-consumption-evolution',
+    loadChildren: () => import('./pages/connection-one-consumption-evolution/connection-one-consumption-evolution.module').then( m => m.ConnectionOneConsumptionEvolutionPageModule)
+  },
+  {
+    path: 'connection-one-consumption-comparative',
+    loadChildren: () => import('./pages/connection-one-consumption-comparative/connection-one-consumption-comparative.module').then( m => m.ConnectionOneConsumptionComparativePageModule)
+  },
 
 ];
 

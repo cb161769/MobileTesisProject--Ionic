@@ -2,7 +2,7 @@
   <ion-toolbar color="secondary">
     <ion-title>Conexion 1</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="options()">
+      <ion-button (click)="options('options-conection-one')">
         <ion-icon slot="icon-only" name="options-outline"></ion-icon>
       </ion-button>
       <ion-button (click)="selectTime()">
@@ -118,6 +118,17 @@
         </ion-col>
         <ion-col size="7" class="ion-align-self-center">
           <p>AAAAAAA</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5" class="ion-align-self-center">
+          <span id="valor"></span>
+        </ion-col>
+        <ion-col size="7" class="ion-align-self-center">
+          <p class="healthy-text" *ngIf="healthy>=20 && healthy<=50">Excelente</p>
+          <p class="healthy-text" *ngIf="healthy>50"> Excelente2</p>
+          <p class="healthy-text" *ngIf="healthy<20 && healthy>0">Excelente3</p>
+          <p class="healthy-text" *ngIf="healthy==0">Excelente4</p>
         </ion-col>
       </ion-row>
     </ion-grid>
