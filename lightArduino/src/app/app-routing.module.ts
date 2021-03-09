@@ -111,6 +111,10 @@ const routes: Routes = [
     path: 'connection-one-consumption-comparative',
     loadChildren: () => import('./pages/connection-one-consumption-comparative/connection-one-consumption-comparative.module').then( m => m.ConnectionOneConsumptionComparativePageModule)
   },
+  {
+    path: 'connection-one-actios',
+    loadChildren: () => import('./pages/connection-one-actios/connection-one-actios.module').then( m => m.ConnectionOneActiosPageModule)
+  },
 
 ];
 
