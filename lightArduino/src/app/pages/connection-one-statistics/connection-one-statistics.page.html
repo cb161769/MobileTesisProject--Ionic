@@ -5,21 +5,21 @@
 </ion-header>
 
 <ion-content  class="container">
-  <ion-card class="card" fixed="true">
+  <ion-card class="card" fixed="true" (click)="go('connection-one-consumptions')">
     <ion-card-header>
-      <ion-card-subtitle>Awesome Subtitle</ion-card-subtitle>
+      
       <ion-card-title>Consumos anuales,mensuales y semanales</ion-card-title>
     </ion-card-header>
   </ion-card>
-  <ion-card class="card" fixed="true">
+  <ion-card class="card" fixed="true" (click)="go('connection-one-consumption-evolution')">
     <ion-card-header>
-      <ion-card-subtitle></ion-card-subtitle>
+      
       <ion-card-title>Evolucion de Consumos</ion-card-title>
     </ion-card-header>
   </ion-card>
-  <ion-card class="card" fixed="true">
+  <ion-card class="card" fixed="true" (click)="go('connection-one-consumption-comparative')">
     <ion-card-header>
-      <ion-card-subtitle></ion-card-subtitle>
+      
       <ion-card-title>Comparativa de Consumos Previos</ion-card-title>
     </ion-card-header>
   </ion-card>

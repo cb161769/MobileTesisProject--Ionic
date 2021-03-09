@@ -13,6 +13,10 @@ const routes: Routes = [
         loadChildren:() => import('../connexion1/connexion1.module').then( m => m.Connexion1PageModule)
       },
       {
+        path: 'tab2',
+        loadChildren:() => import('../connection-one-actios/connection-one-actios.module').then( m => m.ConnectionOneActiosPageModule)
+      },
+      {
         path:'tab3',
         loadChildren:() => import('../connection-one-statistics/connection-one-statistics.module').then( m => m.ConnectionOneStatisticsPageModule)
       }
