@@ -1,0 +1,69 @@
+.container{
+    --ion-background-color:#e5e5e5;
+}
+h3{
+    font-family: "Heebo-Bold" !important;
+    font-size: 40px;
+}   
+
+.intro{
+    padding: 5%;
+    background-color: white;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.centered-text{
+    text-align: center;
+}
+.arrow-up{
+    padding-top: 3%;
+    padding-right: 3%;
+    padding-left: 3%;
+    color: green;
+    font-size: 48px; //Size of the icon
+}
+.arrow-down{
+    padding-top: 3%;
+    padding-right: 3%;
+    padding-left: 3%;
+    color: red;
+    font-size: 48px; //Size of the icon
+}
+
+.card{
+    margin-top: 5%;
+    border-radius: 15px;
+    background-color: white;
+}
+.chart{
+    background-color: white;
+}
+.account{
+    border-bottom: 1px solid white;
+}
+
+.account-details{
+    margin-top: 2.5%;
+}
+.account-name{
+    font-size: 16px;
+    color: black;
+}
+.account-balance{
+    font-weight: 500;
+    font-size: 20px;
+    color: black;
+}
+
+.add-account-button{
+    margin-top: 4%;
+    margin-bottom: 0;
+}
+#valor{
+    font-size: 60px;
+    font-weight: 600;
+    color: green;
+}
+.healthy-text{
+    text-align: justify;
+}
