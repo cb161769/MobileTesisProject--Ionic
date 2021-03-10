@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ConnectionOneActiosPage } from './connection-one-actios.page';
+import { ConnectionOneSchedulePage } from './connection-one-schedule.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: ConnectionOneActiosPage
+    component: ConnectionOneSchedulePage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ConnectionOneActiosPageRoutingModule {}
+export class ConnectionOneSchedulePageRoutingModule {}

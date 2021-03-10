@@ -14,8 +14,9 @@ const routes: Routes = [
       },
       {
         path: 'tab2',
-        loadChildren:() => import('../connection-one-actios/connection-one-actios.module').then( m => m.ConnectionOneActiosPageModule)
+        loadChildren:() => import('../connection-one-schedule/connection-one-schedule-routing.module').then( m => m.ConnectionOneSchedulePageRoutingModule)
       },
+        
       {
         path:'tab3',
         loadChildren:() => import('../connection-one-statistics/connection-one-statistics.module').then( m => m.ConnectionOneStatisticsPageModule)
