@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ConnectionOneActiosPage } from './connection-one-actios.page';
+import { ConnectionOneSchedulePage } from './connection-one-schedule.page';
 
-describe('ConnectionOneActiosPage', () => {
-  let component: ConnectionOneActiosPage;
-  let fixture: ComponentFixture<ConnectionOneActiosPage>;
+describe('ConnectionOneSchedulePage', () => {
+  let component: ConnectionOneSchedulePage;
+  let fixture: ComponentFixture<ConnectionOneSchedulePage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConnectionOneActiosPage ],
+      declarations: [ ConnectionOneSchedulePage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ConnectionOneActiosPage);
+    fixture = TestBed.createComponent(ConnectionOneSchedulePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
