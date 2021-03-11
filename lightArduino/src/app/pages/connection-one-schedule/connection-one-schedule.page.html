@@ -1,9 +1,60 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>connection-one-schedule</ion-title>
+    <ion-title>Configuraciones</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addConfiguration()">
+        <ion-icon slot="start" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+<ion-grid fixed="true">
+  
+  <ion-row >
+    <ion-col size="12" *ngFor="let i of this.tests | async" fixed="true">
+      <ion-item lines="none">
+        <ion-card (click)="edit()">
+          <ion-card-header>
+            <ion-card-title>{{i.configurationTitle}} </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-col size="12">
+              <ion-row>
+                <ion-col size="6"  fixed="true">
+                  <ion-label>{{i.InitialTime}}</ion-label>
+                  <ion-label>{{i.FinalTime}}</ion-label>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6"  fixed="true">
+                  <ion-col size="3">
+                    <ion-toggle disabled="false" color="light" checked="{{i.isActive}}" ></ion-toggle>
+                  </ion-col>
 
+                  
+                </ion-col>
+              </ion-row>
+              
+            </ion-col>
+            <ion-label>Maxima cantidad por dia {{i.maximumKilowattPerDay}}w</ion-label>
+            <ion-col size="12">
+              <ion-label>dias: {{i.days[0]}},{{i.days[1]}},{{i.days[2]}},{{i.days[3]}},{{i.days[4]}}</ion-label>
+            </ion-col>
+            <ion-col size="12">
+              
+            </ion-col>
+            
+            
+          </ion-card-content>
+          
+        </ion-card>
+        
+      </ion-item>
+      
+    </ion-col>
+    
+  </ion-row>
+</ion-grid>
 </ion-content>
