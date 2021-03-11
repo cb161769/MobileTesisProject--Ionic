@@ -116,7 +116,15 @@ const routes: Routes = [
   {
     path: 'connection-one-schedule',
     loadChildren: () => import('./pages/connection-one-schedule/connection-one-schedule.module').then( m => m.ConnectionOneSchedulePageModule)
+  },  {
+    path: 'add-connection-schedule',
+    loadChildren: () => import('./pages/add-connection-schedule/add-connection-schedule.module').then( m => m.AddConnectionSchedulePageModule)
   },
+  {
+    path: 'edit-connection-schedule',
+    loadChildren: () => import('./pages/edit-connection-schedule/edit-connection-schedule.module').then( m => m.EditConnectionSchedulePageModule)
+  },
+
 
 ];
 

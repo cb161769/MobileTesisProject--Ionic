@@ -1,0 +1,16 @@
+ion-card{
+    display: flex;
+    flex-direction: column;
+
+    background: #0000ff;
+    width: 500px;
+    margin-top: 5%;
+    border-radius: 15px;
+  }
+ion-content{
+background: green;
+}
+ion-content ion-card{
+background: rgb(150, 203, 212)!important;
+width: 100%;
+}
