@@ -12,8 +12,41 @@
   </ion-buttons>
 </ion-toolbar>
 
-<ion-content>
-<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
-  <ion-refresher-content></ion-refresher-content>
-</ion-refresher>
+<ion-content class="ion-padding">
+    <form [formGroup]="configDeviceForm" (ngSubmit)="configDevice()">
+      <ion-item>
+        <ion-label position="floating">Nombre de Configuracion</ion-label> <ion-text color="danger">*</ion-text>
+        <ion-input required [(ngModel)]="this.ConfigDeviceModel.configurationName" formControlName="configurationName" type="text"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="configDeviceForm.controls['configurationName'].invalid && configDeviceForm.controls['configurationName'].touched" lines="none">
+        <ion-text color="danger" class="form-error">
+          Please enter a valid email address.
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Dias</ion-label> <ion-text color="danger">*</ion-text>
+        <ion-select value="peperoni" multiple="true" placeholder="Seleccionar Dias" formControlName="configurationDays">
+          <ion-select-option value="peperoni">Peperoni</ion-select-option>
+          <ion-select-option value="hawaii">Hawaii</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="configDeviceForm.controls['configurationDays'].invalid && configDeviceForm.controls['configurationDays'].touched" lines="none">
+        <ion-text color="danger" class="form-error">
+          Please enter a valid email address.
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Nombre de Configuracion</ion-label> <ion-text color="danger">*</ion-text>
+        <ion-input required [(ngModel)]="this.ConfigDeviceModel.configurationMaximumKilowattsPerDay" formControlName="configurationMaximumKilowattsPerDay" type="text"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="configDeviceForm.controls['configurationMaximumKilowattsPerDay'].invalid && configDeviceForm.controls['configurationMaximumKilowattsPerDay'].touched" lines="none">
+        <ion-text color="danger" class="form-error">
+          Please enter a valid email address.
+        </ion-text>
+      </ion-item>
+      <ion-button block color="primary" type="submit" [disabled]="configDeviceForm.invalid">
+        Agregar configuracion
+      </ion-button>
+    </form>
+
 </ion-content>
