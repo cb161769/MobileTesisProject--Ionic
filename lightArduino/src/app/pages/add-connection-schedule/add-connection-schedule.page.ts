@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-add-connection-schedule',
@@ -6,10 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-connection-schedule.page.scss'],
 })
 export class AddConnectionSchedulePage implements OnInit {
+  AddConnectionSchedule:FormGroup;
+
 
   constructor() { }
 
   ngOnInit() {
+  }
+  doRefresh(event:any){
+
   }
 
 }

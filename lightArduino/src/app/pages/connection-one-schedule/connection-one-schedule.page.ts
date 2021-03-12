@@ -25,9 +25,18 @@ export class ConnectionOneSchedulePage implements OnInit {
     
    this.addArray();
   }
+  /**
+   * this method is to redirect to add-connection-schedule page
+   */
   addConfiguration(){
 
+    this.router.navigate(['add-connection-schedule'])
+
+
   }
+  /**
+   * 
+   */
   addArray(){
     this.test.push({
       configurationTitle:'Configuracion de la Manana',

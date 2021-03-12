@@ -3,10 +3,18 @@
     <ion-buttons slot="start">
       <ion-back-button icon="arrow-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title>Editar Configuracion</ion-title>
+    <ion-title>Agregar Configuracion</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="bubbles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
 
 </ion-content>
