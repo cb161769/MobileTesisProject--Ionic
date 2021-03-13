@@ -45,7 +45,7 @@ export class ConfigureDevicePage implements OnInit {
 
   async ngOnInit() {
     this.configureDeviceForm.reset();
-    await this.validateLoggedUser()
+    await this.validateLoggedUser();
 
     
   }
