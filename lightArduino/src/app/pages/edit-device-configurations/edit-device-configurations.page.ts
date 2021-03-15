@@ -1,0 +1,169 @@
+import { ConfigDeviceModel } from './../../models/config-device-model';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+// import { ConfigDeviceModel } from 'src/app/models/config-device-model';
+import { Router } from '@angular/router';
+import { LoadingController, NavController,ToastController } from '@ionic/angular';
+import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
+import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
+import { MessageService } from 'src/app/data-services/messageService/message.service';
+import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
+import { Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
+
+@Component({
+  selector: 'app-edit-device-configurations',
+  templateUrl: './edit-device-configurations.page.html',
+  styleUrls: ['./edit-device-configurations.page.scss'],
+})
+export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
+  editDeviceConfigurationForm: FormGroup;
+  ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
+  loading:any;
+  userDevice:any;
+  constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
+    public ToastController : ToastController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) { 
+      this.editDeviceConfigurationForm = new FormGroup({
+        'configurationName': new FormControl(this.ConfigDeviceModel.configurationName,[Validators.required]),
+        'configurationDays': new FormControl(this.ConfigDeviceModel.configurationDays,[Validators.required]),
+        'configurationId': new FormControl(this.ConfigDeviceModel.configurationId,[Validators.required]),
+        'status': new FormControl(this.ConfigDeviceModel.status,[Validators.required]),
+        'configurationMaximumKilowattsPerDay': new FormControl(this.ConfigDeviceModel.configurationMaximumKilowattsPerDay,[Validators.required]),
+      })
+    }
+  
+  async ngOnInit() {
+    try {
+      await this.validateLoggedUser().then(() => {
+      
+      });
+      
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+  singOut(){
+
+  }
+  getDeviceName(username:string):string{
+    let url = environment.DynamoBDEndPoints.ULR;
+    let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
+    let deviceName;
+    const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
+    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: (response) => {
+       
+        deviceName = response.configuration[0].deviceName;
+        console.log(deviceName)
+        this.getDeviceConfiguration(deviceName);
+        return deviceName;
+      },
+      error: (response) => {
+        console.log(response);
+      },
+      complete: () => {
+        return deviceName
+      }
+    })
+    return deviceName;
+  }
+  async getDeviceConfiguration(device:string){
+    await this.presentLoading();
+    let url = environment.DynamoBDEndPoints.ULR;
+    let urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;  
+    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`
+    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: async (result) => {
+        if (result != undefined) {
+          console.log(result);
+        }else{
+
+        }
+
+      },
+      error:(error) => {
+        console.log(error);
+      },
+      complete: () => {
+
+      }
+    })
+  }
+  async ionViewDidEnter(){
+   
+  }
+  async ionViewDidLeave(){
+   
+  }
+  async ionViewWillEnter(){
+    
+   
+  }
+  async editDevice(){
+
+  }
+  async presentLoading(){
+    this.loading = await this.loadingIndicator.create({
+      message: 'Cargando ...',
+      spinner: 'dots',
+    });
+    await this.loading.present();
+  }
+  async validateLoggedUser(){
+    await this.PresentLoading();
+    this.awsAmplifyService.getCurrentUser().then(async (result)=>{
+      if (result != undefined) {
+        try {
+           this.userDevice = this.getDeviceName(result.attributes.email)
+
+        // await this.getAllFares();
+      } catch (error) {
+        console.log(error);
+        
+      }
+        
+      } else {
+        const toast = await this.ToastController.create({
+          message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+
+       this.redirectToLoginPage(); 
+        
+      }
+    }).catch((error) =>{
+      console.log(error);
+    }).finally(() =>{
+      this.loading.dismiss();
+    })
+  }
+  redirectToLoginPage(){
+    this.router.navigateByUrl('/login');
+
+  }
+  redirectToHomeDevicePage(){
+    this.router.navigateByUrl('/home-device-page');
+
+  }
+    /**
+   * this method is to present a loading Indicator
+   */
+     async PresentLoading(){
+      this.loading = await this.loadingIndicator.create({
+        message:'Cargando ...',
+        spinner:'dots'
+      });
+      await this.loading.present();
+  
+    }
+    ngOnDestroy(): void {
+      //Called once, before the instance is destroyed.
+      //Add 'implements OnDestroy' to the class.
+      
+    }
+
+}

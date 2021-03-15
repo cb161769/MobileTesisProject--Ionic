@@ -21,7 +21,9 @@ export const environment = {
       graphQlQuery:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query",
       getDeviceWeekly: "/IotDevice/getDeviceWeekly/",
       getDeviceRelays: "/IotDevice/getDeviceRelays/",
-      addDeviceConfiguration: "/IotDevice/addDeviceConfiguration"
+      addDeviceConfiguration: "/IotDevice/addDeviceConfiguration",
+      getArduinoDeviceConfiguration: "/IotDevice/getArduinoDeviceConfiguration",
+      getDeviceConfiguration: "/IotDevice/getDeviceConfiguration"
     }
   }
 };

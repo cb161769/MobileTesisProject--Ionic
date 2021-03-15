@@ -30,7 +30,13 @@ export class ConfigDevicePage implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      await this.validateLoggedUser()
+    } catch (error) {
+      console.log(error);
+    }
+
   }
   goBack():void{
 
@@ -61,6 +67,7 @@ export class ConfigDevicePage implements OnInit {
         });
         toast.present();
         this.loading.dismiss();
+        this.configDeviceForm.reset();
       }
       else{
         const toast = await this.ToastController.create({

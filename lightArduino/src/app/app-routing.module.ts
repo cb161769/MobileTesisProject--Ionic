@@ -124,6 +124,14 @@ const routes: Routes = [
     path: 'edit-connection-schedule',
     loadChildren: () => import('./pages/edit-connection-schedule/edit-connection-schedule.module').then( m => m.EditConnectionSchedulePageModule)
   },
+  {
+    path: 'device-configurations',
+    loadChildren: () => import('./pages/device-configurations/device-configurations.module').then( m => m.DeviceConfigurationsPageModule)
+  },
+  {
+    path: 'edit-device-configurations',
+    loadChildren: () => import('./pages/edit-device-configurations/edit-device-configurations.module').then( m => m.EditDeviceConfigurationsPageModule)
+  },
 
 
 ];
