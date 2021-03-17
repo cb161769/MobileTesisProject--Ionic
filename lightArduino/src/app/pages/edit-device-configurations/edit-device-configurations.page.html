@@ -13,8 +13,60 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form>
-    
+  <form [formGroup]="editDeviceConfigurationForm" (ngSubmit)="configureDevice()">
+    <ion-list>
+     <ion-item lines="none" transparent>
+       <ion-label position="floating">Codigo de Configuracion</ion-label>
+       <ion-input type="text" required [(ngModel)]="this.ConfigDeviceModel.configurationId" disabled="true" formControlName="configurationId"></ion-input>
+     </ion-item>
+     <ion-item lines="none" transparent *ngIf="editDeviceConfigurationForm.controls['configurationId'].touched && editDeviceConfigurationForm.controls['configurationId'].invalid">
+       <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+     </ion-item>
+     <ion-item lines="none" transparent>
+      <ion-label position="floating"> Dispositivo a Configurar</ion-label>
+      <ion-input type="text" required [(ngModel)]="this.ConfigDeviceModel.deviceId" disabled="true" formControlName="configurationName"></ion-input>
+     </ion-item>
+     <ion-item lines="none" transparent *ngIf="editDeviceConfigurationForm.controls['configurationName'].touched && editDeviceConfigurationForm.controls['configurationName'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+     <ion-item lines="none" transparent>
+       <ion-label position="floating">Dias</ion-label>
+       <ion-select  multiple="true" [(ngModel)]="this.Days" placeholder="Seleccionar Dias" formControlName="configurationDays" 
+			 [cancelText]="ionSelecNameCancel" [okText]="ionSelecNameOk" ngDefaultControl>
+         <ion-select-option  *ngFor="let item of this.ConfigDeviceModel.configurationDays" [value]="item.dayValue">{{item.dayName}}</ion-select-option>
+       </ion-select>
+     </ion-item>
+     <ion-item lines="none" transparent *ngIf="editDeviceConfigurationForm.controls['configurationDays'].touched && editDeviceConfigurationForm.controls['configurationDays'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item lines="none" transparent>
+      <ion-label >Estatus</ion-label>
+      <ion-toggle slot="end" formControlName="status"  [(ngModel)]="this.ConfigDeviceModel.status"></ion-toggle>
+      <ion-item lines="none" transparent *ngIf="editDeviceConfigurationForm.controls['status'].touched && editDeviceConfigurationForm.controls['status'].invalid">
+        <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+      </ion-item>
+    </ion-item>
+    <ion-item lines="none" transparent >
+      <ion-label position="floating" >Maxima Cantidad de Kwh Por Dia</ion-label>
+      <ion-input type="text" required [(ngModel)]="this.ConfigDeviceModel.configurationMaximumKilowattsPerDay"  formControlName="configurationMaximumKilowattsPerDay"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="editDeviceConfigurationForm.controls['configurationMaximumKilowattsPerDay'].touched && editDeviceConfigurationForm.controls['configurationMaximumKilowattsPerDay'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item lines="none" transparent >
+      <ion-label position="floating" >Equivalente en Pesos</ion-label>
+      <ion-input type="text" required [(ngModel)]="this.pesos"  formControlName="pesosEquivalent"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent >
+      <ion-label position="floating" >Dispositivos Configuados</ion-label>
+      <ion-input type="text" required [(ngModel)]="this.devicedConfigured"  formControlName="configuredDevices"></ion-input>
+    </ion-item>
+    </ion-list>
+    <ion-item>
+      <ion-button block color="secondary" type="submit" >
+        Actualizar Datos
+      </ion-button>
+    </ion-item>
 
   </form>
 

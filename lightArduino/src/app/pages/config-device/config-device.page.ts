@@ -18,6 +18,7 @@ export class ConfigDevicePage implements OnInit {
   configDeviceForm: FormGroup;
   ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   loading:any;
+  
   constructor(
     public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService
