@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -16,5 +16,46 @@
       refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
+  <form [formGroup]="AddConnectionScheduleForm" (ngSubmit)="addConfiguration()">
+    <ion-item>
+      <ion-label position="floating"> Nombre de Configuracion<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required formControlName="configurationTitle" [(ngModel)]="this.configConnectionModel.configurationTitle" type="text"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="AddConnectionScheduleForm.controls['configurationTitle'].touched && AddConnectionScheduleForm.controls['configurationTitle'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Hora Inicial<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required formControlName="InitialTime" [(ngModel)]="this.configConnectionModel.InitialTime" type="text"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="AddConnectionScheduleForm.controls['InitialTime'].touched && AddConnectionScheduleForm.controls['InitialTime'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Hora Final<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required formControlName="FinalTime" [(ngModel)]="this.configConnectionModel.FinalTime" type="text"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="AddConnectionScheduleForm.controls['FinalTime'].touched && AddConnectionScheduleForm.controls['FinalTime'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Estatus<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required formControlName="isActive" [(ngModel)]="this.configConnectionModel.isActive" type="text"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="AddConnectionScheduleForm.controls['isActive'].touched && AddConnectionScheduleForm.controls['isActive'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Estatus<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required formControlName="isActive" [(ngModel)]="this.configConnectionModel.isActive" type="text"></ion-input>
+    </ion-item>
+    <ion-item lines="none" transparent *ngIf="AddConnectionScheduleForm.controls['isActive'].touched && AddConnectionScheduleForm.controls['isActive'].invalid">
+      <ion-label style="color: red;">El valor es requerido o es invalido</ion-label>
+    </ion-item>
+    <ion-button block color="secondary" type="submit" [disabled]="AddConnectionScheduleForm.invalid">
+      Login
+    </ion-button>
+  </form>
+
 
 </ion-content>

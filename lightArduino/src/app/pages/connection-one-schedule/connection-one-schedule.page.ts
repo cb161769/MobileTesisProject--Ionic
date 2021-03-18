@@ -7,6 +7,7 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { EnergyService } from 'src/app/data-services/energyService/energy.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-connection-one-schedule',
   templateUrl: './connection-one-schedule.page.html',
@@ -20,10 +21,16 @@ export class ConnectionOneSchedulePage implements OnInit {
     public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController,public actionSheetController: ActionSheetController) { }
   public test = [];
   public tests: Observable<any[]>;
-
-  ngOnInit() {
-    
-   this.addArray();
+  loading:any;
+  userDevice:any;
+  async ngOnInit() {
+    try {
+      await this.validateLoggedUser();
+      this.addArray();
+    } catch (error) {
+      
+    }
+     
   }
   /**
    * this method is to redirect to add-connection-schedule page
@@ -33,6 +40,116 @@ export class ConnectionOneSchedulePage implements OnInit {
     this.router.navigate(['add-connection-schedule'])
 
 
+  }
+ /**
+   * this method is to present a loading Indicator
+   */
+  async PresentLoading(){
+    this.loading = await this.loadingIndicator.create({
+      message:'Cargando ...',
+      spinner:'dots'
+    });
+    await this.loading.present();
+
+  }
+  /**
+   * This method validates the Logged Device
+   */
+  async validateLoggedUser(){
+    await this.PresentLoading();
+    this.awsAmplifyService.getCurrentUser().then(async (result) => {
+      if (result != undefined) {
+        try {
+          this.userDevice = this.getDeviceName(result.attributes.email);
+          this.loading.dismiss();
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    })
+
+
+  }
+  getDeviceName(username:string):string{
+    let url = environment.DynamoBDEndPoints.ULR;
+    let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
+    let deviceName;
+    const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
+    this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: (response) => {
+       
+        deviceName = response.configuration[0].deviceName;
+        console.log(deviceName)
+        this.getDeviceConfiguration(deviceName);
+        return deviceName;
+      },
+      error: (response) => {
+        console.log(response);
+      },
+      complete: () => {
+        return deviceName;
+      }
+    })
+    return deviceName;
+  }
+    async getDeviceConfiguration(device:string){
+    await this.PresentLoading();
+    let url = environment.DynamoBDEndPoints.ULR;
+    let urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;  
+    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`
+    this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: async (result) => {
+        if (result != undefined) {
+          let deviceConfig = result.deviceConfiguration[0].connectionsConfigurations;
+          if (deviceConfig.length === 0) {
+            const alert = await this.alertController.create({
+          header:'Advertencia',
+          subHeader:'no tiene Conexiones Configuradas',
+          message:'Es necesario que configure las conexiones del dispositivo' +`${this.userDevice}`,
+          buttons: [
+            {
+              text:'Aceptar',
+              handler: async () => {  
+                this.router.navigateByUrl('/add-connection-schedule');
+              }
+            },
+            {
+              text:'Cancelar',
+              handler: async () => {
+                return;
+
+              }
+            }
+          ]
+        });
+        this.loading.dismiss();
+        await alert.present();
+        
+            
+        }
+          /*
+          this.ConfigDeviceModel.configurationId = result.deviceConfiguration[0].configurationId;
+          this.ConfigDeviceModel.configurationMaximumKilowattsPerDay = result.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
+          this.ConfigDeviceModel.connectionsConfigurations = result.deviceConfiguration[0].connectionsConfigurations;
+          this.ConfigDeviceModel.deviceId = result.deviceConfiguration[0].deviceId;
+          this.ConfigDeviceModel.configurationDays = result.deviceConfiguration[0].configurationDays;
+          this.ConfigDeviceModel.status = result.deviceConfiguration[0].status; 
+          this.pesos = `RD$` + `${this.ConfigDeviceModel.configurationMaximumKilowattsPerDay * 0.3175}`;
+          //this.ConfigDeviceModel.connectionsConfigurations = result.deviceConfiguration[0].connectionsConfigurations;
+          this.devicedConfigured = this.ConfigDeviceModel.connectionsConfigurations.length;
+          */
+        }else{
+
+        }
+
+      },
+      error:(error) => {
+        console.log(error);
+      },
+      complete: () => {
+        this.loading.dismiss();
+      }
+    })
   }
   /**
    * 

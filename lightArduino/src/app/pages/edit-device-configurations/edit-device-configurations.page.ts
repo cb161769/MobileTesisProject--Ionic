@@ -53,6 +53,11 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
   singOut(){
 
   }
+  /**
+   * 
+   * @param username  the devoc
+   * @returns String
+   */
   getDeviceName(username:string):string{
     let url = environment.DynamoBDEndPoints.ULR;
     let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
@@ -196,7 +201,7 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
             {
               text:'Aceptar',
               handler: async () => {
-                await this.singOut();
+                await this.redirectConfigConnectionsPage();
 
               }
             },
@@ -244,6 +249,10 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
       }
       
 
+
+    }
+    async redirectConfigConnectionsPage(){
+      this.router.navigateByUrl('/connection-one-schedule');
 
     }
 
