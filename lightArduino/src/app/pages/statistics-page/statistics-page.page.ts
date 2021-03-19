@@ -77,7 +77,13 @@ export class StatisticsPagePage implements OnInit {
               }
               this.relays = relays$;
               // this.relays = of([this.relaysModel]);
-              
+              // configurationTitle:'Configuracion de la Manana',
+              // InitialTime:'07:00am',
+              // FinalTime:'11:00am',
+              // isActive:true,
+              // days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
+              // maximumKilowattPerDay:'500'
+              // },
               // this.relaysList.forEach(index => {
               //   this.relaysModel[index].Name = index.Name;
               //   this.relaysModel[index].Amps = 0;
