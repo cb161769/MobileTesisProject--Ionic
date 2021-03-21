@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, NavController, ActionSheetController,ToastController } from '@ionic/angular';
 import { Apollo } from 'apollo-angular';
-import { Observable, of } from "rxjs";
+import { interval, Observable, of } from "rxjs";
+import { map } from 'rxjs/operators';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { EnergyService } from 'src/app/data-services/energyService/energy.service';
@@ -21,7 +22,8 @@ export class ConnectionOneSchedulePage implements OnInit {
     public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController,public actionSheetController: ActionSheetController) { }
   public test = [];
   public tests: Observable<any[]>;
-  public testModel$: Observable<any[]>;
+  public testModel$: Observable<Array<any>>;
+  public array = [];
   loading:any;
   userDevice:any;
   async ngOnInit() {
@@ -128,31 +130,37 @@ export class ConnectionOneSchedulePage implements OnInit {
         
             
         }else{
-          let deviceConfig = result.deviceConfiguration[0].connectionsConfigurations;
-          console.log(deviceConfig);
-          let model$: Observable<any[]>;
+          this.array = [];
+          this.array = result.deviceConfiguration[0].connectionsConfigurations;
+          this.testModel$ = this.getConfigurationArray();
          
-          for (let index = 0; index < deviceConfig.length; index++) {
+         
+          // // console.log(deviceConfig);
+          // // let model$: Observable<any[]>;
+          // // for (let index = 0; index < deviceConfig.length; index++) {
             
-            let time:Date = new Date( parseInt(deviceConfig[index].InitialTime));
+          // //   let time:Date = new Date( parseInt(deviceConfig[index].InitialTime));
             
-            var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
-            let final = new Date(parseInt(deviceConfig[index].FinalTime));
-            var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
+          // //   var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
+          // //   let final = new Date(parseInt(deviceConfig[index].FinalTime));
+          // //   var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
             
          
-            model$ = of([
-             {configurationTitle: deviceConfig[index].configurationTitle,
-              InitialTime: InitialTime,
-              FinalTime: FinalTime,
-              isActive: deviceConfig[index].isActive,
-              days: deviceConfig[index].days,
-              maximumKilowattPerDay: deviceConfig[index].maximumKilowattPerDay
-            }
-           ])
+          // //   model$ = of([
+          // //    {configurationTitle: deviceConfig[index].configurationTitle,
+          // //     InitialTime: InitialTime,
+          // //     FinalTime: FinalTime,
+          // //     isActive: deviceConfig[index].isActive,
+          // //     days: deviceConfig[index].days,
+          // //     maximumKilowattPerDay: deviceConfig[index].maximumKilowattPerDay
+          // //   }
+          // //  ])
+          // //  this.test.push(model$[index]);
+           
             
-          }
-          this.tests = model$;
+          // }
+          
+          
         }
           /*
           this.ConfigDeviceModel.configurationId = result.deviceConfiguration[0].configurationId;
@@ -177,6 +185,29 @@ export class ConnectionOneSchedulePage implements OnInit {
         this.loading.dismiss();
       }
     })
+  }
+  configurationArray():any{
+    let defaultArray = [];
+    for (let index = 0; index < this.array.length; index++) {
+      
+         let time:Date = new Date( parseInt(this.array[index].InitialTime));
+            
+            var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
+            let final = new Date(parseInt(this.array[index].FinalTime));
+            var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
+            this.array[index].FinalTime = FinalTime;
+            this.array[index].InitialTime = InitialTime;
+            let element = this.array[index];
+           defaultArray.push(element)
+      
+    }
+    return defaultArray;
+
+  }
+  getConfigurationArray(){
+    return interval(1000).pipe(map(i => 
+      this.configurationArray()
+      ))
   }
   /**
    * 
