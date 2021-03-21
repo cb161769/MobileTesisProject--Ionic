@@ -190,10 +190,10 @@ export class ConnectionOneSchedulePage implements OnInit {
     let defaultArray = [];
     for (let index = 0; index < this.array.length; index++) {
       
-         let time:Date = new Date( parseInt(this.array[index].InitialTime));
+         let time:Date = new Date( this.array[index].InitialTime);
             
             var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
-            let final = new Date(parseInt(this.array[index].FinalTime));
+            let final = new Date(this.array[index].FinalTime);
             var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
             this.array[index].FinalTime = FinalTime;
             this.array[index].InitialTime = InitialTime;
