@@ -25,6 +25,22 @@ export const environment = {
       getArduinoDeviceConfiguration: "/IotDevice/getArduinoDeviceConfiguration",
       getDeviceConfiguration: "/IotDevice/getDeviceConfiguration"
     }
+  },
+  AWSIOTEndPoints:{
+    httpEndPoint:"wss://a3grg8s0qkek3y-ats.iot.us-west-2.amazonaws.com/mqtt",
+    region:"us-west-2",
+    AWSIoTTopics:{
+      turnOnDeviceOne:"/turnOnDeviceOne",
+      turnOffDeviceOne:"/turnOffDeviceOne",
+      turnOnDeviceTwo:"/turnOnDeviceTwo",
+      turnOffDeviceTwo:"/turnOffDeviceTwo",
+      turnOnDeviceThree:"/turnOnDeviceThree",
+      turnOffDeviceThree:"/turnOffDeviceThree",
+      turnOnDeviceFour:"/turnOnDeviceFour",
+      turnOffDeviceFour:"/turnOffDeviceFour",
+      turnOnAllDevices:"/turnOnAllDevices",
+      turnOffAllDevices:"/turnOffAllDevices"
+    }
   }
 };
 /*
