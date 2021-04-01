@@ -47,6 +47,11 @@
                   <ion-icon name="bulb-outline" slot="start"></ion-icon>
                   
                   <ion-label>Amperaje <strong>{{realtimeDataModel.device_amps || 0}} Amps</strong></ion-label>
+                  <ion-item>
+                    <ion-button (click)="TurnOffDemo()" expand="block" fill="clear" shape="round">
+                      Apagar Dispositivo 1
+                    </ion-button>
+                  </ion-item>
                 </ion-item>
               </ion-col>
               <ion-col  center text-center col6>

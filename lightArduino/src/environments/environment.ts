@@ -27,7 +27,7 @@ export const environment = {
     }
   },
   AWSIOTEndPoints:{
-    httpEndPoint:"wss://a3grg8s0qkek3y-ats.iot.us-west-2.amazonaws.com/mqtt",
+    httpEndPoint:"a3grg8s0qkek3y-ats.iot.us-west-2.amazonaws.com",
     region:"us-west-2",
     AWSIoTTopics:{
       turnOnDeviceOne:"/turnOnDeviceOne",
