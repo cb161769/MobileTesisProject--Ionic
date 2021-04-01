@@ -1,3 +1,4 @@
+import { MQTTServiceService } from './../../data-services/MQTTService/mqttservice.service';
 import { RealtimeData } from './../../models/realtime-data';
 import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
@@ -79,7 +80,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    */
 
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController) { }
+              public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { }
 
   async ngOnInit() {
     try {
@@ -128,6 +129,14 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       
       event.target.complete();
     }, 2000);
+  }
+  async TurnOffDemo(){
+    await this.MQTTServiceService.PublishToTopic(environment.AWSIOTEndPoints.AWSIoTTopics.turnOffDeviceOne).then(() => {
+      console.log('done');
+    }).catch((error) => {
+      console.log(error);
+    })
+
   }
   
 
@@ -288,6 +297,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
 
        this.redirectToLoginPage(); 
       }
+      this.awsAmplifyService.getCurrentCredentials().then((credentials) => {
+        console.log(credentials)
+      })
 
     }).catch((error) => {
       console.log(error);

@@ -20,7 +20,8 @@ export class AwsAmplifyService {
         mandatorySignId:true,
         region:environment.Region,
         userPoolId:environment.COGNITO_POOL.UserPoolId,
-        userPoolWebClientId:environment.COGNITO_POOL.ClientId
+        userPoolWebClientId:environment.COGNITO_POOL.ClientId,
+        identityPoolId: "us-west-2:b948b6e5-5514-471b-9549-2fa4e5331a93"      
       }
     });
 
@@ -107,11 +108,26 @@ export class AwsAmplifyService {
     * this method get's the current Logged User
     */
    async getCurrentUser(){
+     
      try {
        const currentUser = await Auth.currentAuthenticatedUser();
+
        return currentUser;
      } catch (error) {
        this.returnErrors(error.message);
+     }
+   }
+   async getCurrentCredentials(){
+     try {
+      Auth.currentCredentials().then((info) => {
+        const cognitoIdentityId = info;
+        debugger;
+        console.log(cognitoIdentityId)
+      });
+       const currentCredentials = await Auth.currentCredentials();
+       return currentCredentials;
+     } catch (error) {
+      this.returnErrors(error.message);
      }
    }
    /**
