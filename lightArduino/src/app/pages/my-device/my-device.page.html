@@ -22,16 +22,15 @@
     <img src="../../../assets/images/chip.png">
     <ion-fab vertical="top" horizontal="end" slot="fixed" color="light">
     <ion-fab-button color="light">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon name="settings-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
   </div>
   <ion-card-content>
-
     <ion-item>
     <ion-icon large item-start name="wifi-outline"></ion-icon>
-    <h6>Señal Wi-fi</h6>
-    <small>90%</small>
+    <h6>Nombre del dispositivo</h6>
+    <small>{{this.ConfigDeviceModel.deviceId ||'Cargando..'}}</small>
   </ion-item>
   <ion-item>
     <ion-icon color="subtle" large item-start name='wine'></ion-icon>
