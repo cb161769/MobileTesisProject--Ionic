@@ -7,7 +7,8 @@ export const environment = {
   Region:"us-west-2",
   COGNITO_POOL: {
     UserPoolId: "us-west-2_XdKA6T2aU",
-    ClientId: "7sk5eptvdnktubqjh2edeisi8h"
+    ClientId: "7sk5eptvdnktubqjh2edeisi8h",
+    identityPoolId:"us-west-2:b948b6e5-5514-471b-9549-2fa4e5331a93"
   },
   DynamoBDEndPoints:{
     ULR:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev",

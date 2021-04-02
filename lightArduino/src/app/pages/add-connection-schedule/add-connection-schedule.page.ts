@@ -93,7 +93,7 @@ export class AddConnectionSchedulePage implements OnInit {
   async addConfiguration(){
     const connectionModel:ConfigConnections[] = [];
     connectionModel.push(this.configConnectionModel);
-    debugger;
+   //  debugger;
     this.ConfigDeviceModel.connectionsConfigurations.push(connectionModel[0])
     await this.presentLoading();
       var url = environment.DynamoBDEndPoints.ULR;
