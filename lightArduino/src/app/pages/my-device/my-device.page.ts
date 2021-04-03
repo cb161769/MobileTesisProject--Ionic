@@ -1,3 +1,4 @@
+import { FormGroup ,FormControl} from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController, NavController,ToastController } from '@ionic/angular';
@@ -18,10 +19,24 @@ import { environment } from 'src/environments/environment';
 export class MyDevicePage implements OnInit {
   ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   loading:any;
-  userDevice:string ='';
-  
+  public userDevice:string ='';
+  myDeviceFormGroup:FormGroup;
+  daysConfigured:any = 0;
+  devicesConnectedConfigurations:any = 0;
+  devicesConnected:any = 0;
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-    public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { }
+    public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { 
+      this.myDeviceFormGroup = new FormGroup({
+        'deviceName': new FormControl(this.ConfigDeviceModel.deviceId),
+        'deviceOwner': new FormControl(this.userDevice),
+        'registerDate': new FormControl(this.ConfigDeviceModel.registeredAt),
+        'status': new FormControl(this.ConfigDeviceModel.status),
+        'daysConfigured': new FormControl(this.daysConfigured),
+        'ConnectedDevicesConfigurations': new FormControl(this.devicesConnectedConfigurations),
+        'updateDate': new FormControl(this.ConfigDeviceModel.updatedAt)
+      });
+
+    }
 
   async ngOnInit() {
     try {
@@ -30,7 +45,20 @@ export class MyDevicePage implements OnInit {
       console.log(error);
     }
   }
-  singOut():void{
+  /**
+   * 
+   */
+  async singOut(){
+    await this.presentLoading();
+    this.awsAmplifyService.singOut().then((result) => {
+      if (result != undefined) {
+      }else{
+      }
+    }).catch(() => {
+
+    }).finally(() => {
+      this.loading.dismiss();
+    });
 
   }
   /**
@@ -51,14 +79,16 @@ export class MyDevicePage implements OnInit {
   configDevice():void{
     
   }
+  /**
+   * @method validateLoggedUser()
+   * 
+   */
   async validateLoggedUser(){
     await this.presentLoading();
     this.awsAmplifyService.getCurrentUser().then(async (result)=>{
       if (result != undefined) {
         try {
-           this.userDevice = this.getDeviceName(result.attributes.email)
-
-        // await this.getAllFares();
+           this.userDevice = this.getDeviceName(result.attributes.email);
       } catch (error) {
         console.log(error);
         
@@ -82,6 +112,11 @@ export class MyDevicePage implements OnInit {
       this.loading.dismiss();
     })
   }
+  /**
+   * @function getDeviceName
+   * @param username  
+   * @returns string
+   */
   getDeviceName(username:string):string{
     let url = environment.DynamoBDEndPoints.ULR;
     let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
@@ -89,10 +124,10 @@ export class MyDevicePage implements OnInit {
     const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: (response) => {
-       
         deviceName = response.configuration[0].deviceName;
         console.log(deviceName)
         this.getDeviceConfiguration(deviceName);
+        this.loadAllRelays(deviceName);
         return deviceName;
       },
       error: (response) => {
@@ -125,12 +160,9 @@ export class MyDevicePage implements OnInit {
           this.ConfigDeviceModel.deviceId = result.deviceConfiguration[0].deviceId;
           this.ConfigDeviceModel.configurationDays = result.deviceConfiguration[0].configurationDays;
           this.ConfigDeviceModel.status = result.deviceConfiguration[0].status; 
-          //this.pesos = `RD$` + `${this.ConfigDeviceModel.configurationMaximumKilowattsPerDay * 0.3175}`;
-          //this.ConfigDeviceModel.connectionsConfigurations = result.deviceConfiguration[0].connectionsConfigurations;
-          //this.devicedConfigured = this.ConfigDeviceModel.connectionsConfigurations.length;
-          console.log(this.ConfigDeviceModel);
-        }else{
-
+          this.daysConfigured = this.ConfigDeviceModel.configurationDays.length;
+          this.devicesConnectedConfigurations = this.ConfigDeviceModel.connectionsConfigurations.length;
+          
         }
 
       },
@@ -145,6 +177,33 @@ export class MyDevicePage implements OnInit {
   redirectToLoginPage(){
     this.router.navigateByUrl('/login');
 
+  }
+  editMyDevice(){
+
+  }
+  async loadAllRelays(userEmail:any){
+    var url = environment.DynamoBDEndPoints.ULR;
+    var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
+    const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
+    this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: async (data) => {
+        debugger;
+        if (data != null || data != undefined || data.readings == undefined || data.data != undefined) {
+          if (data.data.length > 0) {
+            this.devicesConnected = data.data.length;
+          } else {
+            this.devicesConnected = 0;
+          }
+        }
+      },
+      error:async (error)=>{
+        const alert = await this.alertController.create({
+          header:'Error',
+          message: error,
+        });
+        await alert.present();
+      }
+    })
   }
 
 }
