@@ -56,42 +56,16 @@ export class StatisticsPagePage implements OnInit {
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(
       {
         next: async (data) => {
-          console.log(data.data);
-          console.log(data.data.Count);
           if (data != null || data != undefined || data.data !=undefined) {
             console.log(data.data.length);
             if (data.data.length > 0) {
-              // console.log(data.data);
-              //this.relaysModel.push(data.data as RelaysModel);
               this.relaysList = data.data;
-              
-              console.log(this.relays);
               let relays$:Observable<RelaysModel[]>;
-              // console.log(this.relaysList);
               for (let index = 0; index < this.relaysList.length; index++) {
-               //const element = array[index];
                 this.relaysModel.push(this.relaysList[index]);
-                relays$ = of([{Name:this.relaysList[index].Name}])
-               // this.relaysModel[index].Name = this.relaysList[index].Name;
-                
+                relays$ = of([{Name:this.relaysList[index].Name}]);
               }
-              this.relays = relays$;
-              // this.relays = of([this.relaysModel]);
-              // configurationTitle:'Configuracion de la Manana',
-              // InitialTime:'07:00am',
-              // FinalTime:'11:00am',
-              // isActive:true,
-              // days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-              // maximumKilowattPerDay:'500'
-              // },
-              // this.relaysList.forEach(index => {
-              //   this.relaysModel[index].Name = index.Name;
-              //   this.relaysModel[index].Amps = 0;
-              //   this.relaysModel[index].status = "";
-
-              // });
-              // console.log(this.relaysModel);
-              
+              this.relays = relays$;  
             }
             
           }
@@ -125,18 +99,14 @@ export class StatisticsPagePage implements OnInit {
   redirectToRegisterDevicePage(){
     this.navController.navigateBack('/register-device');
   }
+  /**
+   * @method singOut
+   */
   async singOut(){
     await this.presentLoading();
     this.awsAmplifyService.singOut().then((result) => {
       if (result != undefined) {
-        // this.subscription && this.subscription.unsubscribe();
-        // this.querySubscription.unsubscribe();
-        // this.redirectToLoginPage();
-        
       }else{
-        // this.subscription && this.subscription.unsubscribe();
-        // this.querySubscription.unsubscribe();
-        // this.redirectToLoginPage();
       }
     }).catch(() => {
 
