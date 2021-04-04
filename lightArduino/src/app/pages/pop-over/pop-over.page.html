@@ -1,0 +1,16 @@
+<ion-list>
+  <ion-list-header>
+    {{dataTitle}}
+  </ion-list-header>
+  <div *ngFor="let item of data">
+    <ion-item *ngIf="isDays === true">
+      <ion-label>{{item.dayName}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="item.configuration === true">
+      <ion-label>{{item.configurationName}}</ion-label>
+    </ion-item>
+  </div>
+</ion-list>
+<ion-button (click)="dismissPopOver()" expand="block">
+  Click me
+</ion-button>
