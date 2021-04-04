@@ -132,6 +132,10 @@ const routes: Routes = [
     path: 'edit-device-configurations',
     loadChildren: () => import('./pages/edit-device-configurations/edit-device-configurations.module').then( m => m.EditDeviceConfigurationsPageModule)
   },
+  {
+    path: 'pop-over',
+    loadChildren: () => import('./pages/pop-over/pop-over.module').then( m => m.PopOverPageModule)
+  },
 
 
 ];

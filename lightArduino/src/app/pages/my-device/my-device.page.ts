@@ -1,7 +1,8 @@
+import { PopOverPage } from './../pop-over/pop-over.page';
 import { FormGroup ,FormControl} from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, AlertController, NavController,ToastController } from '@ionic/angular';
+import { LoadingController, AlertController, NavController,ToastController, PopoverController } from '@ionic/angular';
 import { Apollo } from 'apollo-angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
@@ -10,6 +11,7 @@ import { MessageService } from 'src/app/data-services/messageService/message.ser
 import { MQTTServiceService } from 'src/app/data-services/MQTTService/mqttservice.service';
 import { ConfigDeviceModel } from 'src/app/models/config-device-model';
 import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-my-device',
@@ -20,20 +22,23 @@ export class MyDevicePage implements OnInit {
   ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   loading:any;
   public userDevice:string ='';
+  public deviceUserName:string = '';
   myDeviceFormGroup:FormGroup;
-  daysConfigured:any = 0;
+  public daysConfigured:any = 0;
   devicesConnectedConfigurations:any = 0;
-  devicesConnected:any = 0;
+  public devicesConnected:any = 0;
+  public userEmail:string = '';
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
-    public ToastController : ToastController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { 
+    public ToastController : ToastController,public popOver:PopoverController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { 
       this.myDeviceFormGroup = new FormGroup({
         'deviceName': new FormControl(this.ConfigDeviceModel.deviceId),
-        'deviceOwner': new FormControl(this.userDevice),
+        'deviceOwner': new FormControl(this.deviceUserName),
         'registerDate': new FormControl(this.ConfigDeviceModel.registeredAt),
         'status': new FormControl(this.ConfigDeviceModel.status),
         'daysConfigured': new FormControl(this.daysConfigured),
         'ConnectedDevicesConfigurations': new FormControl(this.devicesConnectedConfigurations),
-        'updateDate': new FormControl(this.ConfigDeviceModel.updatedAt)
+        'updateDate': new FormControl(this.ConfigDeviceModel.updatedAt),
+        'connectedDevices': new FormControl(this.devicesConnected)
       });
 
     }
@@ -89,6 +94,9 @@ export class MyDevicePage implements OnInit {
       if (result != undefined) {
         try {
            this.userDevice = this.getDeviceName(result.attributes.email);
+           this.loadAllRelays(result.attributes.email);
+           this.deviceUserName = result.attributes.email;
+           
       } catch (error) {
         console.log(error);
         
@@ -112,6 +120,20 @@ export class MyDevicePage implements OnInit {
       this.loading.dismiss();
     })
   }
+  async openComponent() {
+    const dataProps = this.ConfigDeviceModel.configurationDays;
+    debugger;
+    const popOver = await this.popOver.create({
+      component: PopOverPage,
+      componentProps:{
+        dataTitle: 'Días',
+        data: dataProps,
+        isDays:true
+      },
+      translucent:true
+    });
+    return await popOver.present();
+  }
   /**
    * @function getDeviceName
    * @param username  
@@ -125,9 +147,9 @@ export class MyDevicePage implements OnInit {
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: (response) => {
         deviceName = response.configuration[0].deviceName;
-        console.log(deviceName)
+       //  console.log(deviceName)
         this.getDeviceConfiguration(deviceName);
-        this.loadAllRelays(deviceName);
+        
         return deviceName;
       },
       error: (response) => {
@@ -160,9 +182,10 @@ export class MyDevicePage implements OnInit {
           this.ConfigDeviceModel.deviceId = result.deviceConfiguration[0].deviceId;
           this.ConfigDeviceModel.configurationDays = result.deviceConfiguration[0].configurationDays;
           this.ConfigDeviceModel.status = result.deviceConfiguration[0].status; 
+          this.ConfigDeviceModel.updatedAt = result.deviceConfiguration[0].updatedAt;
+          this.ConfigDeviceModel.registeredAt = result.deviceConfiguration[0].registeredAt;
           this.daysConfigured = this.ConfigDeviceModel.configurationDays.length;
           this.devicesConnectedConfigurations = this.ConfigDeviceModel.connectionsConfigurations.length;
-          
         }
 
       },
@@ -187,7 +210,7 @@ export class MyDevicePage implements OnInit {
     const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: async (data) => {
-        debugger;
+
         if (data != null || data != undefined || data.readings == undefined || data.data != undefined) {
           if (data.data.length > 0) {
             this.devicesConnected = data.data.length;
