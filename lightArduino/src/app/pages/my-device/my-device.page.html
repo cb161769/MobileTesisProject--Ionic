@@ -36,22 +36,21 @@
       <ion-label>Estatus</ion-label>
       <ion-toggle slot="end" [(ngModel)]="this.ConfigDeviceModel.status" formControlName="status"></ion-toggle>
     </ion-item>
-    <ion-item lines="none" transparent>
+    <ion-item lines="none" transparent (click)="openComponent()" tappable>
       <ion-label position="floating">Días Configurados</ion-label>
       <ion-input type="text" required [(ngModel)]="this.daysConfigured"  formControlName="daysConfigured"></ion-input>
       <ion-icon slot="end" name="eye-outline" item-end (Click)="openComponent()"></ion-icon>
     </ion-item>
-    <ion-item lines="none" transparent>
+    <ion-item lines="none" transparent tappable (click)="openConnectionsComponent()">
       <ion-label position="floating">Cantidad de Conexiones</ion-label>
-      <ion-input type="text" required [(ngModel)]="this.devicesConnectedConfigurations"  formControlName="ConnectedDevicesConfigurations"></ion-input>
-      <ion-button icon-only (click)="openComponent()"color="clear" item-right  >
-        <ion-icon slot="end" name="eye-outline"  ></ion-icon>
-      </ion-button>
+      <ion-input type="text" required [(ngModel)]="this.devicesConnected"  formControlName="connectedDevices"></ion-input>
+      <ion-icon slot="end" name="eye-outline" item-end ></ion-icon>
+      
       
     </ion-item>
-    <ion-item lines="none" transparent>
+    <ion-item lines="none" transparent tappable (click)="openQuantityComponent()">
       <ion-label position="floating">Cantidad de Configuraciones de Conexiones</ion-label>
-      <ion-input type="text" required [(ngModel)]="this.devicesConnected"  formControlName="connectedDevices"></ion-input>
+      <ion-input type="text" required [(ngModel)]="this.devicesConnectedConfigurations"  formControlName="ConnectedDevicesConfigurations"></ion-input>
       <ion-icon slot="end" name="eye-outline" item-end></ion-icon>
     </ion-item>
   </ion-list>
