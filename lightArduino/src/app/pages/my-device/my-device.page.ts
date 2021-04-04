@@ -28,6 +28,7 @@ export class MyDevicePage implements OnInit {
   devicesConnectedConfigurations:any = 0;
   public devicesConnected:any = 0;
   public userEmail:string = '';
+  public devices :any = [];
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
     public ToastController : ToastController,public popOver:PopoverController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { 
       this.myDeviceFormGroup = new FormGroup({
@@ -120,15 +121,65 @@ export class MyDevicePage implements OnInit {
       this.loading.dismiss();
     })
   }
+  /**
+   *@method openComponent
+   * @returns PopOver
+   * @author Claudio Raul Brito Mercedes
+   * @username cb-161769
+   */
   async openComponent() {
     const dataProps = this.ConfigDeviceModel.configurationDays;
-    debugger;
     const popOver = await this.popOver.create({
       component: PopOverPage,
       componentProps:{
         dataTitle: 'Días',
         data: dataProps,
-        isDays:true
+        isDays:true,
+        isConfiguration:false,
+        isConnections:false
+      },
+      translucent:true
+    });
+    return await popOver.present();
+  }
+  /**
+   * @method openQuantityComponent
+   * @returns PopOver
+   * @author Claudio Raul Brito Mercedes
+   * @username cb-161769
+   * @description this method opens a popOver
+   */
+  async openQuantityComponent(){
+    const dataProps = this.ConfigDeviceModel.connectionsConfigurations;
+    const popOver = await this.popOver.create({
+      component:PopOverPage,
+      componentProps:{
+        dataTitle:'Configuraciones de Conexiones',
+        data:dataProps,
+        isDays:false,
+        isConfiguration:true,
+        isConnections:false
+
+      },
+      translucent:true
+    });
+    return await popOver.present();
+  }
+  /**
+   * @userName cb16-1769
+   * @author Claudio Raul Brito Mercedes
+   * @returns {popOver}
+   */
+  async openConnectionsComponent(){
+    const dataProps = this.devices;
+    const popOver = await this.popOver.create({
+      component:PopOverPage,
+      componentProps:{
+        dataTitle:'Conexiones',
+        data:dataProps,
+        isDays:false,
+        isConfiguration:false,
+        isConnections:true
       },
       translucent:true
     });
@@ -147,13 +198,15 @@ export class MyDevicePage implements OnInit {
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: (response) => {
         deviceName = response.configuration[0].deviceName;
-       //  console.log(deviceName)
-        this.getDeviceConfiguration(deviceName);
-        
+        this.getDeviceConfiguration(deviceName);     
         return deviceName;
       },
-      error: (response) => {
-        console.log(response);
+      error: async (response) => {
+        const alert = await this.alertController.create({
+          header:'Error',
+          message: response,
+        });
+        await alert.present();
       },
       complete: () => {
         return deviceName;
@@ -189,8 +242,12 @@ export class MyDevicePage implements OnInit {
         }
 
       },
-      error:(error) => {
-        console.log(error);
+      error:async (error) => {
+        const alert = await this.alertController.create({
+          header:'Error',
+          message: error,
+        });
+        await alert.present();
       },
       complete: () => {
         this.loading.dismiss();
@@ -214,8 +271,10 @@ export class MyDevicePage implements OnInit {
         if (data != null || data != undefined || data.readings == undefined || data.data != undefined) {
           if (data.data.length > 0) {
             this.devicesConnected = data.data.length;
+            this.devices = data.data;
           } else {
             this.devicesConnected = 0;
+            this.devices = [];
           }
         }
       },

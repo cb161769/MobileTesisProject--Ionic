@@ -136,6 +136,10 @@ const routes: Routes = [
     path: 'pop-over',
     loadChildren: () => import('./pages/pop-over/pop-over.module').then( m => m.PopOverPageModule)
   },
+  {
+    path: 'pop-over-connections',
+    loadChildren: () => import('./pages/pop-over-connections/pop-over-connections.module').then( m => m.PopOverConnectionsPageModule)
+  },
 
 
 ];

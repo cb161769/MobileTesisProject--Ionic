@@ -12,6 +12,8 @@ export class PopOverPage implements OnInit {
   dataTitle:string = '';
   data:any = [];
   isDays:boolean = false;
+  isConfiguration:boolean = false;
+  isConnections:boolean = false;
   ngOnInit() {
   }
   dismissPopOver(){

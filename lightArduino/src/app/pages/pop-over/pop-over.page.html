@@ -3,14 +3,17 @@
     {{dataTitle}}
   </ion-list-header>
   <div *ngFor="let item of data">
-    <ion-item *ngIf="isDays === true">
+    <ion-item *ngIf="isDays === true" lines="none">
       <ion-label>{{item.dayName}}</ion-label>
     </ion-item>
-    <ion-item *ngIf="item.configuration === true">
-      <ion-label>{{item.configurationName}}</ion-label>
+    <ion-item *ngIf="isConfiguration=== true" lines="none">
+      <ion-label>{{item.configurationTitle}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="isConnections === true" lines="none">
+      <ion-label>{{item.Name}}</ion-label>
     </ion-item>
   </div>
 </ion-list>
-<ion-button (click)="dismissPopOver()" expand="block">
-  Click me
+<ion-button color="dark" (click)="dismissPopOver()" expand="block">
+  Cerrar
 </ion-button>
