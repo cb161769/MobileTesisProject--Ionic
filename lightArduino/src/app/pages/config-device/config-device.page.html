@@ -4,7 +4,7 @@
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title>Configuración</ion-title>
+  <ion-title>Configuración de Dispositivo</ion-title>
   <ion-buttons slot="end">
     <ion-button (click)="singOut()" color="danger">
       Cerrar Sesión
@@ -20,7 +20,7 @@
       </ion-item>
       <ion-item *ngIf="configDeviceForm.controls['configurationName'].invalid && configDeviceForm.controls['configurationName'].touched" lines="none">
         <ion-text color="danger" class="form-error">
-          Please enter a valid email address.
+          Por favor, ingrese un nombre válido
         </ion-text>
       </ion-item>
       <ion-item>
