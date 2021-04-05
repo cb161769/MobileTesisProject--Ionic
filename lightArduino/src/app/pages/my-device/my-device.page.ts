@@ -11,6 +11,7 @@ import { MessageService } from 'src/app/data-services/messageService/message.ser
 import { MQTTServiceService } from 'src/app/data-services/MQTTService/mqttservice.service';
 import { ConfigDeviceModel } from 'src/app/models/config-device-model';
 import { environment } from 'src/environments/environment';
+import { ConfigDaysModel } from 'src/app/models/config-days-model';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class MyDevicePage implements OnInit {
   public devicesConnected:any = 0;
   public userEmail:string = '';
   public devices :any = [];
+  allDays:ConfigDaysModel[] = [];
   constructor(public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public router:Router, public DynamoDBService: DynamoDBAPIService, 
     public ToastController : ToastController,public popOver:PopoverController, public messageService:MessageService, public alertController: AlertController, public energyService:EnergyService,private apolloClient: Apollo, public navController:NavController, public MQTTServiceService:MQTTServiceService) { 
       this.myDeviceFormGroup = new FormGroup({
@@ -260,6 +262,42 @@ export class MyDevicePage implements OnInit {
   }
   editMyDevice(){
 
+  }
+  loadDays(){
+    let days = [
+      {
+      dayValue:'1'||1,
+      dayName:'Lunes'
+      },
+      {
+      dayValue:'2' || 2,
+      dayName:'Martes'
+      },
+      {
+      dayValue:'3' || 3,
+      dayName:'Miercoles'
+      },
+      {
+      dayValue:'4'|| 4,
+      dayName:'Jueves'
+      },
+      {
+      dayValue:'5' || 5,
+      dayName:'Viernes'
+      },
+      {
+      dayValue:'6' || 6,
+      dayName:'Sabado'
+      },
+      {
+      dayValue:'7'|| 7,
+      dayName:'Domingo'
+      }
+      
+  ];
+    days.forEach(day => {
+      this.allDays.push(day as ConfigDaysModel)
+    });
   }
   async loadAllRelays(userEmail:any){
     var url = environment.DynamoBDEndPoints.ULR;

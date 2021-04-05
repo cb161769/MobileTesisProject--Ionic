@@ -14,38 +14,50 @@
 
 <ion-content class="ion-padding">
     <form [formGroup]="configDeviceForm" (ngSubmit)="configDevice()">
-      <ion-item>
+      <ion-item lines="none">
+        <ion-label position="floating">Código Configuracion</ion-label>
+        <ion-input required [(ngModel)]="this.ConfigDeviceModel.configurationId" formControlName="configurationCode" type="text"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
         <ion-label position="floating">Nombre de Configuracion</ion-label> <ion-text color="danger">*</ion-text>
         <ion-input required [(ngModel)]="this.ConfigDeviceModel.configurationName" formControlName="configurationName" type="text"></ion-input>
       </ion-item>
-      <ion-item *ngIf="configDeviceForm.controls['configurationName'].invalid && configDeviceForm.controls['configurationName'].touched" lines="none">
+      <ion-item lines="none" *ngIf="configDeviceForm.controls['configurationName'].invalid && configDeviceForm.controls['configurationName'].touched" lines="none">
         <ion-text color="danger" class="form-error">
           Por favor, ingrese un nombre válido
         </ion-text>
       </ion-item>
-      <ion-item>
-        <ion-label position="floating">Dias</ion-label> <ion-text color="danger">*</ion-text>
-        <ion-select value="peperoni" multiple="true" placeholder="Seleccionar Dias" formControlName="configurationDays">
-          <ion-select-option value="peperoni">Peperoni</ion-select-option>
-          <ion-select-option value="hawaii">Hawaii</ion-select-option>
+      <ion-item lines="none">
+        <ion-label position="floating">Días</ion-label> <ion-text color="danger">*</ion-text>
+        <ion-select  multiple="true" placeholder="Seleccionar Dias"  [cancelText]="ionSelecNameCancel" [okText]="ionSelecNameOk" formControlName="configurationDays" [(ngModel)]="this.ConfigDeviceModel.configurationDays" ngDefaultControl>
+          <ion-select-option *ngFor="let item of this.allDays" [value]="item.dayName">{{item.dayName}}</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item *ngIf="configDeviceForm.controls['configurationDays'].invalid && configDeviceForm.controls['configurationDays'].touched" lines="none">
+      <ion-item lines="none" *ngIf="configDeviceForm.controls['configurationDays'].invalid && configDeviceForm.controls['configurationDays'].touched" lines="none">
         <ion-text color="danger" class="form-error">
-          Please enter a valid email address.
+          Por favor, seleccione un día
         </ion-text>
       </ion-item>
-      <ion-item>
-        <ion-label position="floating">Nombre de Configuracion</ion-label> <ion-text color="danger">*</ion-text>
+      <ion-item lines="none">
+        <ion-label position="floating">Máxmima cantidad de Kilowatts</ion-label> <ion-text color="danger">*</ion-text>
         <ion-input required [(ngModel)]="this.ConfigDeviceModel.configurationMaximumKilowattsPerDay" formControlName="configurationMaximumKilowattsPerDay" type="text"></ion-input>
       </ion-item>
-      <ion-item *ngIf="configDeviceForm.controls['configurationMaximumKilowattsPerDay'].invalid && configDeviceForm.controls['configurationMaximumKilowattsPerDay'].touched" lines="none">
+      <ion-item lines="none" *ngIf="configDeviceForm.controls['configurationMaximumKilowattsPerDay'].invalid && configDeviceForm.controls['configurationMaximumKilowattsPerDay'].touched" lines="none">
         <ion-text color="danger" class="form-error">
-          Please enter a valid email address.
+          Por favor, ingrese una cantidad válida
         </ion-text>
       </ion-item>
-      <ion-button block color="primary" type="submit" [disabled]="configDeviceForm.invalid">
-        Agregar configuracion
+      <ion-item lines="none">
+        <ion-label>Estatus</ion-label> 
+        <ion-toggle slot="end" [(ngModel)]="this.ConfigDeviceModel.status" formControlName="status" ></ion-toggle>
+      </ion-item>
+      <ion-item lines="none" *ngIf="configDeviceForm.controls['status'].invalid && configDeviceForm.controls['status'].touched" lines="none">
+        <ion-text color="danger" class="form-error">
+          El valor es requerido
+        </ion-text>
+      </ion-item>
+      <ion-button block color="primary" type="submit" [disabled]="!configDeviceForm.invalid">
+        Editar Configuración
       </ion-button>
     </form>
 

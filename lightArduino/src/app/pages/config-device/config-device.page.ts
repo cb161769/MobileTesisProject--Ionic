@@ -8,6 +8,7 @@ import { MessageService } from 'src/app/data-services/messageService/message.ser
 import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
 import { environment } from 'src/environments/environment';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
+import { ConfigDaysModel } from 'src/app/models/config-days-model';
 
 @Component({
   selector: 'app-config-device',
@@ -19,7 +20,9 @@ export class ConfigDevicePage implements OnInit {
   ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   loading:any;
   deviceName:string = '';
-  
+  allDays:ConfigDaysModel[] = [];
+  ionSelecNameCancel:string = 'Cancelar';
+  ionSelecNameOk:string = 'Ok';
   constructor(
     public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService
@@ -38,12 +41,49 @@ export class ConfigDevicePage implements OnInit {
   }
 
   async ngOnInit() {
+    this.loadDays();
     try {
       await this.validateLoggedUser();
     } catch (error) {
       console.log(error);
     }
 
+  }
+  loadDays(){
+    let days = [
+      {
+      dayValue:'1'||1,
+      dayName:'Lunes'
+      },
+      {
+      dayValue:'2' || 2,
+      dayName:'Martes'
+      },
+      {
+      dayValue:'3' || 3,
+      dayName:'Miercoles'
+      },
+      {
+      dayValue:'4'|| 4,
+      dayName:'Jueves'
+      },
+      {
+      dayValue:'5' || 5,
+      dayName:'Viernes'
+      },
+      {
+      dayValue:'6' || 6,
+      dayName:'Sabado'
+      },
+      {
+      dayValue:'7'|| 7,
+      dayName:'Domingo'
+      }
+      
+  ];
+    days.forEach(day => {
+      this.allDays.push(day as ConfigDaysModel)
+    });
   }
   goBack():void{
 
@@ -53,17 +93,6 @@ export class ConfigDevicePage implements OnInit {
     var url = environment.DynamoBDEndPoints.ULR;
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.addDeviceConfiguration
     const urlFullPath = `${url}` + `${urlPath}`;
-    var day = {
-      dayValue:1,
-      dayName: 'Monday'
-    }
-    var array = [];
-    array.push(day);
-   //  this.ConfigDeviceModel.configurationName = 'Test';
-    this.ConfigDeviceModel.deviceId = 'ArduinoDevice01';
-    this.ConfigDeviceModel.status = true;
-    this.ConfigDeviceModel.configurationDays = array;
-    this.ConfigDeviceModel.connectionsConfigurations = [];
     this.dynamoDBService.genericPostMethod(urlFullPath,this.ConfigDeviceModel).subscribe(async (data) =>{
       if (data.status === 200) {
         const toast = await this.ToastController.create({
@@ -188,7 +217,8 @@ export class ConfigDevicePage implements OnInit {
           this.ConfigDeviceModel.deviceId = response.deviceConfiguration[0].deviceId;
           this.ConfigDeviceModel.status = response.deviceConfiguration[0].status;
           this.ConfigDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
-
+          this.ConfigDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
+          debugger;
         } else {
           const alert = await this.alertController.create({
             header:'Error',
