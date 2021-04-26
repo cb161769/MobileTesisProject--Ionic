@@ -24,7 +24,13 @@ export const environment = {
       getDeviceRelays: "/IotDevice/getDeviceRelays/",
       addDeviceConfiguration: "/IotDevice/addDeviceConfiguration",
       getArduinoDeviceConfiguration: "/IotDevice/getArduinoDeviceConfiguration",
-      getDeviceConfiguration: "/IotDevice/getDeviceConfiguration"
+      getDeviceConfiguration: "/IotDevice/getDeviceConfiguration",
+      getDeviceReadingsByCurrentYear: "/IotDevice/getAllDeviceReadingsByMonth",
+      getDeviceReadingsByGivenDay:"/IotDevice/getAllDeviceReadingsByGivenDay",
+      getDeviceReadingsByGivenMonth:"/IotDevice/getAllDeviceReadingsByGivenMonth",
+      Connections:{
+        ConnectionReadingsCurrentWeek:"/IotDevice/Connections/getConnectionReadingsCurrentWeek"
+      }
     }
   },
   AWSIOTEndPoints:{
