@@ -29,6 +29,7 @@
     "aws-amplify": "^3.3.13",
     "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
+    "epoch-charting": "^0.8.4",
     "graphql": "^15.0.0",
     "highcharts": "^9.0.0",
     "highcharts-angular": "^2.10.0",
