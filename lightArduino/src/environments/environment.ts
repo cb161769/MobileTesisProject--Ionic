@@ -29,7 +29,10 @@ export const environment = {
       getDeviceReadingsByGivenDay:"/IotDevice/getAllDeviceReadingsByGivenDay",
       getDeviceReadingsByGivenMonth:"/IotDevice/getAllDeviceReadingsByGivenMonth",
       Connections:{
-        ConnectionReadingsCurrentWeek:"/IotDevice/Connections/getConnectionReadingsCurrentWeek"
+        ConnectionReadingsCurrentWeek:"/IotDevice/Connections/getConnectionReadingsCurrentWeek",
+        ConnectionsGetAllDeviceReadingsByGivenMonth:"/IotDevice/Connections/getAllDeviceReadingsByGivenMonth",
+        ConnectionsGetConnectionYearly:"/IotDevice/Connections/GetConnectionYearly/allConfig",
+        ConnectionsGetReadingsByGivenYear:"/IotDevice/Connections/GetConnectionsReadingsByGivenDay"
       }
     }
   },
