@@ -11,38 +11,13 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Apollo,gql } from 'apollo-angular';
 import { interval, Subscription } from 'rxjs';
-// import * as Highcharts from "highcharts/highstock";
-// import { Options } from "highcharts/highstock";
 
-
-// import IndicatorsCore from "highcharts/indicators/indicators";
-// import IndicatorZigzag from "highcharts/indicators/zigzag";
-// IndicatorsCore(Highcharts);
 @Component({
   selector: 'app-home-device-page',
   templateUrl: './home-device-page.page.html',
   styleUrls: ['./home-device-page.page.scss'],
 })
 export class HomeDevicePagePage implements OnInit, OnDestroy {
-  // Highcharts: typeof Highcharts = Highcharts;
-  // updateFlag = false;
-  // data:any = [];
-  // chartOptions: Highcharts.Options = {
-  //   chart:{
-  //     borderWidth: 1,
-  //     plotBackgroundColor: 'rgba(255, 255, 255, .9)',
-  //     plotBorderWidth: 1
-  //   },
-    
-  //   series: [
-      
-  //     {
-  //       type: 'line',
-  //       data: this.data
-  //     }
-  //   ],
-    
-  // };
   now = Date.now();
   @ViewChild('barChart') barChart;
   bars: any;
@@ -177,14 +152,11 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let saturdayDataAmps = 0;
       let sundayDataAmps = 0;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
-        // this.data = response.usage[0];
-        console.log(fullUrl);
-        // console.log(response);
+
         mondayData = response.usage[0].lunes.watts || 0;
         tuesdayData = response.usage[0].martes.watts || 0;
         wednesdayData = response.usage[0].miercoles.watts || 0;
          thursdayData = response.usage[0].jueves.watts || 0;
-        //thursdayData = 100;
         fridayData = response.usage[0].viernes.watts || 0;
         saturdayData = response.usage[0].sabado.watts || 0;
         sundayData = response.usage[0].domingo.watts || 0;
@@ -239,12 +211,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             }
           }
         })
-        // this.chartOptions.series[0] = {
-        //   type: 'line',
-        //   data: finalData
-        // }
-        // this.updateFlag = true;
-
       })
       
     } catch (error) {
@@ -258,7 +224,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * this method is called one when the view is entered
    */
   async ionViewDidEnter(){
-    //  console.log('cargandooo..');
      const source = interval(1000);
      this.subscription = source.subscribe(() => this.refreshDeviceReadings());
      const cond = interval(10000);
@@ -315,16 +280,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * this method syncs the device readings
    */
   public async  refreshDeviceReadings(){
-   // let data =  this.energyService.getReadingsStatistics();
-   // console.log(data);
-    // date.setHours(date.getHours() - 6);
-    // let since;
-    // since = date.getTime();
-    // console.log(since / 1000);
-    let beginning = Math.floor(Date.now()/1000 );
-    // console.log(beginning);
-    
-
+    let beginning = Math.floor(Date.now()/1000 );    
     try {
       this.querySubscription =  this.apolloClient.watchQuery<any>({
         query: gql`
@@ -367,19 +323,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           this.realtimeDataModel.wifi_Name = data.device.wifi_name;
           this.realtimeDataModel.wifi_strength = data.device.wifi_strength;
           }
-          else{
-          //   console.log(data);
-          //   this.realtimeDataModel.device_amps = data.device.device_amps;
-          //   this.realtimeDataModel.device_name = data.device.device_name;
-          //   this.realtimeDataModel.device_UserName = data.device.device_UserName;
-          //   this.realtimeDataModel.device_watts = Math.abs(data.device.device_watts);
-          //   this.realtimeDataModel.wifi_Ip = data.device.wifi_IP;
-          //   this.realtimeDataModel.wifi_Name = data.device.wifi_name;
-          //   this.realtimeDataModel.wifi_strength = data.device.wifi_strength;
-          //  // this.realtimeDataModel = new RealtimeData();
-          }
-          
-         // console.log(this.realtimeDataModel);
         }
 
       })
