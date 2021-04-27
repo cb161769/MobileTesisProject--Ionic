@@ -8,7 +8,7 @@ import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service'
 import { EnergyService } from 'src/app/data-services/energyService/energy.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
 import { environment } from 'src/environments/environment';
-
+import 'chartjs-adapter-moment';
 @Component({
   selector: 'app-connexion1',
   templateUrl: './connexion1.page.html',
@@ -62,7 +62,7 @@ export class Connexion1Page {
           },
           {
             text:'Este Mes',handler:() =>{
-              
+              this.showDetailChartInCurrentMonth();
             }
           },
           {
@@ -167,6 +167,7 @@ export class Connexion1Page {
 
           },
           options:{
+            responsive:true,
             scales:{
               yAxes:[{
                 ticks:{
@@ -188,7 +189,63 @@ export class Connexion1Page {
       this.showDetailedChartInCurrentWeek();
     }
     showDetailChartInCurrentMonth(){
-      
+      let urlRoot = environment.DynamoBDEndPoints.ULR;
+     let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetAllDeviceReadingsByGivenMonth;
+     let ConnectionName = 'Conexion 1';
+     var curr = new Date; 
+      var firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(),1);
+      var lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() +1,0);
+      lastOfMonth.setHours(24,59,59);
+      firstsOfMonth.setHours(0,0,0);
+      let initialDateEpoch = Math.floor(firstsOfMonth.getTime()/1000);
+     let finalDateEpoch = Math.floor(firstsOfMonth.getTime()/1000);
+      let fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
+      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+        next: (data) =>{
+          console.log(data);
+          let ctx = this.barChart.nativeElement;
+          ctx.height = 200;
+          ctx.width = 250;
+          const dataset  =  data.usage[0].detail.MonthDetails.TimeStamp;
+          console.log(dataset)
+          let month = new Date();
+ 
+          month.toLocaleDateString('es-Es');
+          this.bars= new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels:[''],
+              datasets:[{
+                label:'Valor en watts',
+                  data: dataset,
+                fill:true,
+                
+              }]
+            },
+            options:{
+              responsive:true,
+              title:{
+                display:true,
+                text:'Consumo durante este mes'
+              }
+            },
+            scales:{
+              xAxes:[{
+                type: 'time',
+                display: true,
+                distribution: 'series',
+                time: {
+                    unit:"year",
+                    displayFormats:{year:'YYYY'},
+                    min:'1970' ,
+                    max:'2022',
+                }
+              }]
+            }
+            
+          });
+        }
+      })
     }
 
 
