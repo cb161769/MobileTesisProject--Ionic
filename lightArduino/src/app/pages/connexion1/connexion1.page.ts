@@ -51,13 +51,8 @@ export class Connexion1Page {
         header:'Seleccionar Lapso Temporal',
         buttons:[
           {
-            text:'Anual',handler:() =>{
-
-            }
-          },
-          {
-            text:'Trimestral',handler:() =>{
-              
+            text:'Este Año',handler:() =>{
+              this.showDetailChartInCurrentYear();
             }
           },
           {
@@ -246,6 +241,55 @@ export class Connexion1Page {
           });
         }
       })
+    }
+
+    showDetailChartInCurrentYear(){
+        let urlRoot = environment.DynamoBDEndPoints.ULR;
+       let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
+       let ConnectionName = 'Conexion 1';
+       let fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
+
+       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+        next: async (response) =>{
+          let ctx = this.barChart.nativeElement;
+          ctx.height = 200;
+          ctx.width = 250;
+          this.bars= new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels:[''],
+              datasets:[{
+                label:'Valor en watts',
+                  data: response.usage[0].timeStamp,
+                fill:true,
+                
+              }]
+            },
+            options:{
+              responsive:true,
+              title:{
+                display:true,
+                text:'Consumo durante este año'
+              }
+            },
+            scales:{
+              xAxes:[{
+                type: 'time',
+                display: true,
+                distribution: 'series',
+                time: {
+                    unit:"year",
+                    displayFormats:{year:'YYYY'},
+                    min:'1970' ,
+                    max:'2022',
+                }
+              }]
+            }
+            
+          });
+         }
+       })
+
     }
 
 
