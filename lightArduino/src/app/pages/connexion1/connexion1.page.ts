@@ -23,7 +23,12 @@ export class Connexion1Page {
   gaugeValue = 21000;
   bars: any;
   public healthy: number = 0;
+  showKlhw :boolean = false;
+  showKlwChekedchek : boolean = false;
   gaugeLabel = "Amperaje de la instalacion";
+  totalConsumptionInWatts:string = '';
+  totalConsumptionInKhw:string = '';
+  totalConsumptionInAmps:string = '';
   thresholdConfig = {
     '0': {color: 'green'},
     '40': {color: 'orange'},
@@ -53,16 +58,19 @@ export class Connexion1Page {
           {
             text:'Este Año',handler:() =>{
               this.showDetailChartInCurrentYear();
+              this.selected_time= 'Este Año';
             }
           },
           {
             text:'Este Mes',handler:() =>{
               this.showDetailChartInCurrentMonth();
+              this.selected_time= 'Este Mes';
             }
           },
           {
             text:'Esta Semana',handler:() =>{
               this.showDetailedChartInCurrentWeek();
+              this.selected_time= 'Esta Semana';
             }
           }
         ]
@@ -75,7 +83,9 @@ export class Connexion1Page {
     doRefresh(event:any){
 
     }
-
+    changeKhw(event:any){
+      console.log(event.target);
+    }
 
     async presentLoading(){
       this.loading = await this.loadingIndicator.create({
@@ -139,6 +149,9 @@ export class Connexion1Page {
         let ctx = this.barChart.nativeElement;
         ctx.height = 200;
         ctx.width = 250;
+        this.totalConsumptionInAmps = response.usage[0].totalAmps;
+        this.totalConsumptionInKhw = response.usage[0].totalKhw || 0;
+        this.totalConsumptionInWatts = response.usage[0].totalWatts;
         this.bars = new Chart(ctx,{
           type:'line',
           data:{
@@ -193,16 +206,16 @@ export class Connexion1Page {
       lastOfMonth.setHours(24,59,59);
       firstsOfMonth.setHours(0,0,0);
       let initialDateEpoch = Math.floor(firstsOfMonth.getTime()/1000);
-     let finalDateEpoch = Math.floor(firstsOfMonth.getTime()/1000);
       let fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: (data) =>{
-          console.log(data);
           let ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
           const dataset  =  data.usage[0].detail.MonthDetails.TimeStamp;
-          console.log(dataset)
+          this.totalConsumptionInWatts =data.usage[0].detail.allMonthWatts
+          this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps;
+          this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts;
           let month = new Date();
  
           month.toLocaleDateString('es-Es');
@@ -254,6 +267,9 @@ export class Connexion1Page {
           let ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
+          this.totalConsumptionInKhw = response.usage[0].totalKwh;
+          this.totalConsumptionInAmps =response.usage[0].totalAmps;
+          this.totalConsumptionInWatts =response.usage[0].totalWatts;
           this.bars= new Chart(ctx, {
             type: 'line',
             data: {
