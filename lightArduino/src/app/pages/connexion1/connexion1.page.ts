@@ -84,7 +84,27 @@ export class Connexion1Page {
 
     }
     changeKhw(event:any){
+      console.log(this.showKlhw);
       console.log(event.target);
+      if (this.showKlhw == true && this.selected_time == 'Este Año') {
+        this.showDetailChartInCurrentYearInKiloWatts();
+      }
+      if (this.showKlhw == false && this.selected_time == 'Este Año') {
+        this.showDetailChartInCurrentYear();
+      }
+      // este mes
+      if (this.showKlhw === true  && this.selected_time == 'Este Mes') {
+        this.showDetailChartInCurrentMonthKilowatts();
+      }
+      if (this.showKlhw == false && this.selected_time == 'Este Mes') {
+        this.showDetailChartInCurrentMonth();
+      }
+      if (this.showKlhw === true  && this.selected_time == 'Esta Semana') {
+        this.showDetailChartInCurrentWeekKilowatts();
+      }
+      if (this.showKlhw == false && this.selected_time == 'Esta Semana') {
+        this.showDetailedChartInCurrentWeek();
+      }
     }
 
     async presentLoading(){
@@ -255,7 +275,9 @@ export class Connexion1Page {
         }
       })
     }
-
+    /**
+     * 
+     */
     showDetailChartInCurrentYear(){
         let urlRoot = environment.DynamoBDEndPoints.ULR;
        let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
@@ -306,6 +328,187 @@ export class Connexion1Page {
          }
        })
 
+    }
+    /**
+     * 
+     * @param ConnectionN ConnectionName
+     */
+    showDetailChartInCurrentYearInKiloWatts(ConnectionN?){
+      let urlRoot = environment.DynamoBDEndPoints.ULR;
+      let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
+      let ConnectionName = 'Conexion 1';
+      let fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
+      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+       next: async (response) =>{
+         let ctx = this.barChart.nativeElement;
+         ctx.height = 200;
+         ctx.width = 250;
+         this.totalConsumptionInKhw = response.usage[0].totalKwh;
+         this.totalConsumptionInAmps =response.usage[0].totalAmps;
+         this.totalConsumptionInWatts =response.usage[0].totalWatts;
+         this.bars= new Chart(ctx, {
+           type: 'line',
+           data: {
+             labels:[''],
+             datasets:[{
+               label:'Valor en Kilowatts',
+                 data: response.usage[0].KiloWattsTimeStamp,
+               fill:true,
+               
+             }]
+           },
+           options:{
+             responsive:true,
+             title:{
+               display:true,
+               text:'Consumo durante este año'
+             }
+           },
+           scales:{
+             xAxes:[{
+               type: 'time',
+               display: true,
+               distribution: 'series',
+               time: {
+                   unit:"year",
+                   displayFormats:{year:'YYYY'},
+                   min:'1970' ,
+                   max:'2022',
+               }
+             }]
+           }
+           
+         });
+        }
+      });
+    }
+
+    showDetailChartInCurrentMonthKilowatts(Connection?){
+      let urlRoot = environment.DynamoBDEndPoints.ULR;
+      let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetAllDeviceReadingsByGivenMonth;
+      let ConnectionName = 'Conexion 1';
+      var curr = new Date; 
+       var firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(),1);
+       var lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() +1,0);
+       lastOfMonth.setHours(24,59,59);
+       firstsOfMonth.setHours(0,0,0);
+       let initialDateEpoch = Math.floor(firstsOfMonth.getTime()/1000);
+       let fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
+       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+         next: (data) =>{
+           let ctx = this.barChart.nativeElement;
+           ctx.height = 200;
+           ctx.width = 250;
+           const dataset  =  data.usage[0].detail.MonthDetails.kwhTimesTamp;
+           this.totalConsumptionInWatts =data.usage[0].detail.allMonthWatts
+           this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps;
+           this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts;
+           let month = new Date();
+  
+           month.toLocaleDateString('es-Es');
+           this.bars= new Chart(ctx, {
+             type: 'line',
+             data: {
+               labels:[''],
+               datasets:[{
+                 label:'Valor en Kilowatts',
+                   data: dataset,
+                 fill:true,
+                 
+               }]
+             },
+             options:{
+               responsive:true,
+               title:{
+                 display:true,
+                 text:'Consumo durante este mes'
+               }
+             },
+             scales:{
+               xAxes:[{
+                 type: 'time',
+                 display: true,
+                 distribution: 'series',
+                 time: {
+                     unit:"year",
+                     displayFormats:{year:'YYYY'},
+                     min:'1970' ,
+                     max:'2022',
+                 }
+               }]
+             }
+             
+           });
+         }
+       })
+    }
+    showDetailChartInCurrentWeekKilowatts(Connection?){
+      let urlRoot = environment.DynamoBDEndPoints.ULR;
+      let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionReadingsCurrentWeek;
+      let ConnectionName = 'Conexion 1';
+      var curr = new Date; // get current date
+      var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+      var last = first + 6; // last day is the first day + 6
+  
+      var firstday = new Date(curr.setDate(first));
+      firstday.setHours(0,0,0);
+  
+      var lastday = new Date(curr.setDate(last));
+      lastday.setHours(24,59,59);
+      
+      
+      let initialDateEpoch = Math.floor(firstday.getTime()/1000);
+      let finalDateEpoch = Math.floor(lastday.getTime()/1000);
+      let fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${finalDateEpoch}/${ConnectionName}`;
+      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+        next: (data) =>{
+          let ctx = this.barChart.nativeElement;
+          ctx.height = 200;
+          ctx.width = 250;
+          const dataset  =  data.usage[0].Timestamp;
+          this.totalConsumptionInAmps = data.usage[0].totalAmps;
+          this.totalConsumptionInKhw = data.usage[0].totalKhw || 0;
+          this.totalConsumptionInWatts = data.usage[0].totalWatts;
+          let month = new Date();
+          if (dataset == []) {
+            dataset.push({t:new Date().toISOString(), y:0})
+          }
+          month.toLocaleDateString('es-Es');
+          this.bars= new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels:[''],
+              datasets:[{
+                label:'Valor en Kilowatts',
+                  data: dataset,
+                fill:true,
+                
+              }]
+            },
+            options:{
+              responsive:true,
+              title:{
+                display:true,
+                text:'Consumo durante esta semana'
+              }
+            },
+            scales:{
+              xAxes:[{
+                type: 'time',
+                display: true,
+                distribution: 'series',
+                time: {
+                    unit:"year",
+                    displayFormats:{year:'YYYY'},
+                    min:'1970' ,
+                    max:'2022',
+                }
+              }]
+            }
+            
+          });
+        }
+      })
     }
 
 
