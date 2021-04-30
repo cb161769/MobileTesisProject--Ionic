@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ConnectionOneConsumptionsPageRoutingModule } from './connection-one-consumptions-routing.module';
 
 import { ConnectionOneConsumptionsPage } from './connection-one-consumptions.page';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ConnectionOneConsumptionsPageRoutingModule
+    ConnectionOneConsumptionsPageRoutingModule,
+    IonicSelectableModule
   ],
   declarations: [ConnectionOneConsumptionsPage]
 })

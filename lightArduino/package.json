@@ -34,6 +34,7 @@
     "graphql": "^15.0.0",
     "highcharts": "^9.0.0",
     "highcharts-angular": "^2.10.0",
+    "ionic-selectable": "^4.9.0",
     "moment": "^2.29.1",
     "ngx-gauge": "^1.1.0",
     "ngx-ion-simple-mask": "^0.8.8",
