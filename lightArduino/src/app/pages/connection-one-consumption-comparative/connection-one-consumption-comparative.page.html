@@ -3,10 +3,77 @@
     <ion-buttons slot="start">
       <ion-back-button icon="arrow-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title>Comparativa de consumo</ion-title>
+    <ion-title>Predecir Consumo Proximo</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="container" [fullscreen]="true" [scrollEvents] ="true">
+ <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+   <ion-refresher-content
+     pullingIcon="arrow-dropdown"
+     pullingText="Pull to refresh"
+     refreshingSpinner="bubbles"
+     refreshingText="Refreshing...">
+   </ion-refresher-content>
+ </ion-refresher>
+ <ion-grid fixed ="true" class="intro">
+   <!--First Row-->
+   <ion-row>
+     <ion-col size="12">
+      <ion-item lines="none"> 
+        <ion-label>Seleccionar Dispositivo</ion-label>
+        <ion-item lines="none">
+          <ion-select value="peperoni" multiple="true" placeholder="Seleccione">
+            <ion-select-option value="peperoni">Peperoni</ion-select-option>
+            <ion-select-option value="hawaii">Hawaii</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-item>
+     </ion-col>
+   </ion-row>
+   <ion-row>
+     <ion-col size="12">
+      <ion-item lines="none">
+        <ion-label>Tiempo Estimacion</ion-label>
+        <ion-item lines="none">
+          <ion-select value="peperoni" multiple="false" placeholder="Seleccione">
+            <ion-select-option value="peperoni">Peperoni</ion-select-option>
+            <ion-select-option value="hawaii">Hawaii</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-item>
+     </ion-col>
+   </ion-row>
+ </ion-grid>
+ <ion-card *ngIf="true" class="card" fixed="true">
+  <ion-card-header>
+    <ion-card-subtitle>Resumen</ion-card-subtitle>
+    <ion-card-title>Nombre Dispositivo</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid fixed ="true">
+      <ion-row>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-icon name="bulb-outline"></ion-icon>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-icon name="bulb-outline"></ion-icon>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item lines="none" class="ion-align-self-center">
+              <canvas #chart>
 
+              </canvas>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
 </ion-content>
