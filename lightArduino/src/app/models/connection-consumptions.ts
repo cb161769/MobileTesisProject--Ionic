@@ -1,5 +1,5 @@
 export class ConnectionConsumptions {
-    Devices:[];
+    Devices:Array<any>;
     StartDate:Date;
     FinalDate:Date;
     GraphType:string;

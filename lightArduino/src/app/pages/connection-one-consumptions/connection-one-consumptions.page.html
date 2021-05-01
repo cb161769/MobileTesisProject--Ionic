@@ -23,7 +23,7 @@
         <ion-label>Seleccionar Dispositivo</ion-label>
         <ion-item lines="none">
           <ion-select  multiple="true" placeholder="Seleccione" [ngModel]="this.ConnectionConsumptionsModel.Devices" (ionChange)="onChange($event)">
-            <ion-select-option *ngFor="let item of this.AvailableCharts" [value]="item.name">{{item.name}}</ion-select-option>
+            <ion-select-option *ngFor="let item of this.ConnectionConsumptionsModel.Devices" [value]="item.name">{{item.name}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-item>
@@ -62,7 +62,7 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-card *ngIf="true" class="card" fixed="true">
+<ion-card *ngIf="this.showCard" class="card" fixed="true">
   <ion-card-header>
     <ion-card-subtitle>Resumen</ion-card-subtitle>
     <ion-card-title>Nombre Dispositivo</ion-card-title>
