@@ -5,6 +5,7 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
 import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
+import { ConfigDeviceModel } from 'src/app/models/config-device-model';
 import { ConnectionConsumptions } from 'src/app/models/connection-consumptions';
 import { environment } from 'src/environments/environment';
 
@@ -21,6 +22,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
   ngOnInit() {
   }
+  ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   AvailableCharts =[ 
     {
       name:'bar'
@@ -86,6 +88,39 @@ export class ConnectionOneConsumptionsPage implements OnInit {
         }
       })
       return deviceName;
+    }
+    async GetDeviceConfiguration(username:any){
+      var url = environment.DynamoBDEndPoints.ULR;
+      var urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
+      const urlFullPath = `${url}` + `${urlPath}`+`/${username}`;
+      this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+        next:async (response) => {
+          if (response.status === 200) {
+            this.ConfigDeviceModel.configurationId = response.deviceConfiguration[0].configurationId;
+            this.ConfigDeviceModel.configurationMaximumKilowattsPerDay = response.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
+            this.ConfigDeviceModel.configurationDays = response.deviceConfiguration[0].configurationDays;
+            this.ConfigDeviceModel.deviceId = response.deviceConfiguration[0].deviceId;
+            this.ConfigDeviceModel.status = response.deviceConfiguration[0].status;
+            this.ConfigDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
+            this.ConfigDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
+          } else {
+            const alert = await this.alertController.create({
+              header:'Error',
+              message: 'ha ocurrido un error, intentelo nuevamente',
+            });
+            await alert.present();
+            return;
+          }
+  
+        },
+        error: async(error) => {
+          const alert = await this.alertController.create({
+            header:'Error',
+            message: error,
+          });
+          await alert.present();
+        }
+      })
     }
 
 }
