@@ -218,7 +218,6 @@ export class ConfigDevicePage implements OnInit {
           this.ConfigDeviceModel.status = response.deviceConfiguration[0].status;
           this.ConfigDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
           this.ConfigDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
-          debugger;
         } else {
           const alert = await this.alertController.create({
             header:'Error',
