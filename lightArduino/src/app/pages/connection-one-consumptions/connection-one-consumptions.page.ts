@@ -17,10 +17,12 @@ import { environment } from 'src/environments/environment';
 export class ConnectionOneConsumptionsPage implements OnInit {
   deviceName:string = '';
   loading:any;
+  showCard:boolean = false;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) { }
 
-  ngOnInit() {
+ async  ngOnInit() {
+  await this.validateLoggedUser();
   }
   ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
   AvailableCharts =[ 
@@ -46,6 +48,35 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   onChange(event){
     console.log(event.target.value);
 
+  }
+  async validateLoggedUser(){
+    await this.PresentLoading();
+    this.awsAmplifyService.getCurrentUser().then(async (result)=>{
+      if (result != undefined) {
+        try {
+        this.getDeviceName(result.attributes.email);
+      } catch (error) {
+        console.log(error);
+        
+      }
+        
+      } else {
+        const toast = await this.ToastController.create({
+          message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+
+      // this.redirectToLoginPage(); 
+        
+      }
+    }).catch((error) =>{
+
+    }).finally(() =>{
+      this.loading.dismiss();
+    })
   }
     /**
    * this method is to present a loading Indicator
@@ -73,7 +104,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
         next: (response) => {
           deviceName = response.configuration[0].deviceName;
-          this.GetDeviceConfiguration(deviceName);     
+          this.GetDeviceConfiguration(deviceName);
+          let object = [{name: deviceName}];
+          this.ConnectionConsumptionsModel.Devices= object;    
           return deviceName;
         },
         error: async (response) => {
