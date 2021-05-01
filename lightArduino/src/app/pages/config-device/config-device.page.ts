@@ -143,7 +143,7 @@ export class ConfigDevicePage implements OnInit {
     this.awsAmplifyService.getCurrentUser().then(async (result)=>{
       if (result != undefined) {
         try {
-        await this.getDeviceName(result.attributes.email);
+        this.getDeviceName(result.attributes.email);
       } catch (error) {
         console.log(error);
         
