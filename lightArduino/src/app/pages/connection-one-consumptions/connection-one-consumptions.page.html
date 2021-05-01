@@ -22,9 +22,8 @@
       <ion-item lines="none">
         <ion-label>Seleccionar Dispositivo</ion-label>
         <ion-item lines="none">
-          <ion-select value="peperoni" multiple="true" placeholder="Seleccione">
-            <ion-select-option value="peperoni">Peperoni</ion-select-option>
-            <ion-select-option value="hawaii">Hawaii</ion-select-option>
+          <ion-select  multiple="true" placeholder="Seleccione" [ngModel]="this.ConnectionConsumptionsModel.Devices" (ionChange)="onChange($event)">
+            <ion-select-option *ngFor="let item of this.AvailableCharts" [value]="item.name">{{item.name}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-item>
@@ -35,7 +34,7 @@
       <ion-item lines="none">
         <ion-label>Fecha Inicial</ion-label>
         <ion-item lines="none">
-          <ion-datetime display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+          <ion-datetime [ngModel]="this.ConnectionConsumptionsModel.StartDate" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
         </ion-item>
       </ion-item>
     </ion-col>
@@ -45,7 +44,7 @@
       <ion-item lines="none">
         <ion-label>Fecha Final</ion-label>
         <ion-item lines="none">
-          <ion-datetime display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+          <ion-datetime [ngModel]="this.ConnectionConsumptionsModel.FinalDate" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
         </ion-item>
       </ion-item>
     </ion-col>
@@ -55,9 +54,8 @@
       <ion-item lines="none">
         <ion-label>Tipo de Grafico</ion-label>
         <ion-item lines="none">
-          <ion-select value="peperoni" multiple="false" placeholder="Seleccione">
-            <ion-select-option value="peperoni">Peperoni</ion-select-option>
-            <ion-select-option value="hawaii">Hawaii</ion-select-option>
+          <ion-select [ngModel]="this.ConnectionConsumptionsModel.GraphType" multiple="false" placeholder="Seleccione">
+            <ion-select-option *ngFor="let item of this.AvailableCharts" [value]="item.name">{{item.name}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-item>
