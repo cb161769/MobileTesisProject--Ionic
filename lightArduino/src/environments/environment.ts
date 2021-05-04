@@ -28,6 +28,17 @@ export const environment = {
       getDeviceReadingsByCurrentYear: "/IotDevice/getAllDeviceReadingsByMonth",
       getDeviceReadingsByGivenDay:"/IotDevice/getAllDeviceReadingsByGivenDay",
       getDeviceReadingsByGivenMonth:"/IotDevice/getAllDeviceReadingsByGivenMonth",
+      DeviceCriteria:{
+        Monthly:{
+          getAllDeviceReadingsByGivenParametersMonthly:"/IotDevice/getAllDeviceReadingsByGivenParametersMonthly/"
+        }
+      },
+      ConnectionsCriteria:{
+        Monthly:{
+          getAllDeviceReadingsByGivenParametersMonthly:"/IotDevice/Connections/getAllDeviceReadingsByGivenParametersMonthly/"
+        }
+      },
+
       Connections:{
         ConnectionReadingsCurrentWeek:"/IotDevice/Connections/getConnectionReadingsCurrentWeek",
         ConnectionsGetAllDeviceReadingsByGivenMonth:"/IotDevice/Connections/getAllDeviceReadingsByGivenMonth",

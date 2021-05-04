@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, NavController, AlertController,ToastController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
@@ -8,7 +8,8 @@ import { ToastService } from 'src/app/data-services/ToasterService/toast.service
 import { ConfigDeviceModel } from 'src/app/models/config-device-model';
 import { ConnectionConsumptions } from 'src/app/models/connection-consumptions';
 import { environment } from 'src/environments/environment';
-
+import {  Chart} from 'chart.js';
+import 'chartjs-adapter-moment';
 @Component({
   selector: 'app-connection-one-consumptions',
   templateUrl: './connection-one-consumptions.page.html',
@@ -18,6 +19,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   deviceName:string = '';
   loading:any;
   showCard:boolean = false;
+  chart:any;
+  arrayModel:Array<any> = [];
+  @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) { }
 
@@ -36,6 +40,17 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       name:'pie' 
     }
     ];
+    AvailableCriteria = [
+      {
+        name:'Mensual'
+      },
+      {
+        name:'Semanal'
+      },
+      {
+        name:'Anual'
+      }
+    ];
     ConnectionConsumptionsModel:ConnectionConsumptions = new ConnectionConsumptions();
   doRefresh(event) {
     console.log('Begin async operation');
@@ -47,6 +62,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   }
   onChange(event){
     console.log(event.target.value);
+    this.arrayModel = [];
+    this.arrayModel = event.target.value;
 
   }
   async validateLoggedUser(){
@@ -104,8 +121,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
         next: (response) => {
           deviceName = response.configuration[0].deviceName;
+          this.deviceName = deviceName;
           this.GetDeviceConfiguration(deviceName);
-          let object = [{name: deviceName}];
+          let object = [{name: deviceName},{name:'Conexion 1'}];
           this.ConnectionConsumptionsModel.Devices= object;    
           return deviceName;
         },
@@ -154,6 +172,136 @@ export class ConnectionOneConsumptionsPage implements OnInit {
           await alert.present();
         }
       })
+    }
+    Seacrh(){
+      let searchOtherDevice:boolean = false;
+      let criteria;
+      this.showCard = true;
+      for (let index = 0; index < this.AvailableCriteria.length; index++) {
+
+        let element = this.AvailableCriteria[index];
+        criteria = element.name;
+        break;
+
+        
+
+      }
+      let chartType;
+      for (let index = 0; index < this.AvailableCharts.length; index++) {
+        let element = this.AvailableCharts[index];
+        chartType = element.name;
+        break;
+
+      }
+      for (let index = 0; index < this.ConnectionConsumptionsModel.Devices.length; index++) {
+        const element = this.ConnectionConsumptionsModel.Devices[index];
+        if (this.arrayModel.length > 1) {
+          searchOtherDevice = true;
+          
+        }
+        if (element.name === this.deviceName) {
+          if (criteria === "Mensual") {
+            let url = environment.DynamoBDEndPoints.ULR;
+            let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.DeviceCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
+            let startDate = this.ConnectionConsumptionsModel.StartDate;
+            let finalDate = this.ConnectionConsumptionsModel.FinalDate;
+            let start = new Date(startDate);
+            let end = new Date(finalDate);
+
+            let first =  start.getTime();
+            let last = end.getTime();
+            let StartDateEpoch =  Math.floor(first/1000);
+            let FinalDateEpoch = Math.floor(last/1000);
+            
+            let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}` 
+            this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+              next:(data) => {
+                let ctx = this.ConnectionChart.nativeElement;
+                ctx.height = 200;
+                ctx.width = 250;
+                const dataset = data.usage[0].wattsTimeStamp;
+                this.chart = new Chart(ctx,
+                  {
+                    type:chartType,
+                    data:{
+                      labels:[''],
+                      datasets:[{
+                        label:'',
+                        data: dataset,
+                        fill:true
+                      }]
+                    },
+                    options:{
+                      responsive:true,
+                      title:{
+                        display:true,
+                        text:'Consumo watts'
+                      }
+                    },
+                    scales:{
+                      xAxes:[{
+                        type: 'time',
+                        display: true,
+                        distribution: 'series',
+                        time: {
+                            unit:"year",
+                            displayFormats:{year:'YYYY'},
+                            min:'1970' ,
+                            max:'2022',
+                        }
+                      }]
+                    }
+                  })
+              }
+            });
+            
+          }
+
+        }else if (element.name =! null && element.name != this.deviceName){
+          if (criteria ==="Mensual" && searchOtherDevice == true) {
+
+            let url = environment.DynamoBDEndPoints.ULR;
+            let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
+            let startDate = this.ConnectionConsumptionsModel.StartDate;
+            let finalDate = this.ConnectionConsumptionsModel.FinalDate;
+            let start = new Date(startDate);
+            let end = new Date(finalDate);
+            let first =  start.getTime();
+            let last = end.getTime();
+            let StartDateEpoch =  Math.floor(first/1000);
+            let FinalDateEpoch = Math.floor(last/1000);
+            let connectionName = 'Conexion 1';
+            let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}/${connectionName}`;
+            
+            this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+              next:(data) => {
+                debugger;
+                this.addData(this.chart,'','',data.usage[0].timeStamp);
+              }
+            })
+
+
+            
+          }
+        }
+
+      }
+    }
+    /**
+     * 
+     * @param chart a chart
+     * @param label label
+     * @param color color
+     * @param data data
+     */
+    addData(chart,label,color,data) {
+      debugger;
+      chart.data.datasets.push({
+        label: label,
+        backgroundColor:color,
+        data:data
+      });
+      chart.update();
     }
 
 }
