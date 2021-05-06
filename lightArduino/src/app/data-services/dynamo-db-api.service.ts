@@ -2,7 +2,7 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable,throwError, from  } from 'rxjs';
+import { Observable,throwError, from, forkJoin  } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { Auth } from 'aws-amplify';
@@ -21,17 +21,10 @@ export class DynamoDBAPIService {
    }
   
   /**
-   * this method is 
+   * this method is to Generic 
    * @param ulrRoot the specified URL
    */
    genericGetMethods(ulrRoot:string): Observable<any>{
-    // const headers = new HttpHeaders();
-    // headers.append('Access-Control-Allow-Headers', 'Content-Type');
-    // headers.append('Access-Control-Allow-Methods', 'GET');
-    // headers.append('Access-Control-Allow-Origin', '*');
-    // let options = {
-    //   headers: headers
-    // }
     return this.httpClient.get(ulrRoot).pipe(
       map((data: any[]) => {
         return data;
@@ -41,6 +34,33 @@ export class DynamoDBAPIService {
       })
     );
     
+  }
+  async asyncGenericGetMethods(url:string){
+    const resul = await this.httpClient.get(url).pipe(
+      map((data: any[]) => {
+
+      })
+    ).toPromise();
+    debugger;
+    return resul;
+  }
+  async multipleGenericGetMethods(ConnectionsArray:Array<any>, connectionName,DevicesUrl?,ConnectionUrl?){
+    let calls = [];
+    debugger;
+    for (let index = 0; index < ConnectionsArray.length; index++) {
+      const element = ConnectionsArray[index];
+      if (element == connectionName) {
+        calls.push(this.httpClient.get(DevicesUrl));
+        //debugger;
+      }else{
+        ConnectionUrl += `${element}`
+       // debugger;
+        calls.push(this.httpClient.get(ConnectionUrl));
+      }
+      
+      
+    }
+    return forkJoin(calls);
   }
   
   /**

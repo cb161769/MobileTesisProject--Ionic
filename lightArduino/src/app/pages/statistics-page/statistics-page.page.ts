@@ -57,7 +57,6 @@ export class StatisticsPagePage implements OnInit {
       {
         next: async (data) => {
           if (data != null || data != undefined || data.data !=undefined) {
-            console.log(data.data.length);
             if (data.data.length > 0) {
               this.relaysList = data.data;
               let relays$:Observable<RelaysModel[]>;
@@ -120,7 +119,6 @@ export class StatisticsPagePage implements OnInit {
   }
   async  validateLoggedUser(){
     await this.presentLoading();
-    // await this.validateUserDevice();
     this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         this.loadAllRelays(result.attributes.email);
