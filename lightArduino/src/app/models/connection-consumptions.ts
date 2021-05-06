@@ -3,6 +3,6 @@ export class ConnectionConsumptions {
     StartDate:Date;
     FinalDate:Date;
     GraphType:string;
-    SearchCriteria:Array<any>;
+    SearchCriteria:any;
 
 }
