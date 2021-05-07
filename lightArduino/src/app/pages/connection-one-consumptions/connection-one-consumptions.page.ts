@@ -22,6 +22,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   chart:any;
   arrayModel:Array<any> = [];
   connectionSelect:any;
+  totalAmps:any = 0;
+  totalWatts:any = 0;
   @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) { }
@@ -131,7 +133,6 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             object.push(element);
             
           }
-          debugger;
           this.ConnectionConsumptionsModel.Devices= object;    
           return deviceName;
         },
@@ -220,8 +221,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
           let StartDateEpoch =  Math.floor(first/1000);
           let FinalDateEpoch = Math.floor(last/1000);
           
-          let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}` 
-          ;
+          let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}`;
+
           let ur2l = environment.DynamoBDEndPoints.ULR;
           let urlEndpoint2 = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
           let startDate2 = this.ConnectionConsumptionsModel.StartDate;
@@ -235,21 +236,18 @@ export class ConnectionOneConsumptionsPage implements OnInit {
           let connectionName2 = elemento;
           let urlFullPath2 = ur2l + urlEndpoint2 + `${StartDateEpoch}/${FinalDateEpoch}/`;
           (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel,this.deviceName,urlFullPath,urlFullPath2)).subscribe({
-            next: async (data:any ) =>{
+            next: async (data ) =>{
               let ctx = this.ConnectionChart.nativeElement;
               ctx.height = 200;
               ctx.width = 250;
-              debugger;
-              const dataset = data[0].usage[0].wattsTimeStamp;
-              debugger;
+
+              const dataset = data;
               this.chart = new Chart(ctx,
                 {
                   type:this.ConnectionConsumptionsModel.GraphType,
                   data:{
-                    labels:[''],
+                    labels:this.arrayModel,
                     datasets:[{
-                      label:'',
-                      data: dataset,
                       fill:true
                     }]
                   },
@@ -273,103 +271,34 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                       }
                     }]
                   }
-                })
+                });
+                for (let index = 0; index <= dataset.length; index++) {
+                  const element:any = dataset[index];
+                  if (element === undefined) {
+                    break;
+                  }
+                  this.totalAmps += element.usage[0].totalAmpsProm;
+                  this.totalWatts += element.usage[0].totalWattsProm;
+                  this.chart.data.datasets.push(
+                    {
+                      label: element.usage[0].ConnectionName || '',
+                      data:element.usage[0].wattsTimeStamp,
+                      fill: true,
+                      lineTension: 0.2,
+                      borderColor: "rgba(75, 75, 75, 0.7)",
+                      pointBorderColor: "rgba(75, 75, 75, 0.7)",
+                      pointHoverBackgroundColor: "rgba(75, 75, 75, 0.7)",
+                    }
+                  )
+                  
+                }
+                this.chart.update();
+
             }
           });
           
         }
-        // if (elemento === this.deviceName) {
-        //   if (criteria === "Mensual") {
-        //     let url = environment.DynamoBDEndPoints.ULR;
-        //     let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.DeviceCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
-        //     let startDate = this.ConnectionConsumptionsModel.StartDate;
-        //     let finalDate = this.ConnectionConsumptionsModel.FinalDate;
-        //     let start = new Date(startDate);
-        //     let end = new Date(finalDate);
 
-        //     let first =  start.getTime();
-        //     let last = end.getTime();
-        //     let StartDateEpoch =  Math.floor(first/1000);
-        //     let FinalDateEpoch = Math.floor(last/1000);
-            
-        //     let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}` 
-        //     ;
-        //     (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel,this.deviceName,urlFullPath)).subscribe({
-        //       next: async (data:any ) =>{
-        //         let ctx = this.ConnectionChart.nativeElement;
-        //         ctx.height = 200;
-        //         ctx.width = 250;
-        //         debugger;
-        //         const dataset = data[0].usage[0].wattsTimeStamp;
-        //         this.chart = new Chart(ctx,
-        //           {
-        //             type:this.ConnectionConsumptionsModel.GraphType,
-        //             data:{
-        //               labels:[''],
-        //               datasets:[{
-        //                 label:'',
-        //                 data: dataset,
-        //                 fill:true
-        //               }]
-        //             },
-        //             options:{
-        //               responsive:true,
-        //               title:{
-        //                 display:true,
-        //                 text:'Consumo watts'
-        //               }
-        //             },
-        //             scales:{
-        //               xAxes:[{
-        //                 type: 'time',
-        //                 display: true,
-        //                 distribution: 'series',
-        //                 time: {
-        //                     unit:"year",
-        //                     displayFormats:{year:'YYYY'},
-        //                     min:'1970' ,
-        //                     max:'2022',
-        //                 }
-        //               }]
-        //             }
-        //           })
-        //       }
-        //     })
-
-     
-        //   }
-
-        // } if ((elemento != this.deviceName && elemento != true)){
-        //   if (criteria ==="Mensual" && searchOtherDevice == true) {
-
-        //     let url = environment.DynamoBDEndPoints.ULR;
-        //     let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
-        //     let startDate = this.ConnectionConsumptionsModel.StartDate;
-        //     let finalDate = this.ConnectionConsumptionsModel.FinalDate;
-        //     let start = new Date(startDate);
-        //     let end = new Date(finalDate);
-        //     let first =  start.getTime();
-        //     let last = end.getTime();
-        //     let StartDateEpoch =  Math.floor(first/1000);
-        //     let FinalDateEpoch = Math.floor(last/1000);
-        //     let connectionName = elemento;
-        //     let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}/${connectionName}`;
-
-        //     this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
-        //       next:(data) => {
-        //         this.addData(this.chart,'','',data.usage[0].timeStamp,this.ConnectionConsumptionsModel.GraphType);
-        //       }
-        //     })
-
-            
-
-
-            
-        //   }
-        // }
-        // if (elemento === true) {
-          
-        // }
         
 
       }
@@ -400,7 +329,6 @@ export class ConnectionOneConsumptionsPage implements OnInit {
         if (data.data.length > 0) {
           for (let index = 0; index < data.data.length; index++) {
            devicesArray.push({name: data.data[index].Name});
-            debugger;
           }
           return devicesArray;
         }else {
@@ -413,6 +341,18 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       }
     })
     return devicesArray;
+    }
+    getDataset(index,data){
+      return { 
+        label: 'Label '+ index, 
+        fillColor: 'rgba(220,220,220,0.2)', 
+        strokeColor: 'rgba(220,220,220,1)', 
+        pointColor: 'rgba(220,220,220,1)', 
+        pointStrokeColor: '#fff', 
+        pointHighlightFill: '#fff', 
+        pointHighlightStroke: 'rgba(220,220,220,1)', 
+        data: data 
+        }; 
     }
 
 }
