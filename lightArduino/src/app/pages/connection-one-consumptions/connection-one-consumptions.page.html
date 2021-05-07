@@ -16,80 +16,84 @@
     refreshingText="Refreshing...">
   </ion-refresher-content>
 </ion-refresher>
-<ion-grid fixed="true" class="intro">
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-        <ion-label>Seleccionar Dispositivo</ion-label>
+<form (ngSubmit)="Seacrh()" [formGroup]="ConnectionOneConsumptionsForm">
+  <ion-grid fixed="true" class="intro">
+    <ion-row>
+      <ion-col size="12">
         <ion-item lines="none">
-          <ion-select  multiple="true" placeholder="Seleccione" [(ngModel)]="this.connectionSelect" (ionChange)="onChange($event)">
-            <ion-select-option *ngFor="let item of this.ConnectionConsumptionsModel.Devices" [value]="item.name">{{item.name}}</ion-select-option>
-          </ion-select>
+          <ion-label>Seleccionar Dispositivo</ion-label>
+          <ion-item lines="none">
+            <ion-select  formControlName="Devices"  multiple="true" placeholder="Seleccione" [(ngModel)]="this.connectionSelect" (ionChange)="onChange($event)">
+              <ion-select-option *ngFor="let item of this.ConnectionConsumptionsModel.Devices" [value]="item.name">{{item.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </ion-item>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-        <ion-label>Fecha Inicial</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
         <ion-item lines="none">
-          <ion-datetime [(ngModel)]="this.ConnectionConsumptionsModel.StartDate" display-format="DD.MM.YYYY HH:mm"></ion-datetime>
+          <ion-label>Fecha Inicial</ion-label>
+          <ion-item lines="none">
+            <ion-datetime formControlName="StartDate" [(ngModel)]="this.ConnectionConsumptionsModel.StartDate" pickerFormat="MMM YYYY" 
+            displayFormat="MMM YYYY" placeholder="Month"></ion-datetime>
+          </ion-item>
         </ion-item>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-        <ion-label>Fecha Final</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
         <ion-item lines="none">
-          <ion-datetime [(ngModel)]="this.ConnectionConsumptionsModel.FinalDate" placeholder="Month"
-          pickerFormat="MMM YYYY" 
-          displayFormat="MMM YYYY"></ion-datetime>
+          <ion-label>Fecha Final</ion-label>
+          <ion-item lines="none">
+            <ion-datetime formControlName="FinalDate" [(ngModel)]="this.ConnectionConsumptionsModel.FinalDate" placeholder="Month"
+            pickerFormat="MMM YYYY" 
+            displayFormat="MMM YYYY"></ion-datetime>
+          </ion-item>
         </ion-item>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-        <ion-label>Tipo de Grafico</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
         <ion-item lines="none">
-          <ion-select [(ngModel)]="this.ConnectionConsumptionsModel.GraphType" multiple="false" placeholder="Seleccione">
-            <ion-select-option *ngFor="let item of this.AvailableCharts" [value]="item.name">{{item.name}}</ion-select-option>
-          </ion-select>
+          <ion-label>Tipo de Grafico</ion-label>
+          <ion-item lines="none">
+            <ion-select formControlName="GraphType" [(ngModel)]="this.ConnectionConsumptionsModel.GraphType" multiple="false" placeholder="Seleccione">
+              <ion-select-option *ngFor="let item of this.AvailableCharts" [value]="item.name">{{item.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </ion-item>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-        <ion-label>Criterio de Busqueda</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
         <ion-item lines="none">
-          <ion-select [(ngModel)]="this.ConnectionConsumptionsModel.SearchCriteria" multiple="false" placeholder="Seleccione">
-            <ion-select-option *ngFor="let item of this.AvailableCriteria" [value]="item.name">{{item.name}}</ion-select-option>
-          </ion-select>
+          <ion-label>Criterio de Busqueda</ion-label>
+          <ion-item lines="none">
+            <ion-select formControlName="SearchCriteria" [(ngModel)]="this.ConnectionConsumptionsModel.SearchCriteria" multiple="false" placeholder="Seleccione">
+              <ion-select-option *ngFor="let item of this.AvailableCriteria" [value]="item.name">{{item.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </ion-item>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12">
-      <ion-item lines="none">
-      <ion-button color="secondary"(click)="Seacrh()">
-        <ion-icon slot="start" name="search-outline"></ion-icon>
-        Buscar
-      </ion-button>
-      </ion-item>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item lines="none">
+        <ion-button color="secondary"  [disabled]="ConnectionOneConsumptionsForm.invalid" (click)="Seacrh()">
+          <ion-icon slot="start" name="search-outline"></ion-icon>
+          Buscar
+        </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>  
+</form>
+
 <ion-card *ngIf="this.showCard" class="card" fixed="true">
   <ion-card-header>
     <ion-card-subtitle>Resumen</ion-card-subtitle>
-    <ion-card-title>Nombre Dispositivo</ion-card-title>
+    <!-- <ion-card-title>Nombre Dispositivo</ion-card-title> -->
   </ion-card-header>
   <ion-card-content>
     <ion-grid fixed ="true">
@@ -100,7 +104,8 @@
             <ion-label>{{this.totalWatts.toPrecision(3)}}W</ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-icon name="bulb-outline">{{this.totalAmps.toPrecision(3)}}A</ion-icon>
+            <ion-icon name="bulb-outline"></ion-icon>
+            <ion-label>{{this.totalAmps.toPrecision(3)}}A</ion-label>
           </ion-item>
         </ion-col>
 
@@ -109,9 +114,16 @@
         <ion-col size="12">
           <ion-item lines="none" class="ion-align-self-center">
               <canvas #barchart>
-
               </canvas>
           </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="5" class="ion-align-self-center">
+          
+        </ion-col>
+        <ion-col size="7">
+          
         </ion-col>
       </ion-row>
     </ion-grid>
