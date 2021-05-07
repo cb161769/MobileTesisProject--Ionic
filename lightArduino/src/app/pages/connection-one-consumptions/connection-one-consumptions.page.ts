@@ -10,6 +10,7 @@ import { ConnectionConsumptions } from 'src/app/models/connection-consumptions';
 import { environment } from 'src/environments/environment';
 import {  Chart} from 'chart.js';
 import 'chartjs-adapter-moment';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-connection-one-consumptions',
   templateUrl: './connection-one-consumptions.page.html',
@@ -24,9 +25,20 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   connectionSelect:any;
   totalAmps:any = 0;
   totalWatts:any = 0;
+  conclusionValues:any =0;
+  ConnectionOneConsumptionsForm : FormGroup;
   @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
-    public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) { }
+    public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) 
+    {
+      this.ConnectionOneConsumptionsForm = new FormGroup({
+        'Devices': new FormControl(this.ConnectionConsumptionsModel.Devices,[Validators.required,Validators.minLength(1)]),
+        'StartDate': new FormControl(this.ConnectionConsumptionsModel.StartDate,[Validators.required]),
+        'FinalDate': new FormControl(this.ConnectionConsumptionsModel.FinalDate,[Validators.required]),
+        'GraphType': new FormControl(this.ConnectionConsumptionsModel.GraphType,[Validators.required]),
+        'SearchCriteria': new FormControl(this.ConnectionConsumptionsModel.SearchCriteria,[Validators.required])
+      });
+     }
 
  async  ngOnInit() {
   await this.validateLoggedUser();
@@ -89,7 +101,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
         });
         toast.present();
 
-      // this.redirectToLoginPage(); 
+
         
       }
     }).catch(() =>{
