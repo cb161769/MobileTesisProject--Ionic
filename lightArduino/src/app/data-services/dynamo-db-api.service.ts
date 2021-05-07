@@ -46,7 +46,6 @@ export class DynamoDBAPIService {
   }
   async multipleGenericGetMethods(ConnectionsArray:Array<any>, connectionName,DevicesUrl?,ConnectionUrl?){
     let calls = [];
-    debugger;
     for (let index = 0; index < ConnectionsArray.length; index++) {
       const element = ConnectionsArray[index];
       if (element == connectionName) {
