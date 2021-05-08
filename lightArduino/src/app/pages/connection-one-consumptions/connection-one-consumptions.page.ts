@@ -27,6 +27,17 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   totalWatts:any = 0;
   conclusionValues:any =0;
   ConnectionOneConsumptionsForm : FormGroup;
+  devicesAnalyzed:any = 0;
+  deviceResume:any = {
+    connectionName:'',
+    minorConnectionName:'',
+    connectionAmpsProm:'',
+    elapsedTime:'',
+    dayConsumption:'',
+    nightConsumption:'',
+    wattsProm:0,
+    biggestMonthConsumption:''
+  };
   @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) 
@@ -284,11 +295,53 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                     }]
                   }
                 });
+                if (dataset.length >1) {
+                  this.devicesAnalyzed = dataset.length;
+                  for (let index = 0; index <= dataset.length; index++) {
+                    const element:any = dataset[index];
+                    const secondElement:any = dataset[index + 1];
+                    if (element === undefined) {
+                      break;
+                    }
+                    if (secondElement === undefined) {
+                      break;
+                      
+                    }
+                    debugger;
+                    if (element.usage[0].totalWattsProm > secondElement.usage[0].totalWattsProm) {
+                      console.log('1')
+                    }
+                    else if (element.usage[0].totalWattsProm < secondElement.usage[0].totalWattsProm){
+                      console.log('2')
+                    }
+                    else if (element.usage[0].totalWattsProm == secondElement.usage[0].totalWattsProm){
+                      console.log('3')
+                    }
+                    this.totalAmps += element.usage[0].totalAmpsProm;
+                    this.totalWatts += element.usage[0].totalWattsProm;
+                    this.chart.data.datasets.push(
+                      {
+                        label: element.usage[0].ConnectionName || '',
+                        data:element.usage[0].wattsTimeStamp,
+                        fill: true,
+                        lineTension: 0.2,
+                        borderColor: "rgba(75, 75, 75, 0.7)",
+                        pointBorderColor: "rgba(75, 75, 75, 0.7)",
+                        pointHoverBackgroundColor: "rgba(75, 75, 75, 0.7)",
+                      }
+                    )
+                    
+                  }
+                  this.chart.update();
+                  
+                }
+                this.devicesAnalyzed = dataset.length;
                 for (let index = 0; index <= dataset.length; index++) {
                   const element:any = dataset[index];
                   if (element === undefined) {
                     break;
                   }
+                  debugger;
                   this.totalAmps += element.usage[0].totalAmpsProm;
                   this.totalWatts += element.usage[0].totalWattsProm;
                   this.chart.data.datasets.push(
