@@ -33,10 +33,23 @@ export class ConnectionOneConsumptionsPage implements OnInit {
     minorConnectionName:'',
     connectionAmpsProm:'',
     elapsedTime:'',
-    dayConsumption:'',
-    nightConsumption:'',
+    dayConsumption:{
+      Day:{
+        amps:0,
+        watts:0,
+        khw:0
+      }
+    },
+    nightConsumption:{
+      Night:{
+        amps:0,
+        watts:0,
+        khw:0
+      }
+    },
     wattsProm:0,
-    biggestMonthConsumption:''
+    biggestMonthConsumption:'',
+    mostCommonDay:''
   };
   @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
@@ -309,13 +322,13 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                     }
                     debugger;
                     if (element.usage[0].totalWattsProm > secondElement.usage[0].totalWattsProm) {
-                      console.log('1')
+                      debugger;
                     }
                     else if (element.usage[0].totalWattsProm < secondElement.usage[0].totalWattsProm){
-                      console.log('2')
+                      debugger;
                     }
                     else if (element.usage[0].totalWattsProm == secondElement.usage[0].totalWattsProm){
-                      console.log('3')
+                      debugger;
                     }
                     this.totalAmps += element.usage[0].totalAmpsProm;
                     this.totalWatts += element.usage[0].totalWattsProm;
@@ -341,7 +354,13 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                   if (element === undefined) {
                     break;
                   }
-                  debugger;
+                  debugger
+                  this.deviceResume.connectionName = element.usage[0].ConnectionName;
+                  this.deviceResume.nightConsumption.Night.amps = element.usage[0].NightTotalAmpsProm.toFixed(3);
+                  this.deviceResume.nightConsumption.Night.watts = element.usage[0].NightTotalWattsProm.toFixed(3);
+                  this.deviceResume.dayConsumption.Day.amps = element.usage[0].DayTotalAmpsProm.toFixed(3);
+                  this.deviceResume.dayConsumption.Day.watts = element.usage[0].DayTotalWattsProm.toFixed(3);
+             
                   this.totalAmps += element.usage[0].totalAmpsProm;
                   this.totalWatts += element.usage[0].totalWattsProm;
                   this.chart.data.datasets.push(
