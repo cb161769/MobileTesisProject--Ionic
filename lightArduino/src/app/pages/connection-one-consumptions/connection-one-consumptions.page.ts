@@ -348,6 +348,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                   this.chart.update();
                   
                 }
+                // TODO: add insights in front end, still most used month and less used and most used day and lest used days
                 this.devicesAnalyzed = dataset.length;
                 for (let index = 0; index <= dataset.length; index++) {
                   const element:any = dataset[index];
