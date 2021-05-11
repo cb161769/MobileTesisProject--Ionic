@@ -28,6 +28,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   conclusionValues:any =0;
   ConnectionOneConsumptionsForm : FormGroup;
   devicesAnalyzed:any = 0;
+  devicesList:string = "";
   deviceResume:any = {
     connectionName:'',
     minorConnectionName:'',
@@ -51,6 +52,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
     biggestMonthConsumption:'',
     mostCommonDay:''
   };
+  deviceResumeList:Array<any> = [];
   @ViewChild('barchart') ConnectionChart;
   constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
     public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService) 
@@ -242,6 +244,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
         if (this.arrayModel.length > 1) {
           searchOtherDevice = true;
+          this.devicesList = this.arrayModel.join();
           
         }
         if (criteria == "Mensual") {
@@ -298,12 +301,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                     xAxes:[{
                       type: 'time',
                       display: true,
-                      distribution: 'series',
                       time: {
-                          unit:"year",
-                          displayFormats:{year:'YYYY'},
-                          min:'1970' ,
-                          max:'2022',
+                          unit:"month",
+                  
                       }
                     }]
                   }
@@ -322,7 +322,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                     }
                     debugger;
                     if (element.usage[0].totalWattsProm > secondElement.usage[0].totalWattsProm) {
-                      debugger;
+                      this.deviceResume.connectionName = element.usage[0].ConnectionName;
+                      
                     }
                     else if (element.usage[0].totalWattsProm < secondElement.usage[0].totalWattsProm){
                       debugger;

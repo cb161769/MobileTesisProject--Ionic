@@ -118,12 +118,26 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col size="5" class="ion-align-self-center">
-          
+      <ion-row *ngIf="this.arrayModel.length == 1">
+        <ion-col size="12" class="ion-align-self-center">
+          <span>Resumen de Grafico</span>
         </ion-col>
-        <ion-col size="7">
-          
+        <ion-col size="12" class="ion-align-self-center">
+          <ion-item lines="none">
+            <p>
+              El dispositivo <strong>{{this.deviceResume.connectionName}}</strong>, en horas del dia comsume un aproximado de {{this.deviceResume.dayConsumption.Day.watts}}w
+              En horas de la Noche (9:00PM-6:00AM) se comsume un promedio de {{this.deviceResume.nightConsumption.Night.watts}}w
+            </p>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="this.arrayModel.length>1">
+        <ion-col size="12">
+          <ion-item>
+            <p>
+              Los Dispositivos Analizados <strong>{{this.devicesList}}</strong>, en horas del dia, consumen en promedio 
+            </p>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
