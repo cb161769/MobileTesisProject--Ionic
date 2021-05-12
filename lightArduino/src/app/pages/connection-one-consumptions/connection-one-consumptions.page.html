@@ -118,7 +118,7 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="this.arrayModel.length == 1">
+      <!-- <ion-row *ngIf="this.arrayModel.length <= 1">
         <ion-col size="12" class="ion-align-self-center">
           <span>Resumen de Grafico</span>
         </ion-col>
@@ -130,13 +130,22 @@
             </p>
           </ion-item>
         </ion-col>
-      </ion-row>
-      <ion-row *ngIf="this.arrayModel.length>1">
+      </ion-row> -->
+      <ion-row *ngIf="this.arrayModel.length<=1">
         <ion-col size="12">
-          <ion-item>
+          <ion-item lines="none">
             <p>
-              Los Dispositivos Analizados <strong>{{this.devicesList}}</strong>, en horas del dia, consumen en promedio 
+              Los Dispositivos Analizados <strong>{{this.devicesList}}</strong>, en horas del dia, consumen en promedio{{this.totalWatts.toFixed()}}w
             </p>
+           
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" *ngFor ="let item of this.deviceResumeList; let i = index;">
+          <ion-item lines="none" *ngIf="item.connectionName != ''">
+            <p >
+              {{item.connectionName}}
+            </p>
+            
           </ion-item>
         </ion-col>
       </ion-row>
