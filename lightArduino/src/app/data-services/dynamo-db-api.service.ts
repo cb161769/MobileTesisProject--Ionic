@@ -49,12 +49,17 @@ export class DynamoDBAPIService {
     for (let index = 0; index < ConnectionsArray.length; index++) {
       const element = ConnectionsArray[index];
       if (element == connectionName) {
-        calls.push(this.httpClient.get(DevicesUrl));
+        calls.push(this.httpClient.get(DevicesUrl).pipe(
+          retry(3)
+        )
+        );
         //debugger;
       }else{
-        ConnectionUrl += `${element}`
-       // debugger;
-        calls.push(this.httpClient.get(ConnectionUrl));
+        ConnectionUrl += `${element}`;
+       debugger;
+        calls.push(this.httpClient.get(ConnectionUrl).pipe(
+          retry(3)
+        ));
       }
       
       
