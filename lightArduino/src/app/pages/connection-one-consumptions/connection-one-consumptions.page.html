@@ -143,7 +143,21 @@
         <ion-col size="12" *ngFor ="let item of this.deviceResumeList; let i = index;">
           <ion-item lines="none" *ngIf="item.connectionName != ''">
             <p >
-              {{item.connectionName}}
+              Dentro de los dispositivo analizados, el de mayor consumo es: <strong>{{item.connectionName}}</strong>
+            </p>
+            
+          </ion-item>
+          <ion-item lines="none" *ngIf="item.EqualconnectionName != ''">
+            <p >
+              Por otra parte, el dispositivo con consumo igual a los demas<strong>{{item.LowestconnectionName}}</strong>, durante el dia consume un promedio de {{item.dayConsumption?.Day?.watts}}watts
+              en la noche consume un promedio de {{item.nightConsumption?.Night?.watts}}watts
+            </p>
+            
+          </ion-item>
+          <ion-item lines="none" *ngIf="item.LowestconnectionName != ''">
+            <p >
+              Por otra parte, el dispositivo con menor consumo <strong>{{item.LowestconnectionName}}</strong>, durante el dia consume un promedio de {{item.dayConsumption?.Day?.watts}}watts
+              en la noche consume un promedio de {{item.nightConsumption?.Night?.watts}}watts
             </p>
             
           </ion-item>

@@ -33747,6 +33747,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                  
               }
               console.log(this.deviceResumeList);
+              debugger;
               this.totalAmps += element.totalAmpsProm;
               this.totalWatts += element.totalWattsProm;
               
