@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, NavController, AlertController,ToastController } from '@ionic/angular';
+import { LoadingController, NavController, AlertController, ToastController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
@@ -17,142 +17,142 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./connection-one-consumptions.page.scss'],
 })
 export class ConnectionOneConsumptionsPage implements OnInit {
-  deviceName:string = '';
-  loading:any;
-  showCard:boolean = false;
-  chart:any;
-  arrayModel:Array<any> = [];
-  connectionSelect:any;
-  totalAmps:any = 0;
-  totalWatts:any = 0;
-  conclusionValues:any =0;
+  deviceName: string = '';
+  loading: any;
+  showCard: boolean = false;
+  chart: any;
+  arrayModel: Array<any> = [];
+  connectionSelect: any;
+  totalAmps: any = 0;
+  totalWatts: any = 0;
+  conclusionValues: any = 0;
   ConnectionOneConsumptionsForm : FormGroup;
-  devicesAnalyzed:any = 0;
-  devicesList:string = "";
-  deviceResume:any = {
-    connectionName:'',
-    minorConnectionName:'',
-    connectionAmpsProm:'',
-    elapsedTime:{},
-    dayConsumption:{
-      Day:{
-        amps:0,
-        watts:0,
-        khw:0
+  devicesAnalyzed: any = 0;
+  devicesList: string = "";
+  deviceResume: any = {
+    connectionName: '',
+    minorConnectionName: '',
+    connectionAmpsProm: '',
+    elapsedTime: {},
+    dayConsumption: {
+      Day: {
+        amps: 0,
+        watts: 0,
+        khw: 0
       }
     },
-    nightConsumption:{
-      Night:{
-        amps:0,
-        watts:0,
-        khw:0
+    nightConsumption: {
+      Night: {
+        amps: 0,
+        watts: 0,
+        khw: 0
       }
     },
-    wattsProm:0,
-    biggestMonthConsumption:'',
-    mostCommonDay:''
+    wattsProm: 0,
+    biggestMonthConsumption: '',
+    mostCommonDay: ''
   };
-  deviceResume2:any = {
-    minorConnectionName:'',
-    connectionAmpsProm:'',
-    elapsedTime:{},
-    Biggest:{
-        connectionName:'',
-        dayConsumption:{
-      Day:{
-        amps:0,
-        watts:0,
-        khw:0
+  deviceResume2: any = {
+    minorConnectionName: '',
+    connectionAmpsProm: '',
+    elapsedTime: {},
+    Biggest: {
+        connectionName: '',
+        dayConsumption: {
+      Day: {
+        amps: 0,
+        watts: 0,
+        khw: 0
       }
     },
-        nightConsumption:{
-        Night:{
-          amps:0,
-          watts:0,
-          khw:0
+        nightConsumption: {
+        Night: {
+          amps: 0,
+          watts: 0,
+          khw: 0
         }
       }
     },
-    Lowest:{
-        LowestconnectionName:'',
-        dayConsumption:{
+    Lowest: {
+        LowestconnectionName: '',
+        dayConsumption: {
         Day:
         {
-            amps:0,
-            watts:0,
-            khw:0
+            amps: 0,
+            watts: 0,
+            khw: 0
         }
     },
-    nightConsumption:{
-        Night:{
-          amps:0,
-          watts:0,
-          khw:0
+    nightConsumption: {
+        Night: {
+          amps: 0,
+          watts: 0,
+          khw: 0
         }
       }},
-      Equal:{
-        EqualconnectionName:'',
-        dayConsumption:{
-      Day:{
-        amps:0,
-        watts:0,
-        khw:0
+      Equal: {
+        EqualconnectionName: '',
+        dayConsumption: {
+      Day: {
+        amps: 0,
+        watts: 0,
+        khw: 0
       }
     },
-    nightConsumption:{
-        Night:{
-          amps:0,
-          watts:0,
-          khw:0
+    nightConsumption: {
+        Night: {
+          amps: 0,
+          watts: 0,
+          khw: 0
         }
       }},
 
-    wattsProm:0,
-    biggestMonthConsumption:'',
-    mostCommonDay:''
+    wattsProm: 0,
+    biggestMonthConsumption: '',
+    mostCommonDay: ''
   };
-  deviceResumeList:Array<any> = [];
+  deviceResumeList: Array<any> = [];
   @ViewChild('barchart') ConnectionChart;
-  constructor( public awsAmplifyService:AwsAmplifyService,public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastService,
-               public ToastController : ToastController,public alertController:AlertController, public router:Router, public messageService:MessageService, public dynamoDBService: DynamoDBAPIService)
+  constructor( public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
+               public ToastController : ToastController, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService)
     {
       this.ConnectionOneConsumptionsForm = new FormGroup({
-        'Devices': new FormControl(this.ConnectionConsumptionsModel.Devices,[Validators.required,Validators.minLength(1)]),
-        'StartDate': new FormControl(this.ConnectionConsumptionsModel.StartDate,[Validators.required]),
-        'FinalDate': new FormControl(this.ConnectionConsumptionsModel.FinalDate,[Validators.required]),
-        'GraphType': new FormControl(this.ConnectionConsumptionsModel.GraphType,[Validators.required]),
-        'SearchCriteria': new FormControl(this.ConnectionConsumptionsModel.SearchCriteria,[Validators.required])
+        'Devices': new FormControl(this.ConnectionConsumptionsModel.Devices, [Validators.required, Validators.minLength(1)]),
+        'StartDate': new FormControl(this.ConnectionConsumptionsModel.StartDate, [Validators.required]),
+        'FinalDate': new FormControl(this.ConnectionConsumptionsModel.FinalDate, [Validators.required]),
+        'GraphType': new FormControl(this.ConnectionConsumptionsModel.GraphType, [Validators.required]),
+        'SearchCriteria': new FormControl(this.ConnectionConsumptionsModel.SearchCriteria, [Validators.required])
       });
      }
 
  async  ngOnInit() {
   await this.validateLoggedUser();
   }
-  ConfigDeviceModel:ConfigDeviceModel = new ConfigDeviceModel();
+  ConfigDeviceModel: ConfigDeviceModel = new ConfigDeviceModel();
   // tslint:disable-next-line: member-ordering
-  AvailableCharts =[
+  AvailableCharts = [
     {
-      name:'bar'
+      name: 'bar'
     },
     {
-      name:'line'
+      name: 'line'
     },
     {
-      name:'pie'
+      name: 'pie'
     }
     ];
     AvailableCriteria = [
       {
-        name:'Mensual'
+        name: 'Mensual'
       },
       {
-        name:'Semanal'
+        name: 'Semanal'
       },
       {
-        name:'Anual'
+        name: 'Anual'
       }
     ];
-    ConnectionConsumptionsModel:ConnectionConsumptions = new ConnectionConsumptions();
+    ConnectionConsumptionsModel: ConnectionConsumptions = new ConnectionConsumptions();
   doRefresh(event) {
     console.log('Begin async operation');
 
@@ -169,7 +169,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   }
   async validateLoggedUser(){
     await this.PresentLoading();
-    this.awsAmplifyService.getCurrentUser().then(async (result)=>{
+    this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         try {
         this.getDeviceName(result.attributes.email);
@@ -190,9 +190,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
 
       }
-    }).catch(() =>{
+    }).catch(() => {
 
-    }).finally(() =>{
+    }).finally(() => {
       this.loading.dismiss();
     })
   }
@@ -203,8 +203,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
    */
      async PresentLoading(){
       this.loading = await this.loadingIndicator.create({
-        message:'Cargando ...',
-        spinner:'dots'
+        message: 'Cargando ...',
+        spinner: 'dots'
       });
       await this.loading.present();
 
@@ -214,7 +214,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
      * @param username
      * @returns String
      */
-    getDeviceName(username:string):string{
+    getDeviceName(username: string): string{
       let Connections = this.getDevices(username);
       let url = environment.DynamoBDEndPoints.ULR;
       let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
@@ -231,12 +231,12 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             object.push(element);
 
           }
-          this.ConnectionConsumptionsModel.Devices= object;
+          this.ConnectionConsumptionsModel.Devices = object;
           return deviceName;
         },
         error: async (response) => {
           const alert = await this.alertController.create({
-            header:'Error',
+            header: 'Error',
             message: response,
           });
           await alert.present();
@@ -247,12 +247,12 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       })
       return deviceName;
     }
-    async GetDeviceConfiguration(username:any){
+    async GetDeviceConfiguration(username: any){
       var url = environment.DynamoBDEndPoints.ULR;
       var urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
-      const urlFullPath = `${url}` + `${urlPath}`+`/${username}`;
+      const urlFullPath = `${url}` + `${urlPath}` + `/${username}`;
       this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
-        next:async (response) => {
+        next: async (response) => {
           if (response.status === 200) {
             this.ConfigDeviceModel.configurationId = response.deviceConfiguration[0].configurationId;
             // tslint:disable-next-line: max-line-length
@@ -264,7 +264,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             this.ConfigDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
           } else {
             const alert = await this.alertController.create({
-              header:'Error',
+              header: 'Error',
               message: 'ha ocurrido un error, intentelo nuevamente',
             });
             await alert.present();
@@ -274,7 +274,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
         },
         error: async(error) => {
           const alert = await this.alertController.create({
-            header:'Error',
+            header: 'Error',
             message: error,
           });
           await alert.present();
@@ -282,9 +282,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       })
     }
    async Seacrh(){
-      let searchOtherDevice:boolean = false;
+      let searchOtherDevice: boolean = false;
       let criteria;
-      debugger;
+      
       this.showCard = true;
       for (let index = 0; index < this.AvailableCriteria.length; index++) {
         let element = this.AvailableCriteria[index];
@@ -298,7 +298,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
 
         }
-        if (this.ConnectionConsumptionsModel.SearchCriteria== "Mensual") {
+        if (this.ConnectionConsumptionsModel.SearchCriteria == "Mensual") {
           let url = environment.DynamoBDEndPoints.ULR;
           let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.DeviceCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
           let startDate = this.ConnectionConsumptionsModel.StartDate;
@@ -308,8 +308,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
           let first =  start.getTime();
           let last = end.getTime();
-          let StartDateEpoch =  Math.floor(first/1000);
-          let FinalDateEpoch = Math.floor(last/1000);
+          let StartDateEpoch =  Math.floor(first / 1000);
+          let FinalDateEpoch = Math.floor(last / 1000);
 
           let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}`;
 
@@ -317,9 +317,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
           // tslint:disable-next-line: max-line-length
           let urlEndpoint2 = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
           let urlFullPath2 = ur2l + urlEndpoint2 + `${StartDateEpoch}/${FinalDateEpoch}/`;
-          (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel,this.deviceName,urlFullPath,urlFullPath2)).subscribe({
-              next:async (data:any) =>{
-                debugger;
+          (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel, this.deviceName, urlFullPath, urlFullPath2)).subscribe({
+              next: async (data: any) => {
+                
                 let ctx = this.ConnectionChart.nativeElement;
                 ctx.height = 200;
                 ctx.width = 250;
@@ -327,33 +327,33 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                 this.chart = new Chart(ctx,
                           {
                           type: this.ConnectionConsumptionsModel.GraphType,
-                          data:{
+                          data: {
                               labels: this.arrayModel,
-                              datasets:[]
+                              datasets: []
                           },
-                          options:{
-                              response:true,
-                              title:{
-                                  display:true,
-                                  text:'Consumo watts'
+                          options: {
+                              response: true,
+                              title: {
+                                  display: true,
+                                  text: 'Consumo watts'
                               }
                           },
-                          scales:{
-                              xAxes:[{
+                          scales: {
+                              xAxes: [{
                                   type: 'time',
-                                  display:true,
-                                  time:{
-                                      unit:'week'
+                                  display: true,
+                                  time: {
+                                      unit: 'week'
                                   }
                               }]
                           }
                       });
-                if(dataset.length > 1){
+                if (dataset.length > 1){
                        this.devicesAnalyzed = dataset.length;
 
                        for (let index = 0; index <= dataset.length; index++) {
-            const element:any = dataset[index];
-            const secondElement:any = dataset[index + 1];
+            const element: any = dataset[index];
+            const secondElement: any = dataset[index + 1];
             if (element === undefined) {
               break;
             }
@@ -394,7 +394,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
             }
             console.log(this.deviceResumeList);
-            debugger;
+            
             this.totalAmps += element.totalAmpsProm;
             this.totalWatts += element.totalWattsProm;
 
@@ -409,7 +409,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             this.chart.data.datasets.push(
               {
                 label: data[0].usage[0].ConnectionName,
-                data:data[0].usage[0].wattsTimeStamp,
+                data: data[0].usage[0].wattsTimeStamp,
                 fill: true,
                 lineTension: 0.2,
                 borderColor: "rgba(75, 75, 75, 0.7)",
@@ -426,7 +426,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
 
         }
-        if(this.ConnectionConsumptionsModel.SearchCriteria == "Semanal"){
+        if (this.ConnectionConsumptionsModel.SearchCriteria == "Semanal"){
             let url = environment.DynamoBDEndPoints.ULR;
             let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.DeviceCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
             let startDate = this.ConnectionConsumptionsModel.StartDate;
@@ -436,8 +436,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
             let first =  start.getTime();
             let last = end.getTime();
-            let StartDateEpoch =  Math.floor(first/1000);
-            let FinalDateEpoch = Math.floor(last/1000);
+            let StartDateEpoch =  Math.floor(first / 1000);
+            let FinalDateEpoch = Math.floor(last / 1000);
 
             let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}`;
 
@@ -445,9 +445,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             // tslint:disable-next-line: max-line-length
             let urlEndpoint2 = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
             let urlFullPath2 = ur2l + urlEndpoint2 + `${StartDateEpoch}/${FinalDateEpoch}/`;
-            (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel,this.deviceName,urlFullPath,urlFullPath2)).subscribe({
-                next:async (data) =>{
-                  debugger;
+            (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel, this.deviceName, urlFullPath, urlFullPath2)).subscribe({
+                next: async (data) => {
+                  
                   let ctx = this.ConnectionChart.nativeElement;
                   ctx.height = 200;
                   ctx.width = 250;
@@ -455,33 +455,33 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                   this.chart = new Chart(ctx,
                             {
                             type: this.ConnectionConsumptionsModel.GraphType,
-                            data:{
+                            data: {
                                 labels: this.arrayModel,
-                                datasets:[]
+                                datasets: []
                             },
-                            options:{
-                                response:true,
-                                title:{
-                                    display:true,
-                                    text:'Consumo watts'
+                            options: {
+                                response: true,
+                                title: {
+                                    display: true,
+                                    text: 'Consumo watts'
                                 }
                             },
-                            scales:{
-                                xAxes:[{
+                            scales: {
+                                xAxes: [{
                                     type: 'time',
-                                    display:true,
-                                    time:{
-                                        unit:'week'
+                                    display: true,
+                                    time: {
+                                        unit: 'week'
                                     }
                                 }]
                             }
                         });
-                  if(dataset.length > 1){
+                  if (dataset.length > 1){
                          this.devicesAnalyzed = dataset.length;
 
                          for (let index = 0; index <= dataset.length; index++) {
-              const element:any = dataset[index];
-              const secondElement:any = dataset[index + 1];
+              const element: any = dataset[index];
+              const secondElement: any = dataset[index + 1];
               if (element === undefined) {
                 break;
               }
@@ -522,7 +522,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
               }
               console.log(this.deviceResumeList);
-              debugger;
+              
               this.totalAmps += element.totalAmpsProm;
               this.totalWatts += element.totalWattsProm;
 
@@ -538,11 +538,11 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
 
                 }
-            })
+            });
 
         }
         if (this.ConnectionConsumptionsModel.SearchCriteria == "Anual") {
-          debugger;
+          
           let url = environment.DynamoBDEndPoints.ULR;
           let urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.DeviceCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
           let startDate = this.ConnectionConsumptionsModel.StartDate;
@@ -552,8 +552,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
           let first =  start.getTime();
           let last = end.getTime();
-          let StartDateEpoch =  Math.floor(first/1000);
-          let FinalDateEpoch = Math.floor(last/1000);
+          let StartDateEpoch =  Math.floor(first / 1000);
+          let FinalDateEpoch = Math.floor(last / 1000);
 
           let urlFullPath = url + urlEndpoint + `${StartDateEpoch}/${FinalDateEpoch}`;
 
@@ -561,9 +561,9 @@ export class ConnectionOneConsumptionsPage implements OnInit {
             // tslint:disable-next-line: max-line-length
           let urlEndpoint2 = environment.DynamoBDEndPoints.API_PATHS.ConnectionsCriteria.Monthly.getAllDeviceReadingsByGivenParametersMonthly;
           let urlFullPath2 = ur2l + urlEndpoint2 + `${StartDateEpoch}/${FinalDateEpoch}/`;
-          (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel,this.deviceName,urlFullPath,urlFullPath2)).subscribe({
-                next:async (data:any) =>{
-                    debugger;
+          (await this.dynamoDBService.multipleGenericGetMethods(this.arrayModel, this.deviceName, urlFullPath, urlFullPath2)).subscribe({
+                next: async (data: any) => {
+                    
                     let ctx = this.ConnectionChart.nativeElement;
                     ctx.height = 200;
                     ctx.width = 250;
@@ -571,22 +571,22 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                     this.chart = new Chart(ctx,
                             {
                             type: this.ConnectionConsumptionsModel.GraphType,
-                            data:{
+                            data: {
                                 labels: this.arrayModel,
-                                datasets:[],
+                                datasets: [],
                             },
-                            options:{
-                                response:true,
-                                title:{
-                                    display:true,
-                                    text:'Consumo watts'
+                            options: {
+                                response: true,
+                                title: {
+                                    display: true,
+                                    text: 'Consumo watts'
                                 }
                             },
-                            scales:{
-                                xAxes:[{
+                            scales: {
+                                xAxes: [{
                                     type: 'time',
-                                    display:true,
-                                    time:{
+                                    display: true,
+                                    time: {
                                         displayFormats: {
 
                                             'year': 'MMM DD',
@@ -595,12 +595,12 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                                 }]
                             }
                         });
-                    if(dataset.length > 1){
+                    if (dataset.length > 1){
                          this.devicesAnalyzed = dataset.length;
 
                          for (let index = 0; index <= dataset.length; index++) {
-                        const element:any = dataset[index];
-                        const secondElement:any = dataset[index + 1];
+                        const element: any = dataset[index];
+                        const secondElement: any = dataset[index + 1];
                         if (element === undefined) {
                           break;
                         }
@@ -640,7 +640,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                 this.deviceResumeList.push(this.deviceResume2.Equal);
 
               }
-                        debugger;
+                        
                         this.totalAmps += element.totalAmpsProm;
                         this.totalWatts += element.totalWattsProm;
 
@@ -649,12 +649,12 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                          this.chart.update();
 
             }else{
-              debugger;
+              
               this.chart.data.datasets = [];
               this.chart.data.datasets.push(
                 {
                   label: data[0].usage[0].ConnectionName,
-                  data:data[0].usage[0].wattsTimeStamp,
+                  data: data[0].usage[0].wattsTimeStamp,
                   fill: true,
                   lineTension: 0.2,
                   borderColor: "rgba(75, 75, 75, 0.7)",
@@ -678,23 +678,8 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
 
   }
-    /**
-     *
-     * @param chart a chart
-     * @param label label
-     * @param color color
-     * @param data data
-     */
-addData(chart,label,color,data, type?) {
-      chart.config.type = type;
-      chart.data.datasets.push({
-        label: label,
-        backgroundColor:color,
-        data:data
-      });
-      chart.update();
-    }
-getDevices(userEmail:any):Array<any>{
+
+  getDevices(userEmail: any): Array<any>{
       var url = environment.DynamoBDEndPoints.ULR;
       var urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
       const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
@@ -717,17 +702,6 @@ getDevices(userEmail:any):Array<any>{
     })
       return devicesArray;
     }
-getDataset(index,data){
-      return {
-        label: 'Label '+ index,
-        fillColor: 'rgba(220,220,220,0.2)',
-        strokeColor: 'rgba(220,220,220,1)',
-        pointColor: 'rgba(220,220,220,1)',
-        pointStrokeColor: '#fff',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgba(220,220,220,1)',
-        data: data
-        };
-    }
+
 
 }
