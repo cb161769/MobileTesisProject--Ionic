@@ -17,6 +17,17 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./connection-one-consumptions.page.scss'],
 })
 export class ConnectionOneConsumptionsPage implements OnInit {
+  constructor( public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
+               public ToastController : ToastController, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService)
+    {
+      this.ConnectionOneConsumptionsForm = new FormGroup({
+        'Devices': new FormControl(this.ConnectionConsumptionsModel.Devices, [Validators.required, Validators.minLength(1)]),
+        'StartDate': new FormControl(this.ConnectionConsumptionsModel.StartDate, [Validators.required]),
+        'FinalDate': new FormControl(this.ConnectionConsumptionsModel.FinalDate, [Validators.required]),
+        'GraphType': new FormControl(this.ConnectionConsumptionsModel.GraphType, [Validators.required]),
+        'SearchCriteria': new FormControl(this.ConnectionConsumptionsModel.SearchCriteria, [Validators.required])
+      });
+     }
   deviceName: string = '';
   loading: any;
   showCard: boolean = false;
@@ -113,21 +124,6 @@ export class ConnectionOneConsumptionsPage implements OnInit {
   };
   deviceResumeList: Array<any> = [];
   @ViewChild('barchart') ConnectionChart;
-  constructor( public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
-               public ToastController : ToastController, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService)
-    {
-      this.ConnectionOneConsumptionsForm = new FormGroup({
-        'Devices': new FormControl(this.ConnectionConsumptionsModel.Devices, [Validators.required, Validators.minLength(1)]),
-        'StartDate': new FormControl(this.ConnectionConsumptionsModel.StartDate, [Validators.required]),
-        'FinalDate': new FormControl(this.ConnectionConsumptionsModel.FinalDate, [Validators.required]),
-        'GraphType': new FormControl(this.ConnectionConsumptionsModel.GraphType, [Validators.required]),
-        'SearchCriteria': new FormControl(this.ConnectionConsumptionsModel.SearchCriteria, [Validators.required])
-      });
-     }
-
- async  ngOnInit() {
-  await this.validateLoggedUser();
-  }
   ConfigDeviceModel: ConfigDeviceModel = new ConfigDeviceModel();
   // tslint:disable-next-line: member-ordering
   AvailableCharts = [
@@ -153,6 +149,10 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       }
     ];
     ConnectionConsumptionsModel: ConnectionConsumptions = new ConnectionConsumptions();
+
+ async  ngOnInit() {
+  await this.validateLoggedUser();
+  }
   doRefresh(event) {
     console.log('Begin async operation');
 
@@ -393,7 +393,6 @@ export class ConnectionOneConsumptionsPage implements OnInit {
               this.deviceResumeList.push(this.deviceResume2.Equal);
 
             }
-            console.log(this.deviceResumeList);
             
             this.totalAmps += element.totalAmpsProm;
             this.totalWatts += element.totalWattsProm;
