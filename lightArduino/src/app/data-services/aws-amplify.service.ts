@@ -11,45 +11,45 @@ export class AwsAmplifyService {
   /**
    * this is the Aws Amplify Service Constructor
    */
-  error:any;
+  error: any;
 
   constructor() {
     Amplify.configure({
       Auth:
       {
-        mandatorySignId:true,
-        region:environment.Region,
-        userPoolId:environment.COGNITO_POOL.UserPoolId,
-        userPoolWebClientId:environment.COGNITO_POOL.ClientId,
-        identityPoolId: environment.COGNITO_POOL.identityPoolId     
+        mandatorySignId: true,
+        region: environment.Region,
+        userPoolId: environment.COGNITO_POOL.UserPoolId,
+        userPoolWebClientId: environment.COGNITO_POOL.ClientId,
+        identityPoolId: environment.COGNITO_POOL.identityPoolId
       }
     });
 
   }
   /**
    * This method's is for the User SingIn
-   * @param username the username 
-   * @param password 
-   * @param email 
-   * @param name 
-   * @param familyName 
-   * @param phone 
+   * @param username the username
+   * @param password
+   * @param email
+   * @param name
+   * @param familyName
+   * @param phone
    * @returns user;
    */
-   async singUp(username:any,password:any,email?:any,name?:any,familyName?:any,phone?:any){
+   async singUp(username: any, password: any, email?: any, name?: any, familyName?: any, phone?: any){
      try {
        const singUpResponse = await Auth.signUp({
          username,
          password,
-         attributes:{
-           email:email,
-           name:name,
-           family_name:familyName,
-           phone_number:phone
+         attributes: {
+           email,
+           name,
+           family_name: familyName,
+           phone_number: phone
          }
        });
        return singUpResponse;
-       
+
      } catch (error) {
        this.returnErrors(error.message);
        // console.log(error);
@@ -60,12 +60,12 @@ export class AwsAmplifyService {
     * this method is to return an Error
     * @param error the Error
     */
-   returnErrors(error:any){
+   returnErrors(error: any){
      this.error = null;
      this.error = error;
-    
+
    }
-   /**  
+   /**
     * this method get's the current Error
     */
    getErrors(){
@@ -77,30 +77,30 @@ export class AwsAmplifyService {
     * @param username userName
     * @param confirmationCode user's confirmation code
     */
-    confirmSingUp(username:any,confirmationCode:any) {
+    confirmSingUp(username: any, confirmationCode: any) {
     try {
-      const userConfirmed = Auth.confirmSignUp(username,confirmationCode);
+      const userConfirmed = Auth.confirmSignUp(username, confirmationCode);
       return userConfirmed;
-      
+
     } catch (error) {
       this.returnErrors(error.message);
       console.log(error);
-    } 
+    }
    }
    /**
     * This method's is to Sing in to the System
     * @param userName the UserName
     * @param password the Password
     */
-   async singIn(userName:any,password:any){
+   async singIn(userName: any, password: any){
      try {
-       const userSingedIn = await Auth.signIn(userName,password);
+       const userSingedIn = await Auth.signIn(userName, password);
        return userSingedIn;
-       
+
      } catch (error) {
       this.returnErrors(error.message);
       // console.log(error);
-       
+
      }
 
    }
@@ -108,7 +108,7 @@ export class AwsAmplifyService {
     * this method get's the current Logged User
     */
    async getCurrentUser(){
-     
+
      try {
        const currentUser = await Auth.currentAuthenticatedUser();
 
@@ -119,7 +119,7 @@ export class AwsAmplifyService {
    }
    async getCurrentCredentials(){
      try {
-  
+
        const currentCredentials = await Auth.currentCredentials();
        return currentCredentials;
      } catch (error) {
@@ -140,7 +140,7 @@ export class AwsAmplifyService {
     * this method is for the user's Forgot Password
     * @param userName user's Name name
     */
-   async forgotPassword(userName:any){
+   async forgotPassword(userName: any){
      await Auth.forgotPassword(userName).then((data) => {
        const userData = data;
        return userData;
@@ -154,8 +154,8 @@ export class AwsAmplifyService {
     * @param code userName code
     * @param new_password new Password
     */
-   async forgotPasswordSubmit(userName:any,code:any,new_password:any){
-     await Auth.forgotPasswordSubmit(userName,code,new_password).then((data) => {
+   async forgotPasswordSubmit(userName: any, code: any, new_password: any){
+     await Auth.forgotPasswordSubmit(userName, code, new_password).then((data) => {
        const userData = data;
        return userData;
      }).catch((error) => {
@@ -165,26 +165,26 @@ export class AwsAmplifyService {
    /**
     * this function returns the userSession
     */
-    async retrieveCurrentSesion():Promise<any>
+    async retrieveCurrentSesion(): Promise<any>
    {
      const userToken = (await Auth.currentSession()).getAccessToken().getJwtToken();
      // console.log(userToken);
      return userToken;
 
    }
-   async UpdateUserAttributes(username?:any,password?:any,email?:any,name?:any,familyName?:any,phone?:any){
-    let currentUser = await Auth.currentAuthenticatedUser();
-    await Auth.updateUserAttributes(currentUser,{
-      'family_name':familyName,
-      'name':name
+   async UpdateUserAttributes(username?: any, password?: any, email?: any, name?: any, familyName?: any, phone?: any){
+    const currentUser = await Auth.currentAuthenticatedUser();
+    await Auth.updateUserAttributes(currentUser, {
+      family_name: familyName,
+      name: name
     }).then((data) => {
       // console.log(data)
       return data;
     }).catch(error => {
       console.log(error);
-    })
+    });
    }
-    
+
 
 
 

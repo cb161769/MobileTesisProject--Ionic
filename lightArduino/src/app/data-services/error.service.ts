@@ -10,13 +10,13 @@ export class ErrorService {
   constructor() { }
   public handleError(error: HttpErrorResponse){
     if (error.error instanceof ErrorEvent) {
-      console.log('ha ocurrido un error: ',error.error.message);
+      console.log('ha ocurrido un error: ', error.error.message);
     } else {
       console.error(
         `Error del servidor ${error.status}, ` +
         `${JSON.stringify(error.error)}`
       );
-      
+
     }
     return throwError(
       `ha ocurrido un error, por favor inténtenlo nuevamente`

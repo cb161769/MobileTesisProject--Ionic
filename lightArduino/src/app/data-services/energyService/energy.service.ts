@@ -1,30 +1,24 @@
-import { DynamoDBAPIService } from './../dynamo-db-api.service';
-import { ToastController } from '@ionic/angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { Apollo,gql  } from "apollo-angular";
+import { Apollo, gql  } from 'apollo-angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnergyService {
-  private requests:any = [];
-  private base_URL = environment.DynamoBDEndPoints.ULR;
-  private graphQLUrl = environment.DynamoBDEndPoints.API_PATHS.graphQL;
+  private requests: any = [];
 
-  constructor(private httpClient: HttpClient,private toastController:ToastController, private DynamoDBAPIService: DynamoDBAPIService,private apolloClient: Apollo) { }
+  constructor(private apolloClient: Apollo) { }
   /**
    * this method returns wether is loading pending requests
    */
-  public isLoadingPendingRequest():boolean{
-    return this.requests.length !==0;
+  public isLoadingPendingRequest(): boolean{
+    return this.requests.length !== 0;
   }
   public  getReadingsStatistics()  {
     const start = new Date();
     start.setDate(start.getDate() - 31);
 
-    const beginning = Math.ceil(Date.now()/1000);
+    const beginning = Math.ceil(Date.now() / 1000);
     try {
       this.apolloClient.query<any>({
         query: gql`
@@ -41,22 +35,21 @@ export class EnergyService {
         }
         `
       }).subscribe(
-        ({data}) =>{
-          console.log(data);
+        ({data}) => {
           return data;
         }
-      )
-     
+      );
 
-    
+
+
 
     } catch (error) {
       console.log(error);
     }
-  
-    
-  }
-  
 
-  
+
+  }
+
+
+
 }
