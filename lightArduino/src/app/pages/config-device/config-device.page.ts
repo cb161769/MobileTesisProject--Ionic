@@ -1,3 +1,4 @@
+import { LogModel } from 'src/app/models/log-model';
 import { ConfigDeviceModel } from './../../models/config-device-model';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -45,6 +46,14 @@ export class ConfigDevicePage implements OnInit {
     try {
       await this.validateLoggedUser();
     } catch (error) {
+      const logger = new LogModel();
+      logger.level = 'ERROR';
+      logger.route = '';
+      logger.action = 'ngOnInit';
+      logger.timeStamp = new Date();
+      logger.userName = '';
+      logger.logError = error;
+      await this.logDevice(logger);
       console.log(error);
     }
 
@@ -85,14 +94,25 @@ export class ConfigDevicePage implements OnInit {
       this.allDays.push(day as ConfigDaysModel)
     });
   }
-  goBack():void{
-
+  async logDevice(log:LogModel){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    await this.dynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    });
   }
   async configDevice(){
     await this.PresentLoading();
     var url = environment.DynamoBDEndPoints.ULR;
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.addDeviceConfiguration
     const urlFullPath = `${url}` + `${urlPath}`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = urlFullPath;
+    logger.action = 'configDevice';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.dynamoDBService.genericPostMethod(urlFullPath,this.ConfigDeviceModel).subscribe(async (data) =>{
       if (data.status === 200) {
         const toast = await this.ToastController.create({
@@ -116,12 +136,6 @@ export class ConfigDevicePage implements OnInit {
       }
     })
   }
-  /**
-   * this method is for the user's Sing Out
-   */
-  singOut():void{
-
-  }
   doRefresh(event) {
     console.log('Begin async operation');
     
@@ -140,6 +154,13 @@ export class ConfigDevicePage implements OnInit {
   }
   async validateLoggedUser(){
     await this.PresentLoading();
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = '';
+    logger.action = 'validateLoggedUser';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.awsAmplifyService.getCurrentUser().then(async (result)=>{
       if (result != undefined) {
         try {
@@ -208,6 +229,13 @@ export class ConfigDevicePage implements OnInit {
     var url = environment.DynamoBDEndPoints.ULR;
     var urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
     const urlFullPath = `${url}` + `${urlPath}`+`/${username}`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = urlFullPath;
+    logger.action = 'GetDeviceConfiguration';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next:async (response) => {
         if (response.status === 200) {

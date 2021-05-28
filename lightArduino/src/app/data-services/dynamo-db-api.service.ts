@@ -109,20 +109,22 @@ export class DynamoDBAPIService {
 
   }
   genericLogMethod(urlPost: string, bodyPost: any){
+    // debugger;
     const log = {
       userName: bodyPost.userName,
       timeStamp: bodyPost.timeStamp,
       action: bodyPost.action,
       route: bodyPost.route,
+      logLevel: bodyPost.logLevel,
+      logError: bodyPost.logError
     };
     const promise = new Promise((resolve, reject) => {
       this.httpClient.post(urlPost, log)
       .toPromise().then(
-        res => {
-          debugger;
+        (res) => {
           resolve(res);
         },
-        msg => {
+        (msg) => {
           reject(msg);
         }
 

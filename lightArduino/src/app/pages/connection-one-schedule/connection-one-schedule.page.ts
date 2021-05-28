@@ -8,6 +8,7 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { EnergyService } from 'src/app/data-services/energyService/energy.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
+import { LogModel } from 'src/app/models/log-model';
 import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-connection-one-schedule',
@@ -58,15 +59,37 @@ export class ConnectionOneSchedulePage implements OnInit {
   /**
    * This method validates the Logged Device
    */
+   async logDevice(log:LogModel){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    });
+  }
   async validateLoggedUser(){
     await this.PresentLoading();
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = '';
+    logger.action = 'validateLoggedUser';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         try {
           this.userDevice = this.getDeviceName(result.attributes.email);
           this.loading.dismiss();
         } catch (error) {
-          console.log(error)
+          const logger = new LogModel();
+          logger.level = 'ERROR';
+          logger.route = '';
+          logger.action = 'validateLoggedUser';
+          logger.timeStamp = new Date();
+          logger.userName = '';
+          logger.logError = error;
+          await this.logDevice(logger);
+          console.log(error);
         }
       }
     })
@@ -99,7 +122,14 @@ export class ConnectionOneSchedulePage implements OnInit {
     await this.PresentLoading();
     let url = environment.DynamoBDEndPoints.ULR;
     let urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;  
-    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`
+    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = urlFullPath;
+    logger.action = 'getDeviceConfiguration';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: async (result) => {
         if (result != undefined) {
@@ -178,7 +208,15 @@ export class ConnectionOneSchedulePage implements OnInit {
         }
 
       },
-      error:(error) => {
+      error: async (error) => {
+        const logger = new LogModel();
+        logger.level = 'ERROR';
+        logger.route = '';
+        logger.action = 'getDeviceConfiguration';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        logger.logError = error;
+        await this.logDevice(logger);
         console.log(error);
       },
       complete: () => {

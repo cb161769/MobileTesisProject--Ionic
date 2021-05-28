@@ -4,63 +4,67 @@
 
 export const environment = {
   production: false,
-  Region:"us-west-2",
+  Region: 'us-west-2',
   COGNITO_POOL: {
-    UserPoolId: "us-west-2_XdKA6T2aU",
-    ClientId: "7sk5eptvdnktubqjh2edeisi8h",
-    identityPoolId:"us-west-2:b948b6e5-5514-471b-9549-2fa4e5331a93"
+    UserPoolId: 'us-west-2_XdKA6T2aU',
+    ClientId: '7sk5eptvdnktubqjh2edeisi8h',
+    identityPoolId: 'us-west-2:b948b6e5-5514-471b-9549-2fa4e5331a93'
   },
-  DynamoBDEndPoints:{
-    ULR:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev",
-    API_PATHS:{
-      getDeviceReadings:"/IotDevice/getDeviceByUserName",
-      createDevice: "/IotDevice/createDevice",
-      getFares:"/IotDevice/fareConfiguration/getFares",
-      getAllFares:"/IotDevice/fareConfiguration/getAllFares",
-      configureDevice:"/IotDevice/configureDevice",
-      graphQL:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/graphQL",
-      graphQlQuery:"https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query",
-      getDeviceWeekly: "/IotDevice/getDeviceWeekly/",
-      getDeviceRelays: "/IotDevice/getDeviceRelays/",
-      addDeviceConfiguration: "/IotDevice/addDeviceConfiguration",
-      getArduinoDeviceConfiguration: "/IotDevice/getArduinoDeviceConfiguration",
-      getDeviceConfiguration: "/IotDevice/getDeviceConfiguration",
-      getDeviceReadingsByCurrentYear: "/IotDevice/getAllDeviceReadingsByMonth",
-      getDeviceReadingsByGivenDay:"/IotDevice/getAllDeviceReadingsByGivenDay",
-      getDeviceReadingsByGivenMonth:"/IotDevice/getAllDeviceReadingsByGivenMonth",
-      DeviceCriteria:{
-        Monthly:{
-          getAllDeviceReadingsByGivenParametersMonthly:"/IotDevice/getAllDeviceReadingsByGivenParametersMonthly/"
+  LoggerEndPoints: {
+    ULR: 'https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev',
+    DatabaseLogger: '/IotDevice/CreateLog'
+  },
+  DynamoBDEndPoints: {
+    ULR: 'https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev',
+     API_PATHS: {
+      getDeviceReadings: '/IotDevice/getDeviceByUserName',
+      createDevice: '/IotDevice/createDevice',
+      getFares: '/IotDevice/fareConfiguration/getFares',
+      getAllFares: '/IotDevice/fareConfiguration/getAllFares',
+      configureDevice: '/IotDevice/configureDevice',
+      graphQL: 'https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/graphQL',
+      graphQlQuery: 'https://u4jh03inyb.execute-api.us-west-2.amazonaws.com/dev/query',
+      getDeviceWeekly: '/IotDevice/getDeviceWeekly/',
+      getDeviceRelays: '/IotDevice/getDeviceRelays/',
+      addDeviceConfiguration: '/IotDevice/addDeviceConfiguration',
+      getArduinoDeviceConfiguration: '/IotDevice/getArduinoDeviceConfiguration',
+      getDeviceConfiguration: '/IotDevice/getDeviceConfiguration',
+      getDeviceReadingsByCurrentYear: '/IotDevice/getAllDeviceReadingsByMonth',
+      getDeviceReadingsByGivenDay: '/IotDevice/getAllDeviceReadingsByGivenDay',
+      getDeviceReadingsByGivenMonth: '/IotDevice/getAllDeviceReadingsByGivenMonth',
+      DeviceCriteria: {
+        Monthly: {
+          getAllDeviceReadingsByGivenParametersMonthly: '/IotDevice/getAllDeviceReadingsByGivenParametersMonthly/'
         }
       },
-      ConnectionsCriteria:{
-        Monthly:{
-          getAllDeviceReadingsByGivenParametersMonthly:"/IotDevice/Connections/getAllDeviceReadingsByGivenParametersMonthly/"
+      ConnectionsCriteria: {
+        Monthly: {
+          getAllDeviceReadingsByGivenParametersMonthly: '/IotDevice/Connections/getAllDeviceReadingsByGivenParametersMonthly/'
         }
       },
 
-      Connections:{
-        ConnectionReadingsCurrentWeek:"/IotDevice/Connections/getConnectionReadingsCurrentWeek",
-        ConnectionsGetAllDeviceReadingsByGivenMonth:"/IotDevice/Connections/getAllDeviceReadingsByGivenMonth",
-        ConnectionsGetConnectionYearly:"/IotDevice/Connections/GetConnectionYearly/allConfig",
-        ConnectionsGetReadingsByGivenYear:"/IotDevice/Connections/GetConnectionsReadingsByGivenDay"
+      Connections: {
+        ConnectionReadingsCurrentWeek: '/IotDevice/Connections/getConnectionReadingsCurrentWeek',
+        ConnectionsGetAllDeviceReadingsByGivenMonth: '/IotDevice/Connections/getAllDeviceReadingsByGivenMonth',
+        ConnectionsGetConnectionYearly: '/IotDevice/Connections/GetConnectionYearly/allConfig',
+        ConnectionsGetReadingsByGivenYear: '/IotDevice/Connections/GetConnectionsReadingsByGivenDay'
       }
     }
   },
-  AWSIOTEndPoints:{
-    httpEndPoint:"a3grg8s0qkek3y-ats.iot.us-west-2.amazonaws.com",
-    region:"us-west-2",
-    AWSIoTTopics:{
-      turnOnDeviceOne:"/turnOnDeviceOne",
-      turnOffDeviceOne:"/turnOffDeviceOne",
-      turnOnDeviceTwo:"/turnOnDeviceTwo",
-      turnOffDeviceTwo:"/turnOffDeviceTwo",
-      turnOnDeviceThree:"/turnOnDeviceThree",
-      turnOffDeviceThree:"/turnOffDeviceThree",
-      turnOnDeviceFour:"/turnOnDeviceFour",
-      turnOffDeviceFour:"/turnOffDeviceFour",
-      turnOnAllDevices:"/turnOnAllDevices",
-      turnOffAllDevices:"/turnOffAllDevices"
+  AWSIOTEndPoints: {
+    httpEndPoint: 'a3grg8s0qkek3y-ats.iot.us-west-2.amazonaws.com',
+    region: 'us-west-2',
+    AWSIoTTopics: {
+      turnOnDeviceOne: '/turnOnDeviceOne',
+      turnOffDeviceOne: '/turnOffDeviceOne',
+      turnOnDeviceTwo: '/turnOnDeviceTwo',
+      turnOffDeviceTwo: '/turnOffDeviceTwo',
+      turnOnDeviceThree: '/turnOnDeviceThree',
+      turnOffDeviceThree: '/turnOffDeviceThree',
+      turnOnDeviceFour: '/turnOnDeviceFour',
+      turnOffDeviceFour: '/turnOffDeviceFour',
+      turnOnAllDevices: '/turnOnAllDevices',
+      turnOffAllDevices: '/turnOffAllDevices'
     }
   }
 };
