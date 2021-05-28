@@ -5,6 +5,9 @@ import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
 import { ConfirmRegistrarion } from 'src/app/models/confirm-registrarion';
 import { Router } from '@angular/router';
+import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
+import { LogModel } from 'src/app/models/log-model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-confirm-registration',
@@ -25,7 +28,8 @@ export class ConfirmRegistrationPage implements OnInit {
    * @param toast toast
    */
   constructor(public router:Router,public awsAmplifyService:AwsAmplifyService,
-    public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastController
+              public loadingIndicator:LoadingController, public navController:NavController,public toast:ToastController,
+             public  DynamoDBService: DynamoDBAPIService
     ) { 
 
       this.confirmRegistrationForm = new FormGroup({
@@ -38,7 +42,21 @@ export class ConfirmRegistrationPage implements OnInit {
   ngOnInit() {
     
   }
+  async logDevice(log:LogModel){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    });
+  }
   async confirmRegistration(){
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = '';
+    logger.action = 'confirmRegistration';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     await this.PresentLoading();
     this.awsAmplifyService.confirmSingUp(this.confirRegistrationModel.username,this.confirRegistrationModel.verificationCode).then((result) => {
       if (result != undefined) {
@@ -49,7 +67,15 @@ export class ConfirmRegistrationPage implements OnInit {
         this.confirmRegistrationError = this.awsAmplifyService.getErrors();
         
       }
-    }).catch((error) => {
+    }).catch(async (error) => {
+      const logger = new LogModel();
+      logger.level = 'ERROR';
+      logger.route = '';
+      logger.action = 'confirmRegistration';
+      logger.timeStamp = new Date();
+      logger.userName = '';
+      logger.logError = error;
+      await this.logDevice(logger);
 
     }).finally(() => {
       this.loading.dismiss();
