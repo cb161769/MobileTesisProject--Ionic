@@ -60,9 +60,8 @@ export class MyDevicePage implements OnInit {
     await this.presentLoading();
     this.awsAmplifyService.singOut().then((result) => {
       if (result != undefined) {
-      }else{
       }
-    }).catch(() => {
+    }).catch((error) => {
 
     }).finally(() => {
       this.loading.dismiss();

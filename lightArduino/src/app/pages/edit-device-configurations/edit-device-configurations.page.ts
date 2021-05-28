@@ -1,3 +1,4 @@
+import { LogModel } from 'src/app/models/log-model';
 import { ConfigDeviceModel } from './../../models/config-device-model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -53,6 +54,13 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
   singOut(){
 
   }
+  async logDevice(log:LogModel){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    await this.dynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    });
+  }
   /**
    * 
    * @param username  the devoc
@@ -84,7 +92,14 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
     await this.presentLoading();
     let url = environment.DynamoBDEndPoints.ULR;
     let urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;  
-    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`
+    const urlFullPath = `${url}` + `${urlPath}` + `/${device}`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = urlFullPath;
+    logger.action = 'getDeviceConfiguration';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: async (result) => {
         if (result != undefined) {
@@ -103,7 +118,15 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
         }
 
       },
-      error:(error) => {
+      error: async (error) => {
+        const logger = new LogModel();
+        logger.level = 'ERROR';
+        logger.route = urlFullPath;
+        logger.action = 'getDeviceConfiguration';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        logger.logError = error;
+        await this.logDevice(logger);
         console.log(error);
       },
       complete: () => {
@@ -133,6 +156,13 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
   }
   async validateLoggedUser(){
     await this.PresentLoading();
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = '';
+    logger.action = 'validateLoggedUser';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     this.awsAmplifyService.getCurrentUser().then(async (result)=>{
       if (result != undefined) {
         try {
@@ -140,6 +170,14 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
 
         // await this.getAllFares();
       } catch (error) {
+        const logger = new LogModel();
+        logger.level = 'ERROR';
+        logger.route = '';
+        logger.action = 'validateLoggedUser';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        logger.logError = error;
+        await this.logDevice(logger);
         console.log(error);
         
       }
@@ -191,6 +229,13 @@ export class EditDeviceConfigurationsPage implements OnInit, OnDestroy {
       var url = environment.DynamoBDEndPoints.ULR;
       var urlPath = environment.DynamoBDEndPoints.API_PATHS.addDeviceConfiguration;
       const urlFullPath = `${url}` + `${urlPath}`;
+      const logger = new LogModel();
+      logger.level = 'INFO';
+      logger.route = urlPath;
+      logger.action = 'configureDevice';
+      logger.timeStamp = new Date();
+      logger.userName = '';
+      await this.logDevice(logger);
       if (this.devicedConfigured == 0){
         this.loading.dismiss();
         const alert = await this.alertController.create({
