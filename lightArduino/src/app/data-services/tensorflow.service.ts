@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as tf from '@tensorflow/tfjs';
+import * as tfvis from '@tensorflow/tfjs-vis';
 @Injectable({
   providedIn: 'root'
 })
@@ -49,11 +50,11 @@ export class TensorflowService {
     });
   }
   /**
-   * 
+   *
    * @param model the model to appInitialize
    * @param inputs  the correspondents inputs to
    * @param labels the labels to use
-   * @returns 
+   * @returns
    */
   async trainModel(model, inputs, labels){
     model.compile({
@@ -70,7 +71,13 @@ export class TensorflowService {
     });
 
   }
-  makePrediction(model,inputData,normalizationData){
+  /**
+   *
+   * @param model
+   * @param inputData
+   * @param normalizationData
+   */
+  async makePrediction(model, inputData, normalizationData){
     const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
     const [xs, preds] = tf.tidy(() => {
 
@@ -89,15 +96,15 @@ export class TensorflowService {
     return [unNormXs.dataSync(), unNormPreds.dataSync()];
   });
 
-  const predictedPoints = Array.from(xs).map((val, i) => {
-    return {x: val, y: preds[i]}
+    const predictedPoints = Array.from(xs).map((val, i) => {
+    return {x: val, y: preds[i]};
   });
 
-  const originalPoints = inputData.map(d => ({
+    const originalPoints = inputData.map(d => ({
     x: d.horsepower, y: d.mpg,
   }));
 
-  tfvis.render.scatterplot(
+    return  tfvis.render.scatterplot(
     {name: 'Model Predictions vs Original Data'},
     {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
     {

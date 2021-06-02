@@ -42,7 +42,6 @@ export class DynamoDBAPIService {
 
       })
     ).toPromise();
-    debugger;
     return resul;
   }
   async multipleGenericGetMethods(ConnectionsArray: Array<any>, connectionName, DevicesUrl?, ConnectionUrl?){
@@ -57,7 +56,6 @@ export class DynamoDBAPIService {
         // debugger;
       }else{
         ConnectionUrl += `${element}`;
-        debugger;
         calls.push(this.httpClient.get(ConnectionUrl).pipe(
           retry(3)
         ));
@@ -108,6 +106,13 @@ export class DynamoDBAPIService {
     return headers;
 
   }
+  /**
+   * @method genericLogMethod
+   * @description this method logs to the dynamoDb Database
+   * @param urlPost 
+   * @param bodyPost 
+   * @returns 
+   */
   genericLogMethod(urlPost: string, bodyPost: any){
     // debugger;
     const log = {
@@ -135,6 +140,33 @@ export class DynamoDBAPIService {
 
 
   }
+  /**
+   *
+   * @param urlGet url for get the informarion
+   * @author Claudio Raul Brito Mercedes
+   * @returns {Promise<any>}
+   */
+  async genericGet(urlGet: string ): Promise<any>{
+
+
+    const promise = new Promise((resolve, reject) => {
+      this.httpClient.get(urlGet)
+      .toPromise().then(
+        (res) => {
+          resolve(res);
+        },
+        (msg) => {
+          reject(msg);
+        }
+
+      );
+
+    });
+    return promise;
+
+
+  }
+
 
 
 }
