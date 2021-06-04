@@ -87,12 +87,12 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
    *
    */
   async makePrediction() {
-    debugger;
+
     const model = await this.createModel();
     await this.fetchData();
     const tensorData = await this.convertToTensor(this.dataToBeProcessed);
     const {inputs, labels} = tensorData;
-    debugger;
+
     const trainedModel = await this.testModel(model, inputs, labels, 'lossChart');
 
     const finalModel = await this.trainModel(model, this.dataToBeProcessed, tensorData, 'accuracyChart');
