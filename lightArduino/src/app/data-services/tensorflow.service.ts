@@ -21,7 +21,9 @@ export class TensorflowService {
 
   }
   /**
-   *
+   *@function convertToTensor
+   // tslint:disable-next-line: jsdoc-format
+   @author Claudio Raul Brito Mercedes
    * @param data daynamoDbData
    */
   convertToTensor(data){
@@ -58,8 +60,7 @@ export class TensorflowService {
    * @param labels the labels to use
    * @returns
    */
-  async trainModel(model, inputs, labels){
-    debugger;
+  async trainModel(model, inputs, labels,dataPlotted?:any){
     model.compile({
       optimizer: tf.train.adam(),
       loss: tf.losses.meanSquaredError,
@@ -72,9 +73,9 @@ export class TensorflowService {
       epochs,
       shuffle: true,
       callbacks: tfvis.show.fitCallbacks(
-        { name: 'Prediciendo....' },
+        document.getElementById(dataPlotted),
         ['loss', 'mse'],
-        { height: 50, callbacks: ['onEpochEnd'] }
+        { height: 200, callbacks: ['onEpochEnd'] }
       )
     });
 
@@ -85,8 +86,7 @@ export class TensorflowService {
    * @param inputData
    * @param normalizationData
    */
-  async makePrediction(model, inputData, normalizationData, plotData?: HTMLElement){
-    debugger;
+  async makePrediction(model, inputData, normalizationData, plotData?: any){
     const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
     const [xs, preds] = tf.tidy(() => {
 
@@ -112,15 +112,15 @@ export class TensorflowService {
     const originalPoints = inputData.map(d => ({
     x: d.x, y: d.y,
     }));
-
+    debugger;
     return  tfvis.render.scatterplot(
-      plotData || {name: 'Modelo predictivo, vs data original'},
+      document.getElementById(plotData),
     {values: [originalPoints, predictedPoints], series: ['original', 'predecido']},
     {
-      xLabel: 'Horsepower',
-      yLabel: 'MPG',
-      width: 50,
-      height: 50,
+      xLabel: 'Dias',
+      yLabel: 'Consumo',
+      width: 200,
+      height: 100,
     }
   );
   }
