@@ -494,63 +494,58 @@ export class ConnectionOneConsumptionsPage implements OnInit {
                          this.devicesAnalyzed = dataset.length;
 
                          for (let index = 0; index <= dataset.length; index++) {
-              const element: any = dataset[index];
-              const secondElement: any = dataset[index + 1];
-              if (element === undefined) {
-                break;
-              }
-              if (secondElement === undefined) {
-                break;
+                            const element: any = dataset[index];
+                            const secondElement: any = dataset[index + 1];
+                            if (element === undefined) {
+                              break;
+                            }
+                            if (secondElement === undefined) {
+                              break;
+
+                            }
+
+
+                            if (element.totalWattsProm > secondElement.totalWattsProm) {
+
+                              this.deviceResume2.Biggest.connectionName = element.ConnectionName;
+                              this.deviceResume2.Biggest.elapsedTime = element.elapsedTime;
+                              this.deviceResume2.Biggest.dayConsumption.Day.amps = element.DayTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Biggest.dayConsumption.Day.watts = element.DayTotalWattsProm.toFixed(3);
+                              this.deviceResume2.Biggest.nightConsumption.Night.amps = element.NightTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Biggest.nightConsumption.Night.watts = element.NightTotalWattsProm.toFixed(3);
+                              this.deviceResumeList.push(this.deviceResume2.Biggest);
+                            }
+                            else if (element.totalWattsProm < secondElement.totalWattsProm){
+                              this.deviceResume2.Lowest.LowestconnectionName = element.ConnectionName;
+                              this.deviceResume2.Lowest.elapsedTime = secondElement.elapsedTime;
+                              this.deviceResume2.Lowest.dayConsumption.Day.amps = secondElement.DayTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Lowest.dayConsumption.Day.watts = secondElement.DayTotalWattsProm.toFixed(3);
+                              this.deviceResume2.Lowest.nightConsumption.Night.amps = secondElement.NightTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Lowest.nightConsumption.Night.watts = secondElement.NightTotalWattsProm.toFixed(3);
+                              this.deviceResumeList.push(this.deviceResume2.Lowest);
+
+                            }
+                            else if (element.totalWattsProm == secondElement.totalWattsProm){
+                              this.deviceResume2.Equal.EqualconnectionName = element.ConnectionName;
+                              this.deviceResume2.Equal.elapsedTime = element.elapsedTime;
+                              this.deviceResume2.Equal.dayConsumption.Day.amps = element.DayTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Equal.dayConsumption.Day.watts = element.DayTotalWattsProm.toFixed(3);
+                              this.deviceResume2.Equal.nightConsumption.Night.amps = element.NightTotalAmpsProm.toFixed(3);
+                              this.deviceResume2.Equal.nightConsumption.Night.watts = element.NightTotalWattsProm.toFixed(3);
+                              this.deviceResumeList.push(this.deviceResume2.Equal);
+
+                            }
+                            console.log(this.deviceResumeList);
+
+                            this.totalAmps += element.totalAmpsProm;
+                            this.totalWatts += element.totalWattsProm;
+
+
 
               }
-
-
-              if (element.totalWattsProm > secondElement.totalWattsProm) {
-
-                this.deviceResume2.Biggest.connectionName = element.ConnectionName;
-                this.deviceResume2.Biggest.elapsedTime = element.elapsedTime;
-                this.deviceResume2.Biggest.dayConsumption.Day.amps = element.DayTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Biggest.dayConsumption.Day.watts = element.DayTotalWattsProm.toFixed(3);
-                this.deviceResume2.Biggest.nightConsumption.Night.amps = element.NightTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Biggest.nightConsumption.Night.watts = element.NightTotalWattsProm.toFixed(3);
-                this.deviceResumeList.push(this.deviceResume2.Biggest);
-              }
-              else if (element.totalWattsProm < secondElement.totalWattsProm){
-                this.deviceResume2.Lowest.LowestconnectionName = element.ConnectionName;
-                this.deviceResume2.Lowest.elapsedTime = secondElement.elapsedTime;
-                this.deviceResume2.Lowest.dayConsumption.Day.amps = secondElement.DayTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Lowest.dayConsumption.Day.watts = secondElement.DayTotalWattsProm.toFixed(3);
-                this.deviceResume2.Lowest.nightConsumption.Night.amps = secondElement.NightTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Lowest.nightConsumption.Night.watts = secondElement.NightTotalWattsProm.toFixed(3);
-                this.deviceResumeList.push(this.deviceResume2.Lowest);
-
-              }
-              else if (element.totalWattsProm == secondElement.totalWattsProm){
-                this.deviceResume2.Equal.EqualconnectionName = element.ConnectionName;
-                this.deviceResume2.Equal.elapsedTime = element.elapsedTime;
-                this.deviceResume2.Equal.dayConsumption.Day.amps = element.DayTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Equal.dayConsumption.Day.watts = element.DayTotalWattsProm.toFixed(3);
-                this.deviceResume2.Equal.nightConsumption.Night.amps = element.NightTotalAmpsProm.toFixed(3);
-                this.deviceResume2.Equal.nightConsumption.Night.watts = element.NightTotalWattsProm.toFixed(3);
-                this.deviceResumeList.push(this.deviceResume2.Equal);
-
-              }
-              console.log(this.deviceResumeList);
-
-              this.totalAmps += element.totalAmpsProm;
-              this.totalWatts += element.totalWattsProm;
-
-
-
-            }
                          this.chart.update();
 
-            }
-            else{
-
-            }
-
-
+              }
                 }
             });
 

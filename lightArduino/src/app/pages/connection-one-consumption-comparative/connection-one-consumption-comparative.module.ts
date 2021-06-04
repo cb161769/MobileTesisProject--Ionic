@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ConnectionOneConsumptionComparativePageRoutingModule } from './connection-one-consumption-comparative-routing.module';
 
 import { ConnectionOneConsumptionComparativePage } from './connection-one-consumption-comparative.page';
-
+  
 @NgModule({
   imports: [
     CommonModule,

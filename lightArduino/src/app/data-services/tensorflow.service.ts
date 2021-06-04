@@ -25,10 +25,12 @@ export class TensorflowService {
    * @param data daynamoDbData
    */
   convertToTensor(data){
+    debugger;
     return tf.tidy(() => {
       tf.util.shuffle(data);
-      const inputs = data.map(d => d.timeStamp);
-      const labels = data.map(d => d.device_watts);
+
+      const inputs = data.map(d => d.x);
+      const labels = data.map(d => d.y);
       const inputTensor = tf.tensor2d(inputs, [inputs.length, 1]);
       const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
 
@@ -57,6 +59,7 @@ export class TensorflowService {
    * @returns
    */
   async trainModel(model, inputs, labels){
+    debugger;
     model.compile({
       optimizer: tf.train.adam(),
       loss: tf.losses.meanSquaredError,
@@ -68,6 +71,11 @@ export class TensorflowService {
       batchSize,
       epochs,
       shuffle: true,
+      callbacks: tfvis.show.fitCallbacks(
+        { name: 'Prediciendo....' },
+        ['loss', 'mse'],
+        { height: 50, callbacks: ['onEpochEnd'] }
+      )
     });
 
   }
@@ -77,7 +85,8 @@ export class TensorflowService {
    * @param inputData
    * @param normalizationData
    */
-  async makePrediction(model, inputData, normalizationData){
+  async makePrediction(model, inputData, normalizationData, plotData?: HTMLElement){
+    debugger;
     const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
     const [xs, preds] = tf.tidy(() => {
 
@@ -94,23 +103,24 @@ export class TensorflowService {
 
     // Un-normalize the data
     return [unNormXs.dataSync(), unNormPreds.dataSync()];
-  });
+    });
 
     const predictedPoints = Array.from(xs).map((val, i) => {
     return {x: val, y: preds[i]};
-  });
+    });
 
     const originalPoints = inputData.map(d => ({
-    x: d.horsepower, y: d.mpg,
-  }));
+    x: d.x, y: d.y,
+    }));
 
     return  tfvis.render.scatterplot(
-    {name: 'Model Predictions vs Original Data'},
-    {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
+      plotData || {name: 'Modelo predictivo, vs data original'},
+    {values: [originalPoints, predictedPoints], series: ['original', 'predecido']},
     {
       xLabel: 'Horsepower',
       yLabel: 'MPG',
-      height: 300
+      width: 50,
+      height: 50,
     }
   );
   }
