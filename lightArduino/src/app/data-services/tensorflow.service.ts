@@ -27,7 +27,7 @@ export class TensorflowService {
    * @param data daynamoDbData
    */
   convertToTensor(data){
-    debugger;
+    ;
     return tf.tidy(() => {
       tf.util.shuffle(data);
 
@@ -112,14 +112,14 @@ export class TensorflowService {
     const originalPoints = inputData.map(d => ({
     x: d.x, y: d.y,
     }));
-    debugger;
+    ;
     return  tfvis.render.scatterplot(
       document.getElementById(plotData),
     {values: [originalPoints, predictedPoints], series: ['original', 'predecido']},
     {
       xLabel: 'Dias',
       yLabel: 'Consumo',
-      width: 200,
+      width: 300,
       height: 100,
     }
   );
