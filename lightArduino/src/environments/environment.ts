@@ -42,6 +42,9 @@ export const environment = {
           getAllDeviceReadingsByGivenParametersMonthly: '/IotDevice/Connections/getAllDeviceReadingsByGivenParametersMonthly/'
         }
       },
+      Tensorflow: {
+        PredictNexMonth: '/IotDevice/Tensorflow/PredictConsumption/'
+      },
 
       Connections: {
         ConnectionReadingsCurrentWeek: '/IotDevice/Connections/getConnectionReadingsCurrentWeek',
