@@ -16,8 +16,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ConnectionOneConsumptionComparativePage implements OnInit {
   dataToBeProcessed: Array<any> = [];
-  @ViewChild('lossChart') lossChart;
-  @ViewChild('chart') predictChart;
+  lossChart = document.getElementById('lossChart');
+   predictChart = document.getElementById('accuracyChart');
   // tslint:disable-next-line: max-line-length
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
               // tslint:disable-next-line: max-line-length
@@ -77,22 +77,25 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
    * @param normalizationData normalizationData
    * @returns {model}
    */
-  async testModel(model, inputData, normalizationData){
-    return this.tensorflowService.trainModel(model, inputData, normalizationData);
+  async testModel(model, inputData, normalizationData, plotData?){
+    return this.tensorflowService.trainModel(model, inputData, normalizationData, plotData);
   }
-  async trainModel(model, inputData, normalizationData){
-    return this.tensorflowService.makePrediction(model, inputData, normalizationData);
+  async trainModel(model, inputData, normalizationData, plotData?){
+    return this.tensorflowService.makePrediction(model, inputData, normalizationData, plotData);
   }
-
+  /**
+   *
+   */
   async makePrediction() {
+    debugger;
     const model = await this.createModel();
     await this.fetchData();
-    debugger;
     const tensorData = await this.convertToTensor(this.dataToBeProcessed);
     const {inputs, labels} = tensorData;
-    const trainedModel = await this.testModel(model, inputs, labels);
-    const finalModel = await this.trainModel(model, this.dataToBeProcessed, tensorData);
     debugger;
+    const trainedModel = await this.testModel(model, inputs, labels, 'lossChart');
+
+    const finalModel = await this.trainModel(model, this.dataToBeProcessed, tensorData, 'accuracyChart');
   }
 
 
