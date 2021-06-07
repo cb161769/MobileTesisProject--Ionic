@@ -9,10 +9,16 @@ export class AwsSdkService {
   constructor() {
 
   }
+  /**
+   * @function publishMessage
+   * @param topic the topic
+   * @param payload the payload
+   * @returns 
+   */
   async publishMessage(topic?, payload?){
    AWS.config.update({
-     accessKeyId : 'AKIASPGTV7NO4BDCYK5V',
-     secretAccessKey: '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'
+     accessKeyId : environment.API_ACCESS.accessKeyId,
+     secretAccessKey: environment.API_ACCESS.secretAccessKey
    });
    const iotdata = new AWS.IotData({endpoint: environment.AWSIOTEndPoints.httpEndPoint, region: environment.AWSIOTEndPoints.region});
    const params = {
@@ -22,7 +28,7 @@ export class AwsSdkService {
     };
    const response =  iotdata.publish(params, (err, data) => {
      if (err) {
-       console.log(err);
+
      }
 
     });
