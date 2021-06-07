@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {Auth} from 'aws-amplify';
 import {environment} from '../../environments/environment';
 import {Amplify} from 'aws-amplify';
-import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'

@@ -69,6 +69,10 @@ export const environment = {
       turnOnAllDevices: '/turnOnAllDevices',
       turnOffAllDevices: '/turnOffAllDevices'
     }
+  },
+  API_ACCESS:{
+    accessKeyId: 'AKIASPGTV7NO4BDCYK5V',
+    secretAccessKey: '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'
   }
 };
 /*
