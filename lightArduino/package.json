@@ -30,6 +30,7 @@
     "@tensorflow/tfjs-vis": "^1.5.1",
     "apollo-angular": "^2.2.0",
     "aws-amplify": "^3.3.13",
+    "aws-sdk": "^2.922.0",
     "chartjs-adapter-moment": "^1.0.0",
     "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",

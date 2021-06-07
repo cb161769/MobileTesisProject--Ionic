@@ -1,6 +1,8 @@
+import { AwsSdkService } from './awsIoT/aws-sdk.service';
 import { Injectable } from '@angular/core';
 import * as tf from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +22,7 @@ export class TensorflowService {
   return model;
 
   }
+
   /**
    *@function convertToTensor
    // tslint:disable-next-line: jsdoc-format
@@ -27,7 +30,6 @@ export class TensorflowService {
    * @param data daynamoDbData
    */
   convertToTensor(data){
-    ;
     return tf.tidy(() => {
       tf.util.shuffle(data);
 
@@ -112,7 +114,6 @@ export class TensorflowService {
     const originalPoints = inputData.map(d => ({
     x: d.x, y: d.y,
     }));
-    ;
     return  tfvis.render.scatterplot(
       document.getElementById(plotData),
     {values: [originalPoints, predictedPoints], series: ['original', 'predecido']},

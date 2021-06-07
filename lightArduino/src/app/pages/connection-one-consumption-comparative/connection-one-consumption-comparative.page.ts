@@ -1,10 +1,9 @@
+import { AwsSdkService } from './../../data-services/awsIoT/aws-sdk.service';
 import { Router } from '@angular/router';
 import { LoadingController, NavController, ToastController, AlertController } from '@ionic/angular';
 import { AwsAmplifyService } from './../../data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import * as tf from '@tensorflow/tfjs';
-import * as tfvis from '@tensorflow/tfjs-vis';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
 import { ToastService } from 'src/app/data-services/ToasterService/toast.service';
 import { TensorflowService } from 'src/app/data-services/tensorflow.service';
@@ -22,12 +21,13 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
               // tslint:disable-next-line: max-line-length
               public ToastController: ToastController, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService,
-              public tensorflowService: TensorflowService) { }
+              public tensorflowService: TensorflowService, public sdkService:AwsSdkService) { }
 
 
   async ngOnInit() {
     await this.fetchData();
     await this.makePrediction();
+    await this.testSdk();
   }
   doRefresh(event) {
     console.log('Begin async operation');
@@ -36,6 +36,9 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
       console.log('Async operation has ended');
       event.target.complete();
     }, 2000);
+  }
+  async testSdk(){
+  await  this.sdkService.publishMessage();
   }
   /**
    * @function fetchData
