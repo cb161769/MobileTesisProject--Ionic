@@ -83,7 +83,7 @@ export class TensorflowService {
 
   }
   /**
-   *
+   *@function makePrediction
    * @param model
    * @param inputData
    * @param normalizationData
