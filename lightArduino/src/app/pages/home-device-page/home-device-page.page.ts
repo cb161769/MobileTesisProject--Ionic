@@ -62,10 +62,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   async ngOnInit() {
     try {
       this.validateLoggedUser();
-      // const data = await this.energyService.getReadingsStatistics();
-      // console.log('DATA' + data);
-        // const source = interval(1000);
-        // this.subscription = source.subscribe(val => this.refreshDeviceReadings());
 
     } catch (error) {
       const logger = new LogModel();
@@ -345,7 +341,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       .subscribe(async ({data, loading}) => {
         if (!loading)
         {
-          // console.log(data);
           if ( Object.keys(data).length > 0) {
             if (data.device.wifi_strength == 0 || data.device.wifi_strength == null || data.device.wifi_strength == undefined  ) {
               const toast = await this.ToastController.create({

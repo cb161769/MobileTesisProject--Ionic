@@ -1,3 +1,7 @@
+/**
+ * @author Claudio Raul Brito Mercedes
+ * @class RealtimeData
+ */
 export class RealtimeData {
     device_amps:number;
     device_name:string;
