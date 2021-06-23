@@ -339,6 +339,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         `
       }).valueChanges
       .subscribe(async ({data, loading}) => {
+        debugger;
         if (!loading)
         {
           if ( Object.keys(data).length > 0) {

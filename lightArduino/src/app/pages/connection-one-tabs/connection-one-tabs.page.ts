@@ -12,52 +12,65 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 })
 export class ConnectionOneTabsPage implements OnInit, OnDestroy{
 
-  constructor(public DynamoDBService: DynamoDBAPIService,private apolloClient: Apollo,) { }
+  constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, ) { }
    private querySubscription: Subscription;
 
-  ngOnInit() {
+   ngOnInit() {
 
   }
+  async ionViewDidEnter(){
+  await this.automate();
+  }
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+
   }
   public async automate(){
     try {
-     // this.querySubscription = 
-     const deviceName = '';
-      this.querySubscription =  this.apolloClient.watchQuery<any>({
+     // this.querySubscription =
+     const deviceName = 1;
+     this.querySubscription =  this.apolloClient.watchQuery<any>({
         query: gql`
         {
-          sns(timeStamp:${deviceName}){
-            device_amps,
-            device_name,
-            device_UserName,
-            device_watts,
-            wifi_IP,
-            wifi_name,
-            wifi_strength
+          deviceId(deviceName:${deviceName}){
+            isConnection,
+            connectionName,
+            turnOff,
+            isDevice,
+            deviceName
           }
         },
 
         `
-      }).valueChanges.subscribe( async ({data, loading}) =>{
+      }).valueChanges.subscribe( async ({data, loading}) => {
+
         if (!loading) {
          if (Object.keys(data).length > 0) {
-           
-         } 
+          debugger;
+          if (data.deviceId.turnOff === true) {
+            if (data.deviceId.isConnection == true) {
+              
+              debugger;
+            }
+            else{
+
+            }
+          }
+
+
+         }
         }
-      })
+      });
     } catch (error) {
       const logger = new LogModel();
     }
-  } 
-  async logDevice(log:LogModel){
+  }
+  async logDevice(log: LogModel){
     const url = environment.LoggerEndPoints.ULR;
     const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
     const urlFullPath = `${url}` + `${loggerPath}`;
-    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() => {
     });
   }
 }
