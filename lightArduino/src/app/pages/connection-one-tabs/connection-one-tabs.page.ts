@@ -1,9 +1,11 @@
+import { AwsSdkService } from './../../data-services/awsIoT/aws-sdk.service';
 import { Apollo, gql } from 'apollo-angular';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { environment } from './../../../environments/environment';
 import { LogModel } from './../../models/log-model';
 import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DevicesEnum } from 'src/app/utils/utilities';
 
 @Component({
   selector: 'app-connection-one-tabs',
@@ -11,8 +13,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   styleUrls: ['./connection-one-tabs.page.scss'],
 })
 export class ConnectionOneTabsPage implements OnInit, OnDestroy{
-
-  constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, ) { }
+  devicesNames = Object.values(DevicesEnum);
+  constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, public AwsSdkService:AwsSdkService ) { }
    private querySubscription: Subscription;
 
    ngOnInit() {
@@ -44,14 +46,21 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
 
         `
       }).valueChanges.subscribe( async ({data, loading}) => {
-
+        console.log(this.devicesNames);
         if (!loading) {
          if (Object.keys(data).length > 0) {
-          debugger;
           if (data.deviceId.turnOff === true) {
             if (data.deviceId.isConnection == true) {
-              
-              debugger;
+
+             for (let index = 0; index < this.devicesNames.length; index++) {
+              const element = this.devicesNames[index];
+              if (element == data.deviceId.connectionName) {
+                const topic = '/turnOnDeviceOne';
+                const payload = 'hello';
+                await this.AwsSdkService.publishMessage(topic, payload);
+              }
+
+             }
             }
             else{
 
