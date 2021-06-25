@@ -19,6 +19,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
               public ToastController: ToastController) { }
    private querySubscription: Subscription;
     private subscription: Subscription;
+    private turnedOff: boolean = false;
    ngOnInit() {
 
   }
@@ -60,7 +61,6 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
 
         `
       }).valueChanges.subscribe( async ({data, loading}) => {
-        console.log(this.devicesNames);
         if (!loading) {
          if (Object.keys(data).length > 0) {
           if (data.deviceId.turnOff === true) {
@@ -75,8 +75,9 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
                 const payload = 'hello';
 
                 const responses  = await this.AwsSdkService.publishMessage(topic, payload) as any;
-                debugger;
                 if (responses?.response.error != null) {
+                
+                  this.turnedOff = true;
                   const toast = await this.ToastController.create({
                     message: 'Ha ocurrido un error desactivando el dispositivo',
                     duration: 2000,

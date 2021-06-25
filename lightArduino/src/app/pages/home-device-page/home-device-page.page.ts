@@ -296,7 +296,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         this.redirectToLoginPage();
       }
       this.awsAmplifyService.getCurrentCredentials().then((credentials) => {
-        console.log(credentials);
       });
 
     }).catch( async (error) => {
