@@ -3,9 +3,10 @@ import { Apollo, gql } from 'apollo-angular';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
 import { environment } from './../../../environments/environment';
 import { LogModel } from './../../models/log-model';
-import { Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DevicesEnum } from 'src/app/utils/utilities';
+import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-connection-one-tabs',
@@ -14,14 +15,27 @@ import { DevicesEnum } from 'src/app/utils/utilities';
 })
 export class ConnectionOneTabsPage implements OnInit, OnDestroy{
   devicesNames = Object.values(DevicesEnum);
-  constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, public AwsSdkService:AwsSdkService ) { }
+  constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, public AwsSdkService: AwsSdkService,
+              public ToastController: ToastController) { }
    private querySubscription: Subscription;
-
+    private subscription: Subscription;
    ngOnInit() {
 
   }
+  /**
+   * 
+   */
   async ionViewDidEnter(){
-  await this.automate();
+    const source = interval(10000);
+   // this.sub
+    this.subscription = source.subscribe(() => { this.automate()});
+  }
+  /**
+   *
+   */
+  async ionViewDidLeave(){
+   this.querySubscription.unsubscribe();
+   this.subscription && this.subscription.unsubscribe();
   }
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
@@ -55,9 +69,35 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
              for (let index = 0; index < this.devicesNames.length; index++) {
               const element = this.devicesNames[index];
               if (element == data.deviceId.connectionName) {
-                const topic = '/turnOnDeviceOne';
+
+                const remix = environment?.device_TOPICS?.topicsArray.filter(t => t.connectionName == element);
+                const topic = remix[0].turnOffTopics;
                 const payload = 'hello';
-                await this.AwsSdkService.publishMessage(topic, payload);
+
+                const responses  = await this.AwsSdkService.publishMessage(topic, payload) as any;
+                debugger;
+                if (responses?.response.error != null) {
+                  const toast = await this.ToastController.create({
+                    message: 'Ha ocurrido un error desactivando el dispositivo',
+                    duration: 2000,
+                    position: 'bottom',
+                    color: 'dark'
+                  });
+                  toast.present();
+                  this.querySubscription.unsubscribe();
+                }
+                else{
+                  const toast = await this.ToastController.create({
+                    message: `se ha desactivado el dispositivo ${element} de manera satisfactoria`,
+                    duration: 2000,
+                    position: 'bottom',
+                    color: 'dark'
+                  });
+                  toast.present();
+                }
+
+
+
               }
 
              }

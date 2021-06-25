@@ -70,9 +70,38 @@ export const environment = {
       turnOffAllDevices: '/turnOffAllDevices'
     }
   },
-  API_ACCESS:{
+  API_ACCESS: {
     accessKeyId: 'AKIASPGTV7NO4BDCYK5V',
     secretAccessKey: '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'
+  },
+  device_TOPICS: {
+    topicsArray: [
+      {
+        connectionName: 'Conexion 1',
+        turnOnTopics: '/turnOnDeviceOne',
+        turnOffTopics:  '/turnOffDeviceOne'
+      },
+      {
+        connectionName: 'Conexion 2',
+        turnOnTopics: '/turnOnDeviceTwo',
+        turnOffTopics: '/turnOffDeviceTwo'
+      },
+      {
+        connectionName: 'Conexion 3',
+        turnOnTopics: '/turnOnDeviceThree',
+        turnOffTopics: '/turnOffDeviceThree'
+      },
+      {
+        connectionName: 'Conexion 4',
+        turnOnTopics: '/turnOnDeviceFour',
+        turnOffTopics: '/turnOffDeviceFour'
+      },
+
+    ],
+    allDevicesTopics: {
+      turnOn: '/turnOnAllDevices',
+      turnOff: '/turnOffAllDevices'
+    }
   }
 };
 /*
