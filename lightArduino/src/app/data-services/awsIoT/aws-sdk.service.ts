@@ -26,11 +26,11 @@ export class AwsSdkService {
       payload: JSON.stringify(payload),
       qos: 0
     };
-   const response =  iotdata.publish(params, (err, data) => {
+   const response =  iotdata.publish(params, async (err, data) => {
      if (err) {
-
+      debugger;
      }
-
+     debugger;
     });
    return response;
 
