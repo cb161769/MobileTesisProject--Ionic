@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { EditConnectionSchedulePage } from './edit-connection-schedule.page';
@@ -7,7 +7,7 @@ describe('EditConnectionSchedulePage', () => {
   let component: EditConnectionSchedulePage;
   let fixture: ComponentFixture<EditConnectionSchedulePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditConnectionSchedulePage ],
       imports: [IonicModule.forRoot()]

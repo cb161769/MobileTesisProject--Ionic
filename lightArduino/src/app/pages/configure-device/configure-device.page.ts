@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { IOTDevice } from 'src/app/models/iotdevice';
 import { environment } from 'src/environments/environment';
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { LogModel } from 'src/app/models/log-model';
 
 @Component({

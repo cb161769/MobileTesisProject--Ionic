@@ -1,5 +1,5 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController, AlertController, NavController } from '@ionic/angular';

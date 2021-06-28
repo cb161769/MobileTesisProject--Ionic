@@ -49,6 +49,13 @@ export class StatisticsPagePage implements OnInit {
     });
     await this.loading.present();
   }
+  async redirectToConnectionsRelay(relay:any){
+    this.router.navigate(['/connection-one-tabs/connection-one-tab/tab1',{
+      connectionInfo: relay.Name
+    }]
+    );
+    
+  }
   async loadAllRelays(userEmail: any){
     let url = environment.DynamoBDEndPoints.ULR;
     let urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;

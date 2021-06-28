@@ -28,12 +28,9 @@ const routes: Routes = [
       }
     ]
   },
-  {
-    path:'',
-    redirectTo:'connection-one-tab/tab1',
-    pathMatch:'full',
-    canActivate:[AuthGuard]
-  }
+  { path: '',
+    redirectTo: 'connection-one-tab/tab1',
+    pathMatch: 'full' }
 ];
 
 @NgModule({

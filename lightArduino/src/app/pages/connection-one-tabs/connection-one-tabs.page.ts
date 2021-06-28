@@ -95,6 +95,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
                     color: 'dark'
                   });
                   toast.present();
+                  this.querySubscription.unsubscribe();
                 }
 
 
