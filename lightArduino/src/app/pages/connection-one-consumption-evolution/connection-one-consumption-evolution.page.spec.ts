@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { ConnectionOneConsumptionEvolutionPage } from './connection-one-consumption-evolution.page';
@@ -7,7 +7,7 @@ describe('ConnectionOneConsumptionEvolutionPage', () => {
   let component: ConnectionOneConsumptionEvolutionPage;
   let fixture: ComponentFixture<ConnectionOneConsumptionEvolutionPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ConnectionOneConsumptionEvolutionPage ],
       imports: [IonicModule.forRoot()]

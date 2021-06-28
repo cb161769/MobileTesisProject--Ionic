@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { PopOverConnectionsPage } from './pop-over-connections.page';
@@ -7,7 +7,7 @@ describe('PopOverConnectionsPage', () => {
   let component: PopOverConnectionsPage;
   let fixture: ComponentFixture<PopOverConnectionsPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PopOverConnectionsPage ],
       imports: [IonicModule.forRoot()]

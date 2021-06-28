@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { EditConsumoConnectionOnePage } from './edit-consumo-connection-one.page';
@@ -7,7 +7,7 @@ describe('EditConsumoConnectionOnePage', () => {
   let component: EditConsumoConnectionOnePage;
   let fixture: ComponentFixture<EditConsumoConnectionOnePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditConsumoConnectionOnePage ],
       imports: [IonicModule.forRoot()]
