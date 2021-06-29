@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, AlertController, NavController, ToastController, ActionSheetController } from '@ionic/angular';
 import { Apollo } from 'apollo-angular';
 import {  Chart} from 'chart.js';
@@ -15,7 +15,7 @@ import { LogModel } from 'src/app/models/log-model';
   templateUrl: './connexion1.page.html',
   styleUrls: ['./connexion1.page.scss'],
 })
-export class Connexion1Page {
+export class Connexion1Page implements OnInit{
   @ViewChild('barChart') barChart;
   loading: any;
   selected_time: any;
@@ -35,11 +35,13 @@ export class Connexion1Page {
     40: {color: 'orange'},
     75.5: {color: 'red'}
   };
+  connectionName:any;
+
   gaugeAppendText = 'Watts';
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router,
               public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController,
               public messageService: MessageService, public alertController: AlertController,
-              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public actionSheetController: ActionSheetController) { }
+              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public actionSheetController: ActionSheetController,public actrouter:ActivatedRoute) { }
 
 
       /**  This method is launched when  the page is entered*/
@@ -48,6 +50,10 @@ export class Connexion1Page {
     }
     async dismissModal(){
 
+    }
+    ngOnInit(): void {
+      this.connectionName = this.messageService.getConnectionName();
+      debugger;
     }
     async logDevice(log: LogModel){
       const url = environment.LoggerEndPoints.ULR;
@@ -58,6 +64,9 @@ export class Connexion1Page {
     }
     async options(url?: string){
       this.router.navigate([url]);
+    }
+    goBack(){
+      this.router.navigate(['/home-tabs/tabs/tab3']);
     }
     async selectTime(){
       const actionSheet = await this.actionSheetController.create({

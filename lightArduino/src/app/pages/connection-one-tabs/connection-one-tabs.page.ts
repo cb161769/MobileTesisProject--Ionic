@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import { AwsSdkService } from './../../data-services/awsIoT/aws-sdk.service';
 import { Apollo, gql } from 'apollo-angular';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
@@ -16,20 +17,21 @@ import { AlertController, LoadingController, ToastController, NavController } fr
 export class ConnectionOneTabsPage implements OnInit, OnDestroy{
   devicesNames = Object.values(DevicesEnum);
   constructor(public DynamoDBService: DynamoDBAPIService, private apolloClient: Apollo, public AwsSdkService: AwsSdkService,
-              public ToastController: ToastController) { }
+              public ToastController: ToastController, public router: ActivatedRoute) { }
    private querySubscription: Subscription;
     private subscription: Subscription;
-    private turnedOff: boolean = false;
+    private turnedOff = false;
+    private connectionName: any = '';
    ngOnInit() {
 
   }
   /**
-   * 
+   *
    */
   async ionViewDidEnter(){
     const source = interval(10000);
    // this.sub
-    this.subscription = source.subscribe(() => { this.automate()});
+    this.subscription = source.subscribe(() => { this.automate();});
   }
   /**
    *
@@ -41,6 +43,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
+    this.subscription && this.subscription.unsubscribe();
 
   }
   public async automate(){
@@ -76,7 +79,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
 
                 const responses  = await this.AwsSdkService.publishMessage(topic, payload) as any;
                 if (responses?.response.error != null) {
-                
+
                   this.turnedOff = true;
                   const toast = await this.ToastController.create({
                     message: 'Ha ocurrido un error desactivando el dispositivo',
@@ -85,7 +88,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
                     color: 'dark'
                   });
                   toast.present();
-                  this.querySubscription.unsubscribe();
+                  this.subscription.unsubscribe();
                 }
                 else{
                   const toast = await this.ToastController.create({
@@ -95,7 +98,7 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
                     color: 'dark'
                   });
                   toast.present();
-                  this.querySubscription.unsubscribe();
+                  this.subscription.unsubscribe();
                 }
 
 
@@ -103,9 +106,6 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
               }
 
              }
-            }
-            else{
-
             }
           }
 

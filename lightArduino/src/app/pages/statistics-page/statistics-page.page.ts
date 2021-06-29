@@ -50,6 +50,8 @@ export class StatisticsPagePage implements OnInit {
     await this.loading.present();
   }
   async redirectToConnectionsRelay(relay:any){
+    
+    this.messageService.setConnectionName(relay.Name);
     this.router.navigate(['/connection-one-tabs/connection-one-tab/tab1',{
       connectionInfo: relay.Name
     }]
@@ -128,7 +130,7 @@ export class StatisticsPagePage implements OnInit {
     await this.presentLoading();
     this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
-        this.loadAllRelays(result.attributes.email);
+        this.loadAllRelays(result?.attributes?.email);
 
       } else {
         this.currentUserError = this.awsAmplifyService.getErrors();
