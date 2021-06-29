@@ -53,7 +53,6 @@ export class Connexion1Page implements OnInit{
     }
     ngOnInit(): void {
       this.connectionName = this.messageService.getConnectionName();
-      debugger;
     }
     async logDevice(log: LogModel){
       const url = environment.LoggerEndPoints.ULR;

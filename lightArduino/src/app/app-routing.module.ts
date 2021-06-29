@@ -115,7 +115,7 @@ const routes: Routes = [
   },
   {
     path: 'connection-one-statistics',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     loadChildren: () => import('./pages/connection-one-statistics/connection-one-statistics.module').then( m => m.ConnectionOneStatisticsPageModule)
   },
   {
