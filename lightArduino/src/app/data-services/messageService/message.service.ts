@@ -8,6 +8,7 @@ export class MessageService {
   constructor() { }
 
   private userEmail:string;
+  private connectionName:string;
 
   /**
    * this method sets the user email
@@ -25,5 +26,16 @@ export class MessageService {
   
   public getUserEmail():string{
     return this.userEmail;
+  }
+  /**
+   * @author Claudio Raul Brito Mercedes
+   * @param connectionName 
+   */
+  public setConnectionName(connectionName:string){
+    this.connectionName = "";
+    this.connectionName = connectionName;
+  }
+  public getConnectionName():string{
+  return this.connectionName;
   }
 }
