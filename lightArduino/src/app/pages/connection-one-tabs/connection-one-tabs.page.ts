@@ -37,7 +37,6 @@ export class ConnectionOneTabsPage implements OnInit, OnDestroy{
    *
    */
   async ionViewDidLeave(){
-   this.querySubscription.unsubscribe();
    this.subscription && this.subscription.unsubscribe();
   }
   ngOnDestroy(): void {
