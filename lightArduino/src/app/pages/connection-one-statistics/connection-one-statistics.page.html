@@ -1,27 +1,50 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="primary" class="ion-no-border">
     <ion-title>Estadisticos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content  class="container">
-  <ion-card class="card" fixed="true" (click)="go('connection-one-consumptions')">
-    <ion-card-header>
-      
-      <ion-card-title>Consumos anuales,mensuales y semanales</ion-card-title>
-    </ion-card-header>
-  </ion-card>
-  <ion-card class="card" fixed="true" (click)="go('connection-one-consumption-evolution')">
-    <ion-card-header>
-      
-      <ion-card-title>Evolucion de Consumos</ion-card-title>
-    </ion-card-header>
-  </ion-card>
-  <ion-card class="card" fixed="true" (click)="go('connection-one-consumption-comparative')">
-    <ion-card-header>
-      
-      <ion-card-title>Predecir Consumo</ion-card-title>
-    </ion-card-header>
-  </ion-card>
+<ion-content  class="ion-padding" [fullscreen]="true">
+  <div class="center2">
+    <div heading-column-lr></div>
+  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="6" size-lg="6" size-md="6" size-sm="6" size-xs="6">
+        <ion-row>
+          <ion-card type="button" (click)="go('connection-one-consumptions')">
+            <ion-card-header>
+              <ion-card-title>Graficos de Consumo</ion-card-title>
+              <ion-icon slot="icon-only" name="add"></ion-icon>
+  
+            </ion-card-header>
+            <ion-card-content>
+              tanto del <b>dispositivo</b> como sus conexiones
+            </ion-card-content>
+          </ion-card>
+        </ion-row>
+
+      </ion-col>
+
+      <ion-col size="6" size-lg="6" size-md="6" size-sm="6" size-xs="6">
+        <ion-row>
+          <ion-card type="button" (click)="go('connection-one-consumption-comparative')">
+            <ion-card-header>
+        
+              <ion-card-title>Predecir Consumo</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+               consumo <b>aproximado</b> del proximo mes
+            </ion-card-content>
+            
+          </ion-card>
+        </ion-row>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

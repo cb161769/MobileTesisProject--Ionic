@@ -8,3 +8,9 @@
 .container{
     --ion-background-color:#e5e5e5;
 }
+ion-card{
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+    margin: 0 !important;
+   }

@@ -8,12 +8,35 @@ import { Router } from '@angular/router';
 })
 export class ConnectionOneStatisticsPage implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
+  components: Array<any> = [
+    {
+      name: 'Consumos anuales,mensuales y semanales'
+    },
+    {
+      name: ''
+    },
+    {
+      name: ''
+    }
+  ];
 
   ngOnInit() {
   }
-  go(url:string){
-  this.router.navigate([url]) ;   
+  doRefresh(event) {
+    console.log('Begin async operation');
+    
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+  /**
+   *
+   * @param url the url that will need to be set
+   */
+  go(url: string){
+  this.router.navigate([url]) ;
   }
 
 }
