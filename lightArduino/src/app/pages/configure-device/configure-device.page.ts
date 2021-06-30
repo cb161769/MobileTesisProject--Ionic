@@ -177,7 +177,14 @@ export class ConfigureDevicePage implements OnInit {
         try {
         await this.getAllFares();
       } catch (error) {
-        console.log(error);
+        const toast = await this.toastController.create({
+          message:'Ha ocurrido un error, intentelo nuevamente',
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+
 
       }
 

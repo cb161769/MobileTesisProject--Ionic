@@ -27,7 +27,7 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
 
   async ngOnInit() {
     await this.makePrediction();
-    await this.testSdk();
+
   }
   /**
    * 
@@ -35,9 +35,6 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
    */
   async doRefresh(event) {
    await this.ngOnInit();
-  }
-  async testSdk(){
-  await  this.sdkService.publishMessage();
   }
   /**
    * this method is to present a loading Indicator
