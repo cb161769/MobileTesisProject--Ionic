@@ -35,24 +35,24 @@ export class Connexion1Page implements OnInit{
     40: {color: 'orange'},
     75.5: {color: 'red'}
   };
-  connectionName:any;
+  connectionName: any;
 
   gaugeAppendText = 'Watts';
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router,
               public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController,
               public messageService: MessageService, public alertController: AlertController,
-              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public actionSheetController: ActionSheetController,public actrouter:ActivatedRoute) { }
+              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public actionSheetController: ActionSheetController, public actrouter: ActivatedRoute) { }
 
 
       /**  This method is launched when  the page is entered*/
     async ionViewDidEnter(){
-
+      this.connectionName = this.messageService.getConnectionName();
     }
     async dismissModal(){
 
     }
     ngOnInit(): void {
-      this.connectionName = this.messageService.getConnectionName();
+     // this.connectionName = this.messageService.getConnectionName();
     }
     async logDevice(log: LogModel){
       const url = environment.LoggerEndPoints.ULR;
@@ -130,73 +130,86 @@ export class Connexion1Page implements OnInit{
       });
       await this.loading.present();
     }
+    /**
+     * @function showLoading()
+     * @author Claudio Raul Brito Mercedes
+     * @description This function shows a loading indicator
+     */
+    async showLoading(){
+      this.loading = await this.loadingIndicator.create({
+        message: 'Cargando ...',
+        spinner: 'dots'
+      });
+      await this.loading.present();
+    }
   async  showDetailedChartInCurrentWeek(Connection?: any){
- 
-      const urlRoot = environment.DynamoBDEndPoints.ULR;
-     const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionReadingsCurrentWeek;
-     const ConnectionName = 'Conexion 1';
-     let curr = new Date; // get current date
-     let first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-     let last = first + 6; // last day is the first day + 6
+    await this.showLoading();
+    const urlRoot = environment.DynamoBDEndPoints.ULR;
+    const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionReadingsCurrentWeek;
+    const ConnectionName = 'Conexion 1';
+    const curr = new Date; // get current date
+    const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+    const last = first + 6; // last day is the first day + 6
 
-     let firstday = new Date(curr.setDate(first));
-      firstday.setHours(0, 0, 0);
+    const firstday = new Date(curr.setDate(first));
+    firstday.setHours(0, 0, 0);
 
-     let lastday = new Date(curr.setDate(last));
-      lastday.setHours(24, 59, 59);
+    const lastday = new Date(curr.setDate(last));
+    lastday.setHours(24, 59, 59);
 
 
-     const initialDateEpoch = Math.floor(firstday.getTime() / 1000);
-     const finalDateEpoch = Math.floor(lastday.getTime() / 1000);
-     const fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${finalDateEpoch}/${ConnectionName}`;
-     const finalData = [];
-     const ampsData = [];
-      let mondayData = 0;
-      let tuesdayData = 0;
-      let thursdayData = 0;
-      let wednesdayData = 0;
-      let fridayData = 0;
-      let saturdayData = 0;
-      let sundayData = 0;
-      let mondayDataAmps = 0;
-      let tuesdayDataAmps = 0;
-      let thursdayDataAmps = 0;
-      let wednesdayDataAmps = 0;
-      let fridayDataAmps = 0;
-      let saturdayDataAmps = 0;
-      let sundayDataAmps = 0;
-      const logger = new LogModel();
-      logger.level = 'INFO';
-      logger.route = fullUrl;
-      logger.action = 'showDetailedChartInCurrentWeek';
-      logger.timeStamp = new Date();
-      logger.userName = '';
-      await this.logDevice(logger);
-      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+    const initialDateEpoch = Math.floor(firstday.getTime() / 1000);
+    const finalDateEpoch = Math.floor(lastday.getTime() / 1000);
+    const fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${finalDateEpoch}/${ConnectionName}`;
+    const finalData = [];
+    const ampsData = [];
+    let mondayData = 0;
+    let tuesdayData = 0;
+    let thursdayData = 0;
+    let wednesdayData = 0;
+    let fridayData = 0;
+    let saturdayData = 0;
+    let sundayData = 0;
+    let mondayDataAmps = 0;
+    let tuesdayDataAmps = 0;
+    let thursdayDataAmps = 0;
+    let wednesdayDataAmps = 0;
+    let fridayDataAmps = 0;
+    let saturdayDataAmps = 0;
+    let sundayDataAmps = 0;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = fullUrl;
+    logger.action = 'showDetailedChartInCurrentWeek';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
+    this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
-        mondayData = response.usage[0].lunes.watts || 0;
-        tuesdayData = response.usage[0].martes.watts || 0;
-        wednesdayData = response.usage[0].miercoles.watts || 0;
-        thursdayData = response.usage[0].jueves.watts || 0;
-        fridayData = response.usage[0].viernes.watts || 0;
-        saturdayData = response.usage[0].sabado.watts || 0;
-        sundayData = response.usage[0].domingo.watts || 0;
-        finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
-        mondayDataAmps = response.usage[0].lunes.amperios || 0;
-        tuesdayDataAmps = response.usage[0].martes.amperios || 0;
-        thursdayDataAmps = response.usage[0].miercoles.amperios || 0;
-        wednesdayDataAmps = response.usage[0].jueves.amperios || 0;
-        fridayDataAmps = response.usage[0].viernes.amperios || 0;
-        saturdayDataAmps = response.usage[0].sabado.amperios || 0;
-        sundayDataAmps = response.usage[0].domingo.amperios || 0;
-        ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
-        const ctx = this.barChart.nativeElement;
-        ctx.height = 200;
-        ctx.width = 250;
-        this.totalConsumptionInAmps = response.usage[0].totalAmps;
-        this.totalConsumptionInKhw = response.usage[0].totalKhw || 0;
-        this.totalConsumptionInWatts = response.usage[0].totalWatts;
-        this.bars = new Chart(ctx, {
+         debugger;
+         mondayData = response?.usage[0].lunes.watts || 0;
+         tuesdayData = response?.usage[0].martes.watts || 0;
+         wednesdayData = response?.usage[0].miercoles.watts || 0;
+         thursdayData = response?.usage[0].jueves.watts || 0;
+         fridayData = response?.usage[0].viernes.watts || 0;
+         saturdayData = response?.usage[0].sabado.watts || 0;
+         sundayData = response?.usage[0].domingo.watts || 0;
+         finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
+         mondayDataAmps = response?.usage[0].lunes.amperios || 0;
+         tuesdayDataAmps = response?.usage[0].martes.amperios || 0;
+         thursdayDataAmps = response?.usage[0].miercoles.amperios || 0;
+         wednesdayDataAmps = response?.usage[0].jueves.amperios || 0;
+         fridayDataAmps = response?.usage[0].viernes.amperios || 0;
+         saturdayDataAmps = response?.usage[0].sabado.amperios || 0;
+         sundayDataAmps = response?.usage[0].domingo.amperios || 0;
+         ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
+         const ctx = this.barChart.nativeElement;
+         ctx.height = 200;
+         ctx.width = 250;
+         this.totalConsumptionInAmps = response?.usage[0].totalAmps;
+         this.totalConsumptionInKhw = response?.usage[0].totalKhw || 0;
+         this.totalConsumptionInWatts = response?.usage[0].totalWatts;
+         this.bars = new Chart(ctx, {
           type: 'line',
           data: {
             labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
@@ -235,18 +248,20 @@ export class Connexion1Page implements OnInit{
         });
        }
      });
+    this.loading.dismiss();
 
     }
     async ionViewWillEnter(){
       this.showDetailedChartInCurrentWeek();
     }
     async showDetailChartInCurrentMonth(){
+      await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
-     const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetAllDeviceReadingsByGivenMonth;
-     const ConnectionName = 'Conexion 1';
-     let curr = new Date;
-      let firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(), 1);
-      let lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
+      const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetAllDeviceReadingsByGivenMonth;
+      const ConnectionName = this.connectionName;
+      const curr = new Date();
+      const firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(), 1);
+      const lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
       lastOfMonth.setHours(24, 59, 59);
       firstsOfMonth.setHours(0, 0, 0);
       const initialDateEpoch = Math.floor(firstsOfMonth.getTime() / 1000);
@@ -260,13 +275,14 @@ export class Connexion1Page implements OnInit{
       await this.logDevice(logger);
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: (data) => {
+          debugger;
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
-          const dataset  =  data.usage[0].detail.MonthDetails.TimeStamp;
-          this.totalConsumptionInWatts = data.usage[0].detail.allMonthWatts;
-          this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps;
-          this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts;
+          const dataset  =  data?.usage[0].detail.MonthDetails.TimeStamp || 0 ;
+          this.totalConsumptionInWatts = data?.usage[0].detail.allMonthWatts || 0;
+          this.totalConsumptionInAmps = data?.usage[0].detail.allMonthAmps || 0;
+          this.totalConsumptionInKhw = data?.usage[0].detail.allMonthKiloWatts || 0;
           const month = new Date();
 
           month.toLocaleDateString('es-Es');
@@ -294,7 +310,7 @@ export class Connexion1Page implements OnInit{
                 display: true,
                 distribution: 'series',
                 time: {
-                    unit:'year',
+                    unit: 'year',
                     displayFormats: {year: 'YYYY'},
                     min: '1970' ,
                     max: '2022',
@@ -305,30 +321,32 @@ export class Connexion1Page implements OnInit{
           });
         }
       });
+      this.loading.dismiss();
     }
     /**
      *
      */
     async showDetailChartInCurrentYear(){
+        await this.showLoading();
         const urlRoot = environment.DynamoBDEndPoints.ULR;
-       const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
-       const ConnectionName = 'Conexion 1';
-       const fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
-       const logger = new LogModel();
-       logger.level = 'INFO';
-       logger.route = fullUrl;
-       logger.action = 'showDetailChartInCurrentYear';
-       logger.timeStamp = new Date();
-       logger.userName = '';
-       await this.logDevice(logger);
+        const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
+        const ConnectionName = this.connectionName;
+        const fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
+        const logger = new LogModel();
+        logger.level = 'INFO';
+        logger.route = fullUrl;
+        logger.action = 'showDetailChartInCurrentYear';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        await this.logDevice(logger);
         this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: async (response) => {
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
-          this.totalConsumptionInKhw = response.usage[0].totalKwh;
-          this.totalConsumptionInAmps = response.usage[0].totalAmps;
-          this.totalConsumptionInWatts = response.usage[0].totalWatts;
+          this.totalConsumptionInKhw = response?.usage[0].totalKwh || 0;
+          this.totalConsumptionInAmps = response?.usage[0].totalAmps || 0;
+          this.totalConsumptionInWatts = response?.usage[0].totalWatts || 0;
           this.bars = new Chart(ctx, {
             type: 'line',
             data: {
@@ -353,7 +371,7 @@ export class Connexion1Page implements OnInit{
                 display: true,
                 distribution: 'series',
                 time: {
-                    unit:'year',
+                    unit: 'year',
                     displayFormats: {year: 'YYYY'},
                     min: '1970' ,
                     max: '2022',
@@ -364,32 +382,33 @@ export class Connexion1Page implements OnInit{
           });
          }
        });
-
+        this.loading.dismiss();
     }
     /**
      *
      * @param ConnectionN ConnectionName
      */
-    showDetailChartInCurrentYearInKiloWatts(ConnectionN?){
+  async  showDetailChartInCurrentYearInKiloWatts(ConnectionN?){
+      await this.presentLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetConnectionYearly;
-      const ConnectionName = 'Conexion 1';
+      const ConnectionName = this.connectionName;
       const fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
          const ctx = this.barChart.nativeElement;
          ctx.height = 200;
          ctx.width = 250;
-         this.totalConsumptionInKhw = response.usage[0].totalKwh;
-         this.totalConsumptionInAmps = response.usage[0].totalAmps;
-         this.totalConsumptionInWatts = response.usage[0].totalWatts;
+         this.totalConsumptionInKhw = response?.usage[0].totalKwh || 0;
+         this.totalConsumptionInAmps = response?.usage[0].totalAmps || 0;
+         this.totalConsumptionInWatts = response?.usage[0].totalWatts || 0;
          this.bars = new Chart(ctx, {
            type: 'line',
            data: {
              labels: [''],
              datasets: [{
                label: 'Valor en Kilowatts',
-                 data: response.usage[0].KiloWattsTimeStamp,
+                 data: response?.usage[0].KiloWattsTimeStamp || [{x: '0', y: '0'}],
                fill: true,
 
              }]
@@ -407,7 +426,7 @@ export class Connexion1Page implements OnInit{
                display: true,
                distribution: 'series',
                time: {
-                   unit:'year',
+                   unit: 'year',
                    displayFormats: {year: 'YYYY'},
                    min: '1970' ,
                    max: '2022',
@@ -418,28 +437,30 @@ export class Connexion1Page implements OnInit{
          });
         }
       });
+      this.loading.dismiss();
     }
 
-    showDetailChartInCurrentMonthKilowatts(Connection?){
+    async showDetailChartInCurrentMonthKilowatts(Connection?){
+      await this.presentLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionsGetAllDeviceReadingsByGivenMonth;
-      const ConnectionName = 'Conexion 1';
-      let curr = new Date;
-      var firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(), 1);
-      var lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
+      const ConnectionName = this.connectionName;
+      const curr = new Date;
+      const firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(), 1);
+      const lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
       lastOfMonth.setHours(24, 59, 59);
       firstsOfMonth.setHours(0, 0, 0);
-      let initialDateEpoch = Math.floor(firstsOfMonth.getTime() / 1000);
-      let fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
+      const initialDateEpoch = Math.floor(firstsOfMonth.getTime() / 1000);
+      const fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
          next: (data) => {
            const ctx = this.barChart.nativeElement;
            ctx.height = 200;
            ctx.width = 250;
-           const dataset  =  data.usage[0].detail.MonthDetails.kwhTimesTamp;
-           this.totalConsumptionInWatts = data.usage[0].detail.allMonthWatts;
-           this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps;
-           this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts;
+           const dataset  =  data.usage[0].detail.MonthDetails.kwhTimesTamp || 0;
+           this.totalConsumptionInWatts = data.usage[0].detail.allMonthWatts || 0;
+           this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps || 0;
+           this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts || 0;
            const month = new Date();
 
            month.toLocaleDateString('es-Es');
@@ -467,7 +488,7 @@ export class Connexion1Page implements OnInit{
                  display: true,
                  distribution: 'series',
                  time: {
-                     unit:'year',
+                     unit: 'year',
                      displayFormats: {year: 'YYYY'},
                      min: '1970' ,
                      max: '2022',
@@ -478,19 +499,21 @@ export class Connexion1Page implements OnInit{
            });
          }
        });
+      this.loading.dismiss();
     }
-    showDetailChartInCurrentWeekKilowatts(Connection?){
+   async showDetailChartInCurrentWeekKilowatts(Connection?){
+      await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.Connections.ConnectionReadingsCurrentWeek;
-      const ConnectionName = 'Conexion 1';
-      let curr = new Date; // get current date
-      let first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-      let last = first + 6; // last day is the first day + 6
+      const ConnectionName = this.connectionName;
+      const curr = new Date; // get current date
+      const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+      const last = first + 6; // last day is the first day + 6
 
-      let firstday = new Date(curr.setDate(first));
+      const firstday = new Date(curr.setDate(first));
       firstday.setHours(0, 0, 0);
 
-      let lastday = new Date(curr.setDate(last));
+      const lastday = new Date(curr.setDate(last));
       lastday.setHours(24, 59, 59);
 
 
@@ -502,10 +525,10 @@ export class Connexion1Page implements OnInit{
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
-          const dataset  =  data.usage[0].Timestamp;
-          this.totalConsumptionInAmps = data.usage[0].totalAmps;
-          this.totalConsumptionInKhw = data.usage[0].totalKhw || 0;
-          this.totalConsumptionInWatts = data.usage[0].totalWatts;
+          const dataset  =  data?.usage[0].Timestamp || [];
+          this.totalConsumptionInAmps = data?.usage[0].totalAmps || 0;
+          this.totalConsumptionInKhw = data?.usage[0].totalKhw || 0;
+          this.totalConsumptionInWatts = data?.usage[0].totalWatts || 0;
           const month = new Date();
           if (dataset == []) {
             dataset.push({t: new Date().toISOString(), y: 0});
@@ -535,7 +558,7 @@ export class Connexion1Page implements OnInit{
                 display: true,
                 distribution: 'series',
                 time: {
-                    unit:'year',
+                    unit: 'year',
                     displayFormats: {year: 'YYYY'},
                     min: '1970' ,
                     max: '2022',
@@ -546,6 +569,8 @@ export class Connexion1Page implements OnInit{
           });
         }
       });
+      this.loading.dismiss();
+
     }
 
 
