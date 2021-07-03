@@ -169,6 +169,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./pages/pop-over-connections/pop-over-connections.module').then( m => m.PopOverConnectionsPageModule)
   },
+  {
+    path: 'connections-config-schedule',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./pages/connections-config-schedule/connections-config-schedule.module').then( m => m.ConnectionsConfigSchedulePageModule)
+  },
+
 
 
 ];
