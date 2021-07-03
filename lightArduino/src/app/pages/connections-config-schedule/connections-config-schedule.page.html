@@ -1,9 +1,18 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>connections-config-schedule</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agregar configuracion de Conexion</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <form [formGroup]="AddConnectionScheduleForm" (ngSubmit)="addConnectionConfiguration(this.configConnectionModel)">
+    <ion-item>
+      <ion-label position="floating">Nombre de Conexion<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="text" required formControlName=""[(ngModel)]="this.configConnectionModel.connectionName" ></ion-input>
+    </ion-item>
+  </form>
 
 </ion-content>
