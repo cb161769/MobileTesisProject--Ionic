@@ -24,6 +24,9 @@ export class ConnectionsConfigSchedulePage implements OnInit {
   ionSelectNameOk = 'Ok';
   loading: any;
   userDevice = '';
+  showDaily = true;
+  showMonthly = true;
+  sowWeekly = true;    
   constructor(
     // tslint:disable-next-line: max-line-length
     public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
@@ -47,11 +50,117 @@ export class ConnectionsConfigSchedulePage implements OnInit {
   ionViewDidEnter(){
 
   }
+  getDeviceName(username:string):string{
+    let url = environment.DynamoBDEndPoints.ULR;
+    let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
+    let deviceName;
+    const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
+    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: (response) => {
+        deviceName = response.configuration[0].deviceName;
+        this.GetDeviceConfiguration(deviceName);     
+        return deviceName;
+      },
+      error: async (response) => {
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: response,
+        });
+        await alert.present();
+      },
+      complete: () => {
+        return deviceName;
+      }
+    })
+    return deviceName;
+  }
+  /**
+   * @event toggleChange
+   * @param $event event that is triggered when the toggle is moved
+   * @
+   */
+  toggleChange(event){
+    if (this.configConnectionModel.isItDaily == true) {
+      this.configConnectionModel.isItWeekly = false;
+      this.configConnectionModel.isItMonthly = false;
+      this.showDaily = false;
+      this.AddConnectionScheduleForm.get('configurationMaximumKilowattsPerDay').setValidators(Validators.required);
+    }
+    if (this.configConnectionModel.isItWeekly == true) {
+      debugger;
+      this.configConnectionModel.isItDaily = false;
+      this.configConnectionModel.isItMonthly = false;
+      this.sowWeekly = false;
+      this.AddConnectionScheduleForm.get('configurationMaximumKilowattsPerWeek').setValidators(Validators.required);
+    }
+    if (this.configConnectionModel.isItMonthly == true) {
+      debugger;
+      this.configConnectionModel.isItDaily = false;
+      this.configConnectionModel.isItWeekly = false;
+      this.showMonthly = false;
+      this.AddConnectionScheduleForm.get('configurationMaximumKilowattsPerMonth').setValidators(Validators.required);
+    }
+    if (this.showDaily == false) {
+      this.sowWeekly = true;
+      this.showMonthly = true;
+    }
+    if (this.sowWeekly == false) {
+      this.showDaily = true;
+      this.showMonthly = true;
+    }
+    if (this.showMonthly == false) {
+      this.showDaily = true;
+      this.sowWeekly = true;
+    }
+  }
+  async GetDeviceConfiguration(username:any){
+    var url = environment.DynamoBDEndPoints.ULR;
+    var urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
+    const urlFullPath = `${url}` + `${urlPath}`+`/${username}`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = urlFullPath;
+    logger.action = 'GetDeviceConfiguration';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
+    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next:async (response) => {
+        debugger;
+        if (response.status === 200) {
+          this.configDeviceModel.configurationId = response.deviceConfiguration[0].configurationId;
+          this.configDeviceModel.configurationMaximumKilowattsPerDay = response.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
+          this.configDeviceModel.configurationDays = response.deviceConfiguration[0].configurationDays;
+          this.configDeviceModel.deviceId = response.deviceConfiguration[0].deviceId;
+          this.configDeviceModel.status = response.deviceConfiguration[0].status;
+          this.configDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
+          this.configDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
+        } else {
+          const alert = await this.alertController.create({
+            header:'Error',
+            message: 'ha ocurrido un error, intentelo nuevamente',
+          });
+          await alert.present();
+          return;
+        }
+
+      },
+      error: async(error) => {
+        this.loading.dismiss();
+        const alert = await this.alertController.create({
+          header:'Error',
+          message: error,
+        });
+        await alert.present();
+      }
+    })
+  }
   /**
    *
    * @param connection
    */
   async validateConnectionConfiguration(connection?): Promise<any>{
+    await this.GetDeviceConfiguration();
     return true;
   }
     /**
@@ -73,7 +182,19 @@ export class ConnectionsConfigSchedulePage implements OnInit {
    * @author Claudio Raul Brito Mercedes
    * 
    */
+   /**
+   * this method is to present a loading Indicator
+   */
+    async PresentLoading(){
+      this.loading = await this.loadingIndicator.create({
+        message:'Cargando ...',
+        spinner:'dots'
+      });
+      await this.loading.present();
+  
+    }
   async addConnectionConfiguration(connectionModel?){
+    await this.PresentLoading();
     const validation = await this.validateConnectionConfiguration(connectionModel);
     if (validation) {
       let url = environment.DynamoBDEndPoints.ULR;
@@ -89,6 +210,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       await this.logDevice(logger);
       this.dynamoDBService.genericPostMethod(urlFullPath, connectionModel).subscribe({
         next: async (data) => {
+          debugger;
           if (data.status == 200) {
             const toast = await this.ToastController.create({
               message: 'Datos Ingresados Satisfactoriamente',

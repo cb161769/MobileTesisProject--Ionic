@@ -41,7 +41,7 @@ export class ConnectionOneSchedulePage implements OnInit {
    */
   addConfiguration(){
 
-    this.router.navigate(['add-connection-schedule'])
+    this.router.navigate(['connections-config-schedule']);
 
 
   }
@@ -105,7 +105,6 @@ export class ConnectionOneSchedulePage implements OnInit {
       next: (response) => {
        
         deviceName = response.configuration[0].deviceName;
-        console.log(deviceName)
         this.getDeviceConfiguration(deviceName);
         return deviceName;
       },
@@ -143,7 +142,7 @@ export class ConnectionOneSchedulePage implements OnInit {
             {
               text:'Aceptar',
               handler: async () => {  
-                this.router.navigateByUrl('/add-connection-schedule');
+                this.router.navigateByUrl('/connections-config-schedule');
               }
             },
             {
@@ -163,48 +162,11 @@ export class ConnectionOneSchedulePage implements OnInit {
           this.array = [];
           this.array = result.deviceConfiguration[0].connectionsConfigurations;
           this.testModel$ = this.getConfigurationArray();
-         
-         
-          // // console.log(deviceConfig);
-          // // let model$: Observable<any[]>;
-          // // for (let index = 0; index < deviceConfig.length; index++) {
-            
-          // //   let time:Date = new Date( parseInt(deviceConfig[index].InitialTime));
-            
-          // //   var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
-          // //   let final = new Date(parseInt(deviceConfig[index].FinalTime));
-          // //   var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
-            
-         
-          // //   model$ = of([
-          // //    {configurationTitle: deviceConfig[index].configurationTitle,
-          // //     InitialTime: InitialTime,
-          // //     FinalTime: FinalTime,
-          // //     isActive: deviceConfig[index].isActive,
-          // //     days: deviceConfig[index].days,
-          // //     maximumKilowattPerDay: deviceConfig[index].maximumKilowattPerDay
-          // //   }
-          // //  ])
-          // //  this.test.push(model$[index]);
-           
-            
-          // }
+  
           
           
         }
-          /*
-          this.ConfigDeviceModel.configurationId = result.deviceConfiguration[0].configurationId;
-          this.ConfigDeviceModel.configurationMaximumKilowattsPerDay = result.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
-          this.ConfigDeviceModel.connectionsConfigurations = result.deviceConfiguration[0].connectionsConfigurations;
-          this.ConfigDeviceModel.deviceId = result.deviceConfiguration[0].deviceId;
-          this.ConfigDeviceModel.configurationDays = result.deviceConfiguration[0].configurationDays;
-          this.ConfigDeviceModel.status = result.deviceConfiguration[0].status; 
-          this.pesos = `RD$` + `${this.ConfigDeviceModel.configurationMaximumKilowattsPerDay * 0.3175}`;
-          //this.ConfigDeviceModel.connectionsConfigurations = result.deviceConfiguration[0].connectionsConfigurations;
-          this.devicedConfigured = this.ConfigDeviceModel.connectionsConfigurations.length;
-          */
-        }else{
-          
+         
         }
 
       },
@@ -247,75 +209,6 @@ export class ConnectionOneSchedulePage implements OnInit {
       this.configurationArray()
       ))
   }
-  /**
-   * 
-   */
-  // addArray(){
-  //   this.test.push({
-  //     configurationTitle:'Configuracion de la Manana',
-  //     InitialTime:'07:00am',
-  //     FinalTime:'11:00am',
-  //     isActive:true,
-  //     days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //     maximumKilowattPerDay:'500'
-  //     },
-  //     {
-  //       configurationTitle:'Configuracion de la Tarde',
-  //       InitialTime:'07:00am',
-  //       FinalTime:'12:00am',
-  //       isActive:true,
-  //       days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //       maximumKilowattPerDay:'500'
-  //       },
-  //       {
-  //         configurationTitle:'Configuracion de la Noche',
-  //         InitialTime:'12:01pm',
-  //         FinalTime:'11:00am',
-  //         isActive:true,
-  //         days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //         maximumKilowattPerDay:'700'
-  //       },
-  //       {
-  //         configurationTitle:'Configuracion Por defecto',
-  //         InitialTime:'12:01pm',
-  //         FinalTime:'11:00am',
-  //         isActive:true,
-  //         days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //         maximumKilowattPerDay:'700'
-  //       })
-  //   // this.tests = of([{
-  //   //   configurationTitle:'Configuracion de la Manana',
-  //   //   InitialTime:'07:00am',
-  //   //   FinalTime:'11:00am',
-  //   //   isActive:true,
-  //   //   days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //   //   maximumKilowattPerDay:'500'
-  //   //   },
-  //   //   {
-  //   //     configurationTitle:'Configuracion de la Tarde',
-  //   //     InitialTime:'07:00am',
-  //   //     FinalTime:'12:00am',
-  //   //     isActive:true,
-  //   //     days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //   //     maximumKilowattPerDay:'500'
-  //   //     },
-  //   //     {
-  //   //       configurationTitle:'Configuracion de la Noche',
-  //   //       InitialTime:'12:01pm',
-  //   //       FinalTime:'11:00am',
-  //   //       isActive:true,
-  //   //       days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //   //       maximumKilowattPerDay:'700'
-  //   //     },
-  //   //     {
-  //   //       configurationTitle:'Configuracion Por defecto',
-  //   //       InitialTime:'12:01pm',
-  //   //       FinalTime:'11:00am',
-  //   //       isActive:true,
-  //   //       days:['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
-  //   //       maximumKilowattPerDay:'700'
-  //   //     }])
-  // }
   edit(){
     this.router.navigate(['edit-connection-schedule']);
   }
