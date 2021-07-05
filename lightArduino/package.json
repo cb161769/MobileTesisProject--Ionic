@@ -36,6 +36,7 @@
     "@tensorflow/tfjs": "^3.7.0",
     "@tensorflow/tfjs-vis": "^1.5.1",
     "apollo-angular": "^2.6.0",
+    "assert": "^2.0.0",
     "aws-amplify": "^3.4.3",
     "aws-sdk": "^2.935.0",
     "chartjs-adapter-moment": "^1.0.0",
