@@ -91,7 +91,7 @@ export class ConfigDevicePage implements OnInit {
       
   ];
     days.forEach(day => {
-      this.allDays.push(day as ConfigDaysModel)
+      this.allDays.push(day as ConfigDaysModel);
     });
   }
   async logDevice(log:LogModel){
@@ -214,7 +214,7 @@ export class ConfigDevicePage implements OnInit {
       },
       error: async (response) => {
         const alert = await this.alertController.create({
-          header:'Error',
+          header: 'Error',
           message: response,
         });
         await alert.present();

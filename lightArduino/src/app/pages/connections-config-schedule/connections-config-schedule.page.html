@@ -11,8 +11,39 @@
   <form [formGroup]="AddConnectionScheduleForm" (ngSubmit)="addConnectionConfiguration(this.configConnectionModel)">
     <ion-item>
       <ion-label position="floating">Nombre de Conexion<ion-text color="danger">*</ion-text></ion-label>
-      <ion-input type="text" required formControlName=""[(ngModel)]="this.configConnectionModel.connectionName" ></ion-input>
+      <ion-input type="text" required formControlName="connectionName"[(ngModel)]="this.configConnectionModel.connectionName" ></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-label>tiene limite diario? <ion-text color="danger">*</ion-text></ion-label>
+      <ion-toggle (ionChange)="toggleChange($event)" slot="end"  formControlName="isItDaily" [(ngModel)]="this.configConnectionModel.isItDaily"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>tiene limite semanal?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-toggle (ionChange)="toggleChange($event)" slot="end"  formControlName="isItWeekly" [(ngModel)]="this.configConnectionModel.isItWeekly"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>tiene limite mensual?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-toggle (ionChange)="toggleChange($event)" slot="end"  formControlName="isItMonthly" [(ngModel)]="this.configConnectionModel.isItMonthly"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Estatus <ion-text color="danger">*</ion-text></ion-label>
+      <ion-toggle slot="end"  formControlName="status" [(ngModel)]="this.configConnectionModel.status"></ion-toggle>
+    </ion-item>
+    <ion-item  *ngIf="showDaily == false">
+      <ion-label position="floating">Maxima cantidad de kilowatts por dia <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" required formControlName="configurationMaximumKilowattsPerDay"[(ngModel)]="this.configConnectionModel.configurationMaximumKilowattsPerDay"></ion-input>
+    </ion-item>
+    <ion-item  *ngIf="sowWeekly == false">
+      <ion-label position="floating">Maxima cantidad de kilowatts por semana <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" required formControlName="configurationMaximumKilowattsPerWeek"[(ngModel)]="this.configConnectionModel.configurationMaximumKilowattsPerWeek"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="showMonthly == false">
+      <ion-label position="floating">Maxima cantidad de kilowatts por mes <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input type="number" required formControlName="configurationMaximumKilowattsPerMonth"[(ngModel)]="this.configConnectionModel.configurationMaximumKilowattsPerMonth"></ion-input>
+    </ion-item>
+    <ion-button block color="secondary" type="submit" >
+      Agregar Configuracion
+    </ion-button>
   </form>
 
 </ion-content>
