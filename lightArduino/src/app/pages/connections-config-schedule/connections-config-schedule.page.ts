@@ -126,7 +126,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     await this.logDevice(logger);
     this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next:async (response) => {
-        debugger;
+
         if (response.status === 200) {
           this.configDeviceModel.configurationId = response.deviceConfiguration[0].configurationId;
           this.configDeviceModel.configurationMaximumKilowattsPerDay = response.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
@@ -155,12 +155,50 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       }
     })
   }
+  async validateLoggedUser(){   
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = '';
+    logger.action = 'validateLoggedUser';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
+    this.awsAmplifyService.getCurrentUser().then(async (result) => {
+      if (result != undefined) {
+        try {
+          this.getDeviceName(result.attributes.email);
+        } catch (error) {
+          const logger = new LogModel();
+          logger.level = 'ERROR';
+          logger.route = '';
+          logger.action = 'validateLoggedUser';
+          logger.timeStamp = new Date();
+          logger.userName = '';
+          logger.logError = error;
+          await this.logDevice(logger);
+        }
+      }
+    })
+  }
+   allTheSame(array) {
+    var first = array[0];
+    return array.every(function(element) {
+        return element === first;
+    });
+}
+
   /**
    *
    * @param connection
    */
   async validateConnectionConfiguration(connection?): Promise<any>{
-    await this.GetDeviceConfiguration();
+  await this.validateLoggedUser();
+  for (let index = 0; index < this.configDeviceModel.connectionsConfigurations.length; index++) {
+    const element = this.configDeviceModel.connectionsConfigurations[index];
+    if (JSON.stringify(element) === JSON.stringify(connection)) {
+      
+    }
+  }
     return true;
   }
     /**

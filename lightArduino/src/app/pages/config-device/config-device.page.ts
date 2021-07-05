@@ -137,12 +137,6 @@ export class ConfigDevicePage implements OnInit {
     })
   }
   doRefresh(event) {
-    console.log('Begin async operation');
-    
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
   }
   redirectToLoginPage(){
     this.router.navigateByUrl('/login');
@@ -166,7 +160,14 @@ export class ConfigDevicePage implements OnInit {
         try {
         this.getDeviceName(result.attributes.email);
       } catch (error) {
-        console.log(error);
+        const logger = new LogModel();
+        logger.level = 'ERROR';
+        logger.route = '';
+        logger.action = 'validateLoggedUser';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        logger.logError = error;
+        await this.logDevice(logger);
         
       }
         

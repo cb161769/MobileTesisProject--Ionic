@@ -9,7 +9,7 @@ export class ConfigDeviceModel {
     configurationName: string;
     status: boolean;
     configurationDays: ConfigDaysModel[];
-    connectionsConfigurations: ConfigConnections[];
+    connectionsConfigurations: any[];
     configurationMaximumKilowattsPerDay: number;
     registeredAt: Date;
     updatedAt: Date;
