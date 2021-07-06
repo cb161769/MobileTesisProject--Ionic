@@ -26,7 +26,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
   userDevice = '';
   showDaily = true;
   showMonthly = true;
-  sowWeekly = true;    
+  sowWeekly = true;
   constructor(
     // tslint:disable-next-line: max-line-length
     public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
@@ -45,20 +45,26 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     });
    }
 
-  ngOnInit() {
+  async ngOnInit() {
+ 
   }
-  ionViewDidEnter(){
+  async ionViewDidEnter(){
+    try {
+      await this.validateLoggedUser();
+    } catch (error) {
+      
+    }
 
   }
-  getDeviceName(username:string):string{
-    let url = environment.DynamoBDEndPoints.ULR;
+  async getDeviceName(username: string): Promise<string>{
+    const url = environment.DynamoBDEndPoints.ULR;
     let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
     let deviceName;
     const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
     this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
-      next: (response) => {
+      next: async (response) => {
         deviceName = response.configuration[0].deviceName;
-        this.GetDeviceConfiguration(deviceName);     
+        await  this.GetDeviceConfiguration(deviceName);
         return deviceName;
       },
       error: async (response) => {
@@ -71,7 +77,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       complete: () => {
         return deviceName;
       }
-    })
+    });
     return deviceName;
   }
   /**
@@ -113,10 +119,10 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       this.sowWeekly = true;
     }
   }
-  async GetDeviceConfiguration(username:any){
-    var url = environment.DynamoBDEndPoints.ULR;
-    var urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
-    const urlFullPath = `${url}` + `${urlPath}`+`/${username}`;
+  async GetDeviceConfiguration(username: any){
+    const url = environment.DynamoBDEndPoints.ULR;
+    const urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
+    const urlFullPath = `${url}` + `${urlPath}` + `/${username}`;
     const logger = new LogModel();
     logger.level = 'INFO';
     logger.route = urlFullPath;
@@ -124,9 +130,9 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     logger.timeStamp = new Date();
     logger.userName = '';
     await this.logDevice(logger);
-    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
-      next:async (response) => {
 
+    this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+      next: async (response) => {
         if (response.status === 200) {
           this.configDeviceModel.configurationId = response.deviceConfiguration[0].configurationId;
           this.configDeviceModel.configurationMaximumKilowattsPerDay = response.deviceConfiguration[0].configurationMaximumKilowattsPerDay;
@@ -135,9 +141,10 @@ export class ConnectionsConfigSchedulePage implements OnInit {
           this.configDeviceModel.status = response.deviceConfiguration[0].status;
           this.configDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
           this.configDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
+          debugger;
         } else {
           const alert = await this.alertController.create({
-            header:'Error',
+            header: 'Error',
             message: 'ha ocurrido un error, intentelo nuevamente',
           });
           await alert.present();
@@ -145,17 +152,17 @@ export class ConnectionsConfigSchedulePage implements OnInit {
         }
 
       },
-      error: async(error) => {
+      error: async (error) => {
         this.loading.dismiss();
         const alert = await this.alertController.create({
-          header:'Error',
+          header: 'Error',
           message: error,
         });
         await alert.present();
       }
-    })
+    });
   }
-  async validateLoggedUser(){   
+  async validateLoggedUser(){
     const logger = new LogModel();
     logger.level = 'INFO';
     logger.route = '';
@@ -163,7 +170,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     logger.timeStamp = new Date();
     logger.userName = '';
     await this.logDevice(logger);
-    this.awsAmplifyService.getCurrentUser().then(async (result) => {
+    await  this.awsAmplifyService.getCurrentUser().then(async (result) => {
       if (result != undefined) {
         try {
           this.getDeviceName(result.attributes.email);
@@ -178,28 +185,39 @@ export class ConnectionsConfigSchedulePage implements OnInit {
           await this.logDevice(logger);
         }
       }
-    })
+    });
   }
    allTheSame(array) {
-    var first = array[0];
+    const first = array[0];
     return array.every(function(element) {
         return element === first;
     });
 }
 
   /**
-   *
+   *@function validateConnectionConfiguration
    * @param connection
    */
-  async validateConnectionConfiguration(connection?): Promise<any>{
-  await this.validateLoggedUser();
+  async validateConnectionConfiguration(connection?: any): Promise<any>{
+
+  debugger;
   for (let index = 0; index < this.configDeviceModel.connectionsConfigurations.length; index++) {
     const element = this.configDeviceModel.connectionsConfigurations[index];
     if (JSON.stringify(element) === JSON.stringify(connection)) {
-      
+      this.loading.dismiss();
+      const toast = await this.alertController.create({
+        message: 'La configuracion ha sido insertada anteriormente',
+
+      });
+      toast.present();
+      return false;
+
     }
+
   }
-    return true;
+  debugger;
+  this.configDeviceModel.connectionsConfigurations.push(connection);
+  return true;
   }
     /**
    *
@@ -218,25 +236,25 @@ export class ConnectionsConfigSchedulePage implements OnInit {
    * @function addConnectionConfiguration
    * @param connectionModel the connectionModel
    * @author Claudio Raul Brito Mercedes
-   * 
+   *
    */
    /**
    * this method is to present a loading Indicator
    */
     async PresentLoading(){
       this.loading = await this.loadingIndicator.create({
-        message:'Cargando ...',
-        spinner:'dots'
+        message: 'Cargando ...',
+        spinner: 'dots'
       });
       await this.loading.present();
-  
+
     }
   async addConnectionConfiguration(connectionModel?){
     await this.PresentLoading();
     const validation = await this.validateConnectionConfiguration(connectionModel);
     if (validation) {
-      let url = environment.DynamoBDEndPoints.ULR;
-      let urlPath = environment.DynamoBDEndPoints.API_PATHS.addDeviceConfiguration;
+      const url = environment.DynamoBDEndPoints.ULR;
+      const urlPath = environment.DynamoBDEndPoints.API_PATHS.addDeviceConfiguration;
       const urlFullPath = `${url}` + `${urlPath}`;
       const logger = new LogModel();
       logger.level = 'INFO';
@@ -246,7 +264,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       logger.userName = '';
       logger.timeStamp.toDateString();
       await this.logDevice(logger);
-      this.dynamoDBService.genericPostMethod(urlFullPath, connectionModel).subscribe({
+      this.dynamoDBService.genericPostMethod(urlFullPath, this.configDeviceModel).subscribe({
         next: async (data) => {
           debugger;
           if (data.status == 200) {
