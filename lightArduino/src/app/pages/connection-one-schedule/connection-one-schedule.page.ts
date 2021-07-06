@@ -18,9 +18,9 @@ import { environment } from 'src/environments/environment';
 export class ConnectionOneSchedulePage implements OnInit {
 
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router,
-    public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController, 
-    public messageService: MessageService, public alertController: AlertController,
-    public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController,public actionSheetController: ActionSheetController) { }
+              public DynamoDBService: DynamoDBAPIService, public ToastController: ToastController, 
+              public messageService: MessageService, public alertController: AlertController,
+              public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController,public actionSheetController: ActionSheetController) { }
   public test = [];
   public tests: Observable<any[]>;
   public testModel$: Observable<Array<any>>;
@@ -154,8 +154,8 @@ export class ConnectionOneSchedulePage implements OnInit {
             }
           ]
         });
-        this.loading.dismiss();
-        await alert.present();
+            this.loading.dismiss();
+            await alert.present();
         
             
         }else{
@@ -189,25 +189,26 @@ export class ConnectionOneSchedulePage implements OnInit {
   configurationArray():any{
     let defaultArray = [];
     for (let index = 0; index < this.array.length; index++) {
-      
-         let time:Date = new Date( this.array[index].InitialTime);
+          debugger;
+          let time:Date = new Date( this.array[index].InitialTime);
             
-            var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
-            let final = new Date(this.array[index].FinalTime);
-            var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
-            this.array[index].FinalTime = FinalTime;
-            this.array[index].InitialTime = InitialTime;
-            let element = this.array[index];
-           defaultArray.push(element)
+          // var InitialTime = new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(time);
+          // let final = new Date(this.array[index].FinalTime);
+          // var FinalTime =  new Intl.DateTimeFormat("en-US", {hour: "numeric", minute: "numeric"}).format(final);
+          // this.array[index].FinalTime = FinalTime;
+          // this.array[index].InitialTime = InitialTime;
+          let element = this.array[index];
+          debugger;
+          defaultArray.push(element);
       
     }
     return defaultArray;
 
   }
   getConfigurationArray(){
-    return interval(1000).pipe(map(i => 
+    return interval(10000).pipe(map(i => 
       this.configurationArray()
-      ))
+      ));
   }
   edit(){
     this.router.navigate(['edit-connection-schedule']);
