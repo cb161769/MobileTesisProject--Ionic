@@ -15,7 +15,7 @@
 </ion-header>
 
 
-<ion-content class="container" [fullscreen] ="true" [scrollEvents] ="true" (ionScroll)="logScroll($event)">
+<ion-content class="container ion-padding" [fullscreen] ="false" [scrollEvents] ="true" (ionScroll)="logScroll($event)">
 <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
   <ion-refresher-content
     pullingIcon="arrow-dropdown"
@@ -94,7 +94,7 @@
      <ion-col size="12" >
       <ion-item lines="none" >
         <ngx-gauge [type]="gaugeType" 
-        [value]="0"   
+        [value]="this.connectionsRealtimeDataModel.CT1_Watts || 0"   
         [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250" >
        </ngx-gauge>
        </ion-item>
@@ -102,17 +102,37 @@
    </ion-row>
    <ion-row>
      <ion-col size="12">
-      <ion-item lines="none">
+      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Watts">
         <ion-icon name="bulb-outline"></ion-icon>
-        <span class="account-name">Watts</span> 
+        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Watts}}Watts</span> 
+       </ion-item>
+       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Watts == null">
+        <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+        <span class="account-name"> 0 Watts</span> 
        </ion-item>
      </ion-col>
    </ion-row>
    <ion-row>
      <ion-col size="12">
-      <ion-item lines="none">
+      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Amps">
         <ion-icon name="bulb-outline"></ion-icon>
-        <span class="account-name">Amps</span> 
+        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Amps}}Amps</span> 
+       </ion-item>
+       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Amps == null">
+        <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+        <span class="account-name"> 0 Amps</span> 
+       </ion-item>
+     </ion-col>
+   </ion-row>
+   <ion-row>
+     <ion-col size="12">
+      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Status">
+        <ion-icon name="wifi-outline"></ion-icon>
+        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Status}}</span> 
+       </ion-item>
+       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Status == null">
+        <ion-icon name="earth-outline" slot="start"></ion-icon>
+        <span class="account-name"> Desconectado</span> 
        </ion-item>
      </ion-col>
    </ion-row>
