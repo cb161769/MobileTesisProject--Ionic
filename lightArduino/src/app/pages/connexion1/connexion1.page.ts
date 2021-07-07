@@ -186,7 +186,6 @@ export class Connexion1Page implements OnInit{
     await this.logDevice(logger);
     this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
-         debugger;
          mondayData = response?.usage[0].lunes.watts || 0;
          tuesdayData = response?.usage[0].martes.watts || 0;
          wednesdayData = response?.usage[0].miercoles.watts || 0;
@@ -275,7 +274,6 @@ export class Connexion1Page implements OnInit{
       await this.logDevice(logger);
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: (data) => {
-          debugger;
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;

@@ -38,27 +38,33 @@
           <ion-item lines="none" >
             <ion-row>
               <ion-col center text-center col6>
-                <ion-item lines="none">
-                  <ion-icon name="bulb-outline" slot="start"></ion-icon>
-                  
-                  <ion-label>Amperaje <strong>{{realtimeDataModel.device_amps || 0}} Amps</strong></ion-label>
-                  <ion-item>
-                    <ion-button (click)="TurnOffDemo()" expand="block" fill="clear" shape="round">
-                      Apagar Dispositivo 1
-                    </ion-button>
-                  </ion-item>
+                <ion-item lines="none" *ngIf="realtimeDataModel.device_amps != undefined">
+                  <ion-icon name="flash-outline"  slot="start"></ion-icon>
+                  <ion-label>Amperaje <strong>{{realtimeDataModel.device_amps}} Amps</strong></ion-label>
+                </ion-item>
+                <ion-item lines="none" *ngIf="realtimeDataModel.device_amps == undefined">
+                  <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+                  <ion-label>Amperaje <strong>0 Amps</strong></ion-label>
                 </ion-item>
               </ion-col>
               <ion-col  center text-center col6>
-                <ion-item lines="none">
+                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_strength == undefined">
+                  <ion-icon name="cloud-offline-outline" slot="start"></ion-icon>
+                  <ion-label>Porcentaje de Señal Wi-fi <strong>0</strong> %</ion-label>
+                </ion-item>
+                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_strength ">
                   <ion-icon name="wifi-outline" slot="start"></ion-icon>
                   <ion-label>Porcentaje de Señal Wi-fi <strong>{{realtimeDataModel.wifi_strength || 0}}</strong> %</ion-label>
                 </ion-item>
               </ion-col>
               <ion-col center text-center col6>
-                <ion-item lines="none">
+                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_Name == undefined">
                   <ion-icon name="earth-outline" slot="start"></ion-icon>
-                  <ion-label>Conectado a la red <strong>{{realtimeDataModel.wifi_Name || 'Cargando...'}}</strong></ion-label>
+                  <ion-label><strong>Dispositivo no conectado</strong></ion-label>
+                </ion-item>
+                <ion-item *ngIf="realtimeDataModel.wifi_Name">
+                  <ion-icon name="earth-outline" slot="start"></ion-icon>
+                  <ion-label>Dispositivo no conectado<strong>{{realtimeDataModel.wifi_Name || ''}}</strong></ion-label>
                 </ion-item>
               </ion-col>
               
@@ -68,8 +74,6 @@
       </ion-card-content>
     </ion-card>
     <br>
-    
-
     <ion-card>
       <ion-card-header>
         Consumo durante la semana
