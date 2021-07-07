@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, AlertController, NavController, ToastController, ActionSheetController } from '@ionic/angular';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import {  Chart} from 'chart.js';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
@@ -10,6 +10,8 @@ import { MessageService } from 'src/app/data-services/messageService/message.ser
 import { environment } from 'src/environments/environment';
 import 'chartjs-adapter-moment';
 import { LogModel } from 'src/app/models/log-model';
+import { ConnectionsRealtimeDataModel } from 'src/app/models/connections-realtime-data-model';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-connexion1',
   templateUrl: './connexion1.page.html',
@@ -24,6 +26,8 @@ export class Connexion1Page implements OnInit{
   gaugeValue = 21000;
   bars: any;
   public healthy = 0;
+  private querySubscription: Subscription;
+  connectionsRealtimeDataModel:ConnectionsRealtimeDataModel = new ConnectionsRealtimeDataModel()
   showKlhw = false;
   showKlwChekedchek = false;
   gaugeLabel = 'Amperaje de la instalacion';
@@ -570,6 +574,59 @@ export class Connexion1Page implements OnInit{
       this.loading.dismiss();
 
     }
+      /**
+   *
+   * @param ConnectionName ConnectionName
+   */
+  public async refreshDeviceReadings(ConnectionName?){
+    const beginning = Math.floor(Date.now() / 1000 );
+    try {
+      this.querySubscription = this.apolloClient.watchQuery<any>({
+        query: gql`
+        {
+          Ct1_readings(timeStamp:${beginning}){
+            CT1_Amps,
+            CT1_Watts,
+            CT1_Status,
+            Name,
+          }
+        }
+        `
+      }).valueChanges
+      .subscribe(async ({data, loading}) => {
+        if (!loading) {
+          if (Object.keys(data).length > 0) {
+            if (data.CT1_Status == null || data.CT1_Status == undefined) {
+              const toast = await this.ToastController.create({
+                message: `la ${ConnectionName} No esta conectado`,
+                duration: 2000,
+                position: 'bottom',
+                color: 'dark'
+              });
+              toast.present();
+          
+              
+            }
+            else{
+              this.connectionsRealtimeDataModel.Name = data.Name;
+              if (this.connectionsRealtimeDataModel.Name == this.connectionName) {
+                this.connectionsRealtimeDataModel.CT1_Amps = data.CT1_Amps;
+                this.connectionsRealtimeDataModel.CT1_Watts = data.CT1_Watts;
+                this.connectionsRealtimeDataModel.CT1_Status = data.CT1_Status;
+              }
+              else{
+                
+              }
+            }
+
+          }
+
+        }
+      });
+    } catch (error) {
+
+    }
+  }
 
 
 

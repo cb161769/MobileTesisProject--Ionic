@@ -1,7 +1,9 @@
+import { Apollo, gql } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController, NavController, ToastController, AlertController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { DynamoDBAPIService } from 'src/app/data-services/dynamo-db-api.service';
 import { MessageService } from 'src/app/data-services/messageService/message.service';
@@ -10,6 +12,7 @@ import { ConfigDeviceModel } from 'src/app/models/config-device-model';
 import { ConnectionsSchedule } from 'src/app/models/connections-schedule';
 import { LogModel } from 'src/app/models/log-model';
 import { environment } from 'src/environments/environment';
+import { ConnectionsRealtimeDataModel } from 'src/app/models/connections-realtime-data-model';
 
 @Component({
   selector: 'app-connections-config-schedule',
@@ -23,15 +26,17 @@ export class ConnectionsConfigSchedulePage implements OnInit {
   ionSelectNameCancel = 'Cancelar';
   ionSelectNameOk = 'Ok';
   loading: any;
+  private querySubscription: Subscription;
   userDevice = '';
   showDaily = true;
   showMonthly = true;
   sowWeekly = true;
+  connectionsRealtimeDataModel:ConnectionsRealtimeDataModel = new ConnectionsRealtimeDataModel()
   constructor(
     // tslint:disable-next-line: max-line-length
     public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public navController: NavController, public toast: ToastService,
     // tslint:disable-next-line: max-line-length
-    public ToastController: ToastController, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService
+    public ToastController: ToastController, private apolloClient: Apollo, public alertController: AlertController, public router: Router, public messageService: MessageService, public dynamoDBService: DynamoDBAPIService
   ) {
     this.AddConnectionScheduleForm = new FormGroup({
       connectionName: new FormControl(this.configConnectionModel.connectionName, [Validators.required]),
@@ -46,13 +51,13 @@ export class ConnectionsConfigSchedulePage implements OnInit {
    }
 
   async ngOnInit() {
- 
+
   }
   async ionViewDidEnter(){
     try {
       await this.validateLoggedUser();
     } catch (error) {
-      
+
     }
 
   }
@@ -80,6 +85,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     });
     return deviceName;
   }
+
   /**
    * @event toggleChange
    * @param $event event that is triggered when the toggle is moved
@@ -93,14 +99,14 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       this.AddConnectionScheduleForm.get('configurationMaximumKilowattsPerDay').setValidators(Validators.required);
     }
     if (this.configConnectionModel.isItWeekly == true) {
-      debugger;
+
       this.configConnectionModel.isItDaily = false;
       this.configConnectionModel.isItMonthly = false;
       this.sowWeekly = false;
       this.AddConnectionScheduleForm.get('configurationMaximumKilowattsPerWeek').setValidators(Validators.required);
     }
     if (this.configConnectionModel.isItMonthly == true) {
-      debugger;
+
       this.configConnectionModel.isItDaily = false;
       this.configConnectionModel.isItWeekly = false;
       this.showMonthly = false;
@@ -141,7 +147,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
           this.configDeviceModel.status = response.deviceConfiguration[0].status;
           this.configDeviceModel.connectionsConfigurations = response.deviceConfiguration[0].connectionsConfigurations;
           this.configDeviceModel.configurationName = response.deviceConfiguration[0].configurationName;
-          debugger;
+
         } else {
           const alert = await this.alertController.create({
             header: 'Error',
@@ -200,7 +206,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
    */
   async validateConnectionConfiguration(connection?: any): Promise<any>{
 
-  debugger;
+
   for (let index = 0; index < this.configDeviceModel.connectionsConfigurations.length; index++) {
     const element = this.configDeviceModel.connectionsConfigurations[index];
     if (JSON.stringify(element) === JSON.stringify(connection)) {
@@ -215,7 +221,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
     }
 
   }
-  debugger;
+
   this.configDeviceModel.connectionsConfigurations.push(connection);
   return true;
   }
@@ -266,7 +272,7 @@ export class ConnectionsConfigSchedulePage implements OnInit {
       await this.logDevice(logger);
       this.dynamoDBService.genericPostMethod(urlFullPath, this.configDeviceModel).subscribe({
         next: async (data) => {
-          debugger;
+
           if (data.status == 200) {
             const toast = await this.ToastController.create({
               message: 'Datos Ingresados Satisfactoriamente',
