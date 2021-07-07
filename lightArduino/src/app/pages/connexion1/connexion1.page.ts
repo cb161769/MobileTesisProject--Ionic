@@ -532,6 +532,7 @@ export class Connexion1Page implements OnInit{
           this.totalConsumptionInKhw = data?.usage[0].totalKhw || 0;
           this.totalConsumptionInWatts = data?.usage[0].totalWatts || 0;
           const month = new Date();
+
           if (dataset == []) {
             dataset.push({t: new Date().toISOString(), y: 0});
           }
@@ -574,12 +575,20 @@ export class Connexion1Page implements OnInit{
       this.loading.dismiss();
 
     }
-      /**
-   *
-   * @param ConnectionName ConnectionName
+  /**
+   * @function refreshConnectionDeviceReadings
+   * @param ConnectionName the Device ConnectionName
    */
-  public async refreshDeviceReadings(ConnectionName?){
+  public async refreshConnectionDeviceReadings(ConnectionName?){
     const beginning = Math.floor(Date.now() / 1000 );
+    const testConnectionName = ConnectionName;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = 'GQL';
+    logger.action = 'refreshConnectionDeviceReadings';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
     try {
       this.querySubscription = this.apolloClient.watchQuery<any>({
         query: gql`
@@ -604,18 +613,24 @@ export class Connexion1Page implements OnInit{
                 color: 'dark'
               });
               toast.present();
-          
-              
             }
             else{
-              this.connectionsRealtimeDataModel.Name = data.Name;
-              if (this.connectionsRealtimeDataModel.Name == this.connectionName) {
+              // this.connectionsRealtimeDataModel.Name = data.Name;
+              if (data.Name == this.connectionName) {
                 this.connectionsRealtimeDataModel.CT1_Amps = data.CT1_Amps;
                 this.connectionsRealtimeDataModel.CT1_Watts = data.CT1_Watts;
                 this.connectionsRealtimeDataModel.CT1_Status = data.CT1_Status;
+                this.connectionsRealtimeDataModel.Name = data.Name;
               }
               else{
-                
+                const toast = await this.ToastController.create({
+                  message: `Data de la conexion no encontrada`,
+                  duration: 2000,
+                  position: 'bottom',
+                  color: 'dark'
+                });
+                toast.present();
+                // unsubscribe
               }
             }
 
@@ -624,7 +639,22 @@ export class Connexion1Page implements OnInit{
         }
       });
     } catch (error) {
-
+      const logger = new LogModel();
+      logger.level = 'ERROR';
+      logger.route = 'GQL';
+      logger.action = 'refreshConnectionDeviceReadings';
+      logger.timeStamp = new Date();
+      logger.userName = '';
+      logger.logError = error;
+      logger.timeStamp.toDateString();
+      await this.logDevice(logger);
+      const toast = await this.ToastController.create({
+        message: `Ha ocurrido un error`,
+        duration: 2000,
+        position: 'bottom',
+        color: 'dark'
+      });
+      toast.present();
     }
   }
 
