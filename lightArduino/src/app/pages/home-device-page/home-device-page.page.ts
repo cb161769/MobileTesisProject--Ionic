@@ -90,8 +90,14 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         this.querySubscription.unsubscribe();
         this.redirectToLoginPage();
       }
-    }).catch(() => {
-
+    }).catch(async (error) => {
+      const toast = await this.ToastController.create({
+        message: `Ha ocurrido un error`,
+        duration: 2000,
+        position: 'bottom',
+        color: 'dark'
+      });
+      toast.present();
     }).finally(() => {
       this.loading.dismiss();
     });
@@ -240,7 +246,22 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       });
 
     } catch (error) {
-      console.log(error);
+
+      const logger = new LogModel();
+      logger.level = 'ERROR';
+      logger.route = fullUrl;
+      logger.action = 'GET';
+      logger.timeStamp = new Date();
+      logger.userName = '';
+      logger.logError = error;
+      await this.logDevice(logger);
+      const toast = await this.ToastController.create({
+        message: `Ha ocurrido un error`,
+        duration: 2000,
+        position: 'bottom',
+        color: 'dark'
+      });
+      toast.present();
     }
 
 
@@ -306,13 +327,25 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       logger.userName = '';
       logger.logError = error;
       await this.logDevice(logger);
-      console.log(error);
+      const toast = await this.ToastController.create({
+        message: `Ha ocurrido un error`,
+        duration: 2000,
+        position: 'bottom',
+        color: 'dark'
+      });
+      toast.present();
 
     }).finally(() => {
       this.loading.dismiss();
 
     });
 
+
+  }
+  /**
+   * @method selectTime
+   */
+  async selectTime(){
 
   }
   /**
@@ -373,6 +406,13 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         logger.userName = '';
         logger.logError = error;
         await this.logDevice(logger);
+        const toast = await this.ToastController.create({
+          message: `Ha ocurrido un error`,
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
     }
   }
 
