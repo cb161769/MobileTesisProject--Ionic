@@ -3,7 +3,7 @@ import { RealtimeData } from './../../models/realtime-data';
 import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
-import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, NavController,ActionSheetController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {  Chart} from 'chart.js';
@@ -43,7 +43,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   intervalId: number;
   Amps = 0;
   Watts = 0;
-
+  selected_time: any;
+  showKlhw:boolean = false;
 
   /**
    * this is the Home - device page Constructor
@@ -57,7 +58,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    */
 
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router, public DynamoDBService: DynamoDBAPIService,
-              public ToastController: ToastController, public messageService: MessageService, public alertController: AlertController, public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public MQTTServiceService: MQTTServiceService) { }
+              public ToastController: ToastController, public actionSheetController: ActionSheetController,public messageService: MessageService, public alertController: AlertController, public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public MQTTServiceService: MQTTServiceService) { }
 
   async ngOnInit() {
     try {
@@ -346,8 +347,81 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * @method selectTime
    */
   async selectTime(){
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccionar Lapso Temporal',
+      buttons: [
+        {
+          text: 'Este Año', handler: () => {
+            this.showDetailChartInCurrentYear();
+            this.selected_time = 'Este Año';
+          }
+        },
+        {
+          text: 'Este Mes', handler: () => {
+            this.showDetailChartInCurrentMonth();
+            this.selected_time = 'Este Mes';
+          }
+        },
+        {
+          text: 'Esta Semana', handler: () => {
+            this.showDetailedChartInCurrentWeek();
+            this.selected_time = 'Esta Semana';
+          }
+        },
+        {
+          text: 'Rango de fechas custom', handler: () => {
+            this.showModal();
+            this.selected_time = 'Modal';
+          }
+        },
+       
+      ]
+    });
+    await actionSheet.present();
+  }
+  /**
+   *@function showDetailChartInCurrentYear
+   */
+  showDetailChartInCurrentYear(){
 
   }
+  /**
+   *@function showDetailChartInCurrentMonth
+   */
+  showDetailChartInCurrentMonth(){
+
+  }
+  /**
+   *@function showDetailedChartInCurrentWeek
+   */
+  showDetailedChartInCurrentWeek(){
+
+  }
+  showModal(){
+
+  }
+  changeKhw(event: any){
+    if (this.showKlhw == true && this.selected_time == 'Este Año') {
+     // this.showDetailChartInCurrentYearInKiloWatts();
+    }
+    if (this.showKlhw == false && this.selected_time == 'Este Año') {
+      this.showDetailChartInCurrentYear();
+    }
+    // este mes
+    if (this.showKlhw === true  && this.selected_time == 'Este Mes') {
+//this.showDetailChartInCurrentMonthKilowatts();
+    }
+    if (this.showKlhw == false && this.selected_time == 'Este Mes') {
+      this.showDetailChartInCurrentMonth();
+    }
+    if (this.showKlhw === true  && this.selected_time == 'Esta Semana') {
+      //this.showDetailChartInCurrentWeekKilowatts();
+    }
+    if (this.showKlhw == false && this.selected_time == 'Esta Semana') {
+      this.showDetailedChartInCurrentWeek();
+    }
+  }
+
   /**
    * this method syncs the device readings
    */
@@ -477,9 +551,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           await alert.present();
 
         }
-
-      } else {
-
 
       }
     });

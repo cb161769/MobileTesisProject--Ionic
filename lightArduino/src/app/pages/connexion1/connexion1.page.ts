@@ -92,6 +92,12 @@ export class Connexion1Page implements OnInit{
               this.showDetailedChartInCurrentWeek();
               this.selected_time = 'Esta Semana';
             }
+          },
+          {
+            text: 'Rango de fechas custom', handler: () => {
+              this.showDetailedChartInCurrentWeek();
+              this.selected_time = 'Modal';
+            }
           }
         ]
       });
@@ -103,9 +109,13 @@ export class Connexion1Page implements OnInit{
     doRefresh(event: any){
 
     }
+    /**
+     * @function showModal
+     */
+    showModal(){
+
+    }
     changeKhw(event: any){
-      console.log(this.showKlhw);
-      console.log(event.target);
       if (this.showKlhw == true && this.selected_time == 'Este Año') {
         this.showDetailChartInCurrentYearInKiloWatts();
       }
@@ -630,7 +640,6 @@ export class Connexion1Page implements OnInit{
                   color: 'dark'
                 });
                 toast.present();
-                // unsubscribe
               }
             }
 
