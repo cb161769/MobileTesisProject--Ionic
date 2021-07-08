@@ -1,13 +1,19 @@
 <ion-toolbar color="light" class="ion-no-border">
   
-  
+  <ion-buttons slot="start">
+    <ion-button>
+      <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
   <ion-title >Inicio</ion-title>
   <ion-buttons slot="end">
     <ion-button color="danger" (click)="singOut()">
       <ion-icon slot="end" name="log-out-outline"></ion-icon>
       Cerrar Sesión
     </ion-button>
+    
   </ion-buttons>
+ 
 </ion-toolbar>
 <ion-content class="ion-padding" [fullscreen]="false">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
