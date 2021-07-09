@@ -139,7 +139,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   }
 
 
-
+/**
+ * 
+ */
   async showDetailedChart(){
     const urlRoot = environment.DynamoBDEndPoints.ULR;
     const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceWeekly;
@@ -347,6 +349,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * @method selectTime
    */
   async selectTime(){
+    debugger;
     const actionSheet = await this.actionSheetController.create({
       header: 'Seleccionar Lapso Temporal',
       buttons: [
