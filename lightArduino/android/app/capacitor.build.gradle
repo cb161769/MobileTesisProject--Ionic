@@ -14,9 +14,10 @@ dependencies {
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-push-notifications')
     implementation project(':capacitor-status-bar')
-
+    implementation "com.wonderpush:wonderpush-android-sdk:4.0.7"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
 }
-
+apply from: "../../node_modules/wonderpush-cordova-sdk/build-extras.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()
