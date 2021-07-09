@@ -11,6 +11,10 @@
     <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager"/>
   </feature>
 
+  <feature name="WonderPushPlugin">
+    <param name="android-package" value="com.wonderpush.sdk.cordova.WonderPushPlugin"/>
+  </feature>
+
   <feature name="CordovaHttpPlugin">
     <param name="android-package" value="com.silkimen.cordovahttp.CordovaHttpPlugin"/>
   </feature>
