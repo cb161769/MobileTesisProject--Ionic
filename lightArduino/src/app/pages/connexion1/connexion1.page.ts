@@ -34,6 +34,9 @@ export class Connexion1Page implements OnInit{
   totalConsumptionInWatts = '';
   totalConsumptionInKhw = '';
   totalConsumptionInAmps = '';
+  deviceHealth = 0;
+  selectedElapsedTime= '';
+  healthText = '';
   thresholdConfig = {
     0: {color: 'green'},
     40: {color: 'orange'},
@@ -200,7 +203,9 @@ export class Connexion1Page implements OnInit{
     await this.logDevice(logger);
     this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
-         mondayData = response?.usage[0].lunes.watts || 0;
+        
+        this.deviceHealth = response?.health.health || 0; 
+        mondayData = response?.usage[0].lunes.watts || 0;
          tuesdayData = response?.usage[0].martes.watts || 0;
          wednesdayData = response?.usage[0].miercoles.watts || 0;
          thursdayData = response?.usage[0].jueves.watts || 0;

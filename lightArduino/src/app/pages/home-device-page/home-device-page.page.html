@@ -82,7 +82,7 @@
     <br>
     <ion-card>
       <ion-card-header>
-        Consumo durante la semana
+          {{selectedElapsedTime}}
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
@@ -94,8 +94,7 @@
           <ion-row>
             <ion-col center text-center col6>
               <ion-item lines="none">
-                <ion-icon name="calculator-outline" slot="start"></ion-icon>
-                
+                <ion-icon name="calculator-outline" slot="start"></ion-icon>         
                 <ion-label>Total de Watts Consumidos <strong>{{this.Watts || 0}}</strong></ion-label>
               </ion-item>
             </ion-col>
@@ -105,7 +104,21 @@
                 <ion-label>Total Amperios Consumidos<strong>{{this.Amps || 0}}</strong></ion-label>
               </ion-item>
             </ion-col>
+            
           </ion-row>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-row>
+            <ion-col size="12" class="ion-align-self-center" center>
+              <ion-label><strong>Resumen de Consumo a nivel general</strong></ion-label>
+          <p class="healthy-text" *ngIf="deviceHealth ==1"> {{healthText}}</p>
+          <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">{{healthText}}</p>
+          <p class="healthy-text" *ngIf="deviceHealth==0">El consumo del dispositivo no ha tenido cambios de consumos ultimamente</p>
+ 
+            </ion-col>
+          </ion-row>
+
+          
         </ion-item>
         
       </ion-card-content>

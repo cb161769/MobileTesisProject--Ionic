@@ -178,10 +178,10 @@
         </ion-col>
         <!--TODO ADD COMPARATIVES-->
         <ion-col size="7" class="ion-align-self-center">
-          <p class="healthy-text" *ngIf="healthy>=20 && healthy<=50">Excelente</p>
-          <p class="healthy-text" *ngIf="healthy>50"> Excelente2</p>
-          <p class="healthy-text" *ngIf="healthy<20 && healthy>0">Excelente3</p>
-          <p class="healthy-text" *ngIf="healthy==0">Excelente4</p>
+          <ion-label><strong>Resumen de Consumo a nivel general</strong></ion-label>
+          <p class="healthy-text" *ngIf="deviceHealth ==1"> {{healthText}}</p>
+          <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">{{healthText}}</p>
+          <p class="healthy-text" *ngIf="deviceHealth==0">El consumo del dispositivo no ha tenido cambios de consumos ultimamente</p>
         </ion-col>
       </ion-row>
     </ion-grid>
