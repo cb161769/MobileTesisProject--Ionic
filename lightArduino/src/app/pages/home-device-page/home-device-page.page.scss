@@ -15,6 +15,11 @@
 
 
 }
+#valor{
+    font-size: 60px;
+    font-weight: 600;
+    color: green;
+}
 .login-header:after {
     content: "";
     position: absolute;
@@ -99,3 +104,6 @@ ion-card{
     width: 100% !important;
     margin: 0 !important;
    }   
+   .healthy-text{
+    text-align: justify;
+}

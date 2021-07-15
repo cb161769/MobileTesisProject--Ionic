@@ -45,6 +45,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   Watts = 0;
   selected_time: any;
   showKlhw:boolean = false;
+  deviceHealth = 0;
+  selectedElapsedTime= '';
+  healthText = '';
 
   /**
    * this is the Home - device page Constructor
@@ -187,6 +190,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let sundayDataAmps = 0;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
 
+        this.deviceHealth = response?.health.health || 0;
         mondayData = response.usage[0].lunes.watts || 0;
         tuesdayData = response.usage[0].martes.watts || 0;
         wednesdayData = response.usage[0].miercoles.watts || 0;
