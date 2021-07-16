@@ -191,6 +191,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let sundayDataAmps = 0;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: (response) => {
+          debugger;
           this.deviceHealth = response?.health.health || 0;
           this.healthText = response?.health.message || '';
           mondayData = response?.usage[0].lunes.watts || 0;
@@ -292,8 +293,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   async ionViewDidEnter(){
      const source = interval(10000);
      this.subscription = source.subscribe(() => this.refreshDeviceReadings());
-     const cond = interval(10000);
-     this.weeklySubscription = cond.subscribe(() => this.showDetailedChart());
+    //  const cond = interval(10000);
+    //  this.weeklySubscription = cond.subscribe(() => this.showDetailedChart());
    // this.showDetailedChart();
   }
   /**
