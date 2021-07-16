@@ -27,7 +27,7 @@ export class Connexion1Page implements OnInit{
   bars: any;
   public healthy = 0;
   private querySubscription: Subscription;
-  connectionsRealtimeDataModel:ConnectionsRealtimeDataModel = new ConnectionsRealtimeDataModel()
+  connectionsRealtimeDataModel: ConnectionsRealtimeDataModel = new ConnectionsRealtimeDataModel();
   showKlhw = false;
   showKlwChekedchek = false;
   gaugeLabel = 'Amperaje de la instalacion';
@@ -35,7 +35,7 @@ export class Connexion1Page implements OnInit{
   totalConsumptionInKhw = '';
   totalConsumptionInAmps = '';
   deviceHealth = 0;
-  selectedElapsedTime= '';
+  selectedElapsedTime = '';
   healthText = '';
   thresholdConfig = {
     0: {color: 'green'},
@@ -203,31 +203,33 @@ export class Connexion1Page implements OnInit{
     await this.logDevice(logger);
     this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
-        
-        this.deviceHealth = response?.health.health || 0; 
+
+        this.deviceHealth = response?.health.health || 0;
+      
+        this.healthText = response?.health.message || '';
         mondayData = response?.usage[0].lunes.watts || 0;
-         tuesdayData = response?.usage[0].martes.watts || 0;
-         wednesdayData = response?.usage[0].miercoles.watts || 0;
-         thursdayData = response?.usage[0].jueves.watts || 0;
-         fridayData = response?.usage[0].viernes.watts || 0;
-         saturdayData = response?.usage[0].sabado.watts || 0;
-         sundayData = response?.usage[0].domingo.watts || 0;
-         finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
-         mondayDataAmps = response?.usage[0].lunes.amperios || 0;
-         tuesdayDataAmps = response?.usage[0].martes.amperios || 0;
-         thursdayDataAmps = response?.usage[0].miercoles.amperios || 0;
-         wednesdayDataAmps = response?.usage[0].jueves.amperios || 0;
-         fridayDataAmps = response?.usage[0].viernes.amperios || 0;
-         saturdayDataAmps = response?.usage[0].sabado.amperios || 0;
-         sundayDataAmps = response?.usage[0].domingo.amperios || 0;
-         ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
-         const ctx = this.barChart.nativeElement;
-         ctx.height = 200;
-         ctx.width = 250;
-         this.totalConsumptionInAmps = response?.usage[0].totalAmps;
-         this.totalConsumptionInKhw = response?.usage[0].totalKhw || 0;
-         this.totalConsumptionInWatts = response?.usage[0].totalWatts;
-         this.bars = new Chart(ctx, {
+        tuesdayData = response?.usage[0].martes.watts || 0;
+        wednesdayData = response?.usage[0].miercoles.watts || 0;
+        thursdayData = response?.usage[0].jueves.watts || 0;
+        fridayData = response?.usage[0].viernes.watts || 0;
+        saturdayData = response?.usage[0].sabado.watts || 0;
+        sundayData = response?.usage[0].domingo.watts || 0;
+        finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
+        mondayDataAmps = response?.usage[0].lunes.amperios || 0;
+        tuesdayDataAmps = response?.usage[0].martes.amperios || 0;
+        thursdayDataAmps = response?.usage[0].miercoles.amperios || 0;
+        wednesdayDataAmps = response?.usage[0].jueves.amperios || 0;
+        fridayDataAmps = response?.usage[0].viernes.amperios || 0;
+        saturdayDataAmps = response?.usage[0].sabado.amperios || 0;
+        sundayDataAmps = response?.usage[0].domingo.amperios || 0;
+        ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
+        const ctx = this.barChart.nativeElement;
+        ctx.height = 200;
+        ctx.width = 250;
+        this.totalConsumptionInAmps = response?.usage[0].totalAmps;
+        this.totalConsumptionInKhw = response?.usage[0].totalKhw || 0;
+        this.totalConsumptionInWatts = response?.usage[0].totalWatts;
+        this.bars = new Chart(ctx, {
           type: 'line',
           data: {
             labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
@@ -413,13 +415,15 @@ export class Connexion1Page implements OnInit{
       const fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
        next: async (response) => {
-         const ctx = this.barChart.nativeElement;
-         ctx.height = 200;
-         ctx.width = 250;
-         this.totalConsumptionInKhw = response?.usage[0].totalKwh || 0;
-         this.totalConsumptionInAmps = response?.usage[0].totalAmps || 0;
-         this.totalConsumptionInWatts = response?.usage[0].totalWatts || 0;
-         this.bars = new Chart(ctx, {
+        this.deviceHealth = response?.health.health || 0;
+        this.healthText = response?.health.message || '';
+        const ctx = this.barChart.nativeElement;
+        ctx.height = 200;
+        ctx.width = 250;
+        this.totalConsumptionInKhw = response?.usage[0].totalKwh || 0;
+        this.totalConsumptionInAmps = response?.usage[0].totalAmps || 0;
+        this.totalConsumptionInWatts = response?.usage[0].totalWatts || 0;
+        this.bars = new Chart(ctx, {
            type: 'line',
            data: {
              labels: [''],
@@ -478,6 +482,8 @@ export class Connexion1Page implements OnInit{
            this.totalConsumptionInWatts = data.usage[0].detail.allMonthWatts || 0;
            this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps || 0;
            this.totalConsumptionInKhw = data.usage[0].detail.allMonthKiloWatts || 0;
+           this.deviceHealth = data?.health.health || 0;
+           this.healthText = data?.health.message || '';
            const month = new Date();
 
            month.toLocaleDateString('es-Es');
@@ -542,6 +548,8 @@ export class Connexion1Page implements OnInit{
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
+          this.deviceHealth = data?.health.health || 0;
+          this.healthText = data?.health.message || '';
           const dataset  =  data?.usage[0].Timestamp || [];
           this.totalConsumptionInAmps = data?.usage[0].totalAmps || 0;
           this.totalConsumptionInKhw = data?.usage[0].totalKhw || 0;

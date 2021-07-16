@@ -1,126 +1,161 @@
 <ion-toolbar color="light" class="ion-no-border">
-  
   <ion-buttons slot="start">
     <ion-button (click)="selectTime()">
-      <ion-icon slot="icon-only" name="calendar-outline" ></ion-icon>
+      <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title >Inicio</ion-title>
+  <ion-title>Inicio</ion-title>
   <ion-buttons slot="end">
     <ion-button color="danger" (click)="singOut()">
       <ion-icon slot="end" name="log-out-outline"></ion-icon>
       Cerrar Sesión
     </ion-button>
-    
   </ion-buttons>
- 
 </ion-toolbar>
 <ion-content class="ion-padding" [fullscreen]="false">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Lecturas del dispositivo registrado en tiempo real</ion-card-title>
-        
-      </ion-card-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title
+        >Lecturas del dispositivo registrado en tiempo real</ion-card-title
+      >
+    </ion-card-header>
+    <ion-item lines="none">
+      <ion-avatar slot="start">
+        <img src="../../../assets/icon/cpu.svg" />
+      </ion-avatar>
+      <ion-label class="ion-no-border"
+        ><h1>{{realtimeDataModel.device_name|| 'Cargando...'}}</h1>
+        <small
+          >Lecturas del
+          <strong>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</strong></small
+        >
+      </ion-label>
+    </ion-item>
+    <ion-card-content>
       <ion-item lines="none">
-        <ion-avatar slot="start">
-          <img src="../../../assets/icon/cpu.svg" />
-        </ion-avatar>
-        <ion-label class="ion-no-border"><h1>{{realtimeDataModel.device_name|| 'Cargando...'}}</h1>
-        <small>Lecturas del <strong>{{now | date:'EEEE dd MMMM yyyy':'ES' }}</strong></small>
-        </ion-label>
+        <ngx-gauge
+          [type]="gaugeType"
+          [value]="this.realtimeDataModel.device_watts || 0"
+          [append]="gaugeAppendText"
+          [thresholds]="thresholdConfig"
+          [size]="250"
+        >
+        </ngx-gauge>
       </ion-item>
-      <ion-card-content>
-        <ion-item lines="none">
-          
-          <ngx-gauge [type]="gaugeType" 
-          [value]="this.realtimeDataModel.device_watts || 0"   
-          [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250">
-         </ngx-gauge>
-        </ion-item>
-        
-          <ion-item lines="none" >
-            <ion-row>
-              <ion-col center text-center col6>
-                <ion-item lines="none" *ngIf="realtimeDataModel.device_amps != undefined">
-                  <ion-icon name="flash-outline"  slot="start"></ion-icon>
-                  <ion-label>Amperaje <strong>{{realtimeDataModel.device_amps}} Amps</strong></ion-label>
-                </ion-item>
-                <ion-item lines="none" *ngIf="realtimeDataModel.device_amps == undefined">
-                  <ion-icon name="flash-off-outline" slot="start"></ion-icon>
-                  <ion-label>Amperaje <strong>0 Amps</strong></ion-label>
-                </ion-item>
-              </ion-col>
-              <ion-col  center text-center col6>
-                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_strength == undefined">
-                  <ion-icon name="cloud-offline-outline" slot="start"></ion-icon>
-                  <ion-label>Porcentaje de Señal Wi-fi <strong>0</strong> %</ion-label>
-                </ion-item>
-                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_strength ">
-                  <ion-icon name="wifi-outline" slot="start"></ion-icon>
-                  <ion-label>Porcentaje de Señal Wi-fi <strong>{{realtimeDataModel.wifi_strength || 0}}</strong> %</ion-label>
-                </ion-item>
-              </ion-col>
-              <ion-col center text-center col6>
-                <ion-item lines="none" *ngIf="realtimeDataModel.wifi_Name == undefined">
-                  <ion-icon name="earth-outline" slot="start"></ion-icon>
-                  <ion-label><strong>Dispositivo no conectado</strong></ion-label>
-                </ion-item>
-                <ion-item *ngIf="realtimeDataModel.wifi_Name">
-                  <ion-icon name="earth-outline" slot="start"></ion-icon>
-                  <ion-label>Dispositivo no conectado<strong>{{realtimeDataModel.wifi_Name || ''}}</strong></ion-label>
-                </ion-item>
-              </ion-col>
-              
-            </ion-row>
-           
-          </ion-item>
-      </ion-card-content>
-    </ion-card>
-    <br>
-    <ion-card>
-      <ion-card-header>
-          {{selectedElapsedTime}}
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item lines="none">
-          <canvas #barChart>
-            
-          </canvas>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-row>
-            <ion-col center text-center col6>
-              <ion-item lines="none">
-                <ion-icon name="calculator-outline" slot="start"></ion-icon>         
-                <ion-label>Total de Watts Consumidos <strong>{{this.Watts || 0}}</strong></ion-label>
-              </ion-item>
-            </ion-col>
-            <ion-col  center text-center col6>
-              <ion-item lines="none">
-                <ion-icon name="calculator-outline" slot="start"></ion-icon>
-                <ion-label>Total Amperios Consumidos<strong>{{this.Amps || 0}}</strong></ion-label>
-              </ion-item>
-            </ion-col>
-            
-          </ion-row>
-        </ion-item>
-        <ion-item lines="none">
-          <ion-row>
-            <ion-col size="12" class="ion-align-self-center" center>
-              <ion-label><strong>Resumen de Consumo a nivel general</strong></ion-label>
-          <p class="healthy-text" *ngIf="deviceHealth ==1"> {{healthText}}</p>
-          <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">{{healthText}}</p>
-          <p class="healthy-text" *ngIf="deviceHealth==0">El consumo del dispositivo no ha tenido cambios de consumos ultimamente</p>
- 
-            </ion-col>
-          </ion-row>
 
-          
-        </ion-item>
-        
-      </ion-card-content>
-    </ion-card>
+      <ion-item lines="none">
+        <ion-row>
+          <ion-col center text-center col6>
+            <ion-item
+              lines="none"
+              *ngIf="realtimeDataModel.device_amps != undefined"
+            >
+              <ion-icon name="flash-outline" slot="start"></ion-icon>
+              <ion-label
+                >Amperaje
+                <strong
+                  >{{realtimeDataModel.device_amps}} Amps</strong
+                ></ion-label
+              >
+            </ion-item>
+            <ion-item
+              lines="none"
+              *ngIf="realtimeDataModel.device_amps == undefined"
+            >
+              <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+              <ion-label>Amperaje <strong>0 Amps</strong></ion-label>
+            </ion-item>
+          </ion-col>
+          <ion-col center text-center col6>
+            <ion-item
+              lines="none"
+              *ngIf="realtimeDataModel.wifi_strength == undefined"
+            >
+              <ion-icon name="cloud-offline-outline" slot="start"></ion-icon>
+              <ion-label
+                >Porcentaje de Señal Wi-fi <strong>0</strong> %</ion-label
+              >
+            </ion-item>
+            <ion-item lines="none" *ngIf="realtimeDataModel.wifi_strength ">
+              <ion-icon name="wifi-outline" slot="start"></ion-icon>
+              <ion-label
+                >Porcentaje de Señal Wi-fi
+                <strong>{{realtimeDataModel.wifi_strength || 0}}</strong>
+                %</ion-label
+              >
+            </ion-item>
+          </ion-col>
+          <ion-col center text-center col6>
+            <ion-item
+              lines="none"
+              *ngIf="realtimeDataModel.wifi_Name == undefined"
+            >
+              <ion-icon name="earth-outline" slot="start"></ion-icon>
+              <ion-label><strong>Dispositivo no conectado</strong></ion-label>
+            </ion-item>
+            <ion-item *ngIf="realtimeDataModel.wifi_Name">
+              <ion-icon name="earth-outline" slot="start"></ion-icon>
+              <ion-label
+                >Dispositivo no conectado<strong
+                  >{{realtimeDataModel.wifi_Name || ''}}</strong
+                ></ion-label
+              >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <br />
+  <ion-card>
+    <ion-card-header> {{selectedElapsedTime}} </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <canvas #barChart> </canvas>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-row>
+          <ion-col center text-center col6>
+            <ion-item lines="none">
+              <ion-icon name="calculator-outline" slot="start"></ion-icon>
+              <ion-label
+                >Total de Watts Consumidos
+                <strong>{{this.Watts || 0}}</strong></ion-label
+              >
+            </ion-item>
+          </ion-col>
+          <ion-col center text-center col6>
+            <ion-item lines="none">
+              <ion-icon name="calculator-outline" slot="start"></ion-icon>
+              <ion-label
+                >Total Amperios Consumidos<strong
+                  >{{this.Amps || 0}}</strong
+                ></ion-label
+              >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-row>
+          <ion-col size="12" class="ion-align-self-center" center>
+            <ion-label
+              ><strong>Resumen de Consumo a nivel general</strong></ion-label
+            >
+            <p class="healthy-text" *ngIf="deviceHealth ==1">{{healthText}}</p>
+            <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">
+              {{healthText}}
+            </p>
+            <p class="healthy-text" *ngIf="deviceHealth==0">
+              El consumo del dispositivo no ha tenido cambios de consumos
+              ultimamente
+            </p>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

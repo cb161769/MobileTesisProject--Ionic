@@ -1,9 +1,8 @@
 <ion-header>
   <ion-toolbar>
-
     <ion-buttons slot="start">
       <ion-button (click)="goBack()">
-        <ion-icon slot="icon-only"  name="arrow-back-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
 
       <ion-button (click)="selectTime()">
@@ -14,180 +13,219 @@
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content class="container ion-padding" [fullscreen] ="false" [scrollEvents] ="true" (ionScroll)="logScroll($event)">
-<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-  <ion-refresher-content
-    pullingIcon="arrow-dropdown"
-    pullingText="Pull to refresh"
-    refreshingSpinner="bubbles"
-    refreshingText="Refreshing...">
-  </ion-refresher-content>
-</ion-refresher>
-<ion-grid fixed="true" class="intro">
-  <ion-row>
-    <ion-col size="12" class="centered-text">Consumo Total</ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="12" class="centered-text">
-      <h3>{{this.totalConsumptionInKhw}}Kwh</h3>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col size="2">
-     
-      <ion-icon slot="start" name="arrow-up-outline">
-       
-      </ion-icon>
-      <h6>{{this.totalConsumptionInAmps}}Amps</h6>
-    </ion-col >
-    <ion-col size="6">
-    
-    </ion-col>
-    <ion-col size="2">
-      <ion-icon slot="start" name="arrow-down-circle" class="arrow-down">
-      
-      </ion-icon>
-      <h6>{{this.totalConsumptionInWatts}}W</h6>
-    </ion-col>
-  </ion-row>
-</ion-grid>
-<ion-card class="card" fixed="true">
-<ion-card-header>
-  <ion-card-title>Consumo en tiempo real</ion-card-title>
-</ion-card-header>
-<ion-card-content>
- <ion-grid>
-  <ion-row>
-    <ion-col size="12">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title><ion-icon name="flash-outline"></ion-icon> Consumo</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-row>
-            <ion-col size="6">
-              <ion-item lines="none">
-                <ion-label>Estatus</ion-label>
-              </ion-item>
-            </ion-col>
-            <ion-col size="6">
-              <ion-item lines="none"> 
-                <ion-toggle color="primary" disabled></ion-toggle>
-              </ion-item>
-            </ion-col>
-            <ion-col size="12">
-              <ion-item  lines="none">
-                <ion-button color="secondary">
-                  <ion-icon name="power-outline"></ion-icon>
-                  encender
-                </ion-button>
-              </ion-item>
-              
-            </ion-col>
-          </ion-row>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
-   <ion-row class="account">
-     <ion-col size="12" >
-      <ion-item lines="none" >
-        <ngx-gauge [type]="gaugeType" 
-        [value]="this.connectionsRealtimeDataModel.CT1_Watts || 0"   
-        [append]="gaugeAppendText" [thresholds]="thresholdConfig" [size]="250" >
-       </ngx-gauge>
-       </ion-item>
-     </ion-col>
-   </ion-row>
-   <ion-row>
-     <ion-col size="12">
-      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Watts">
-        <ion-icon name="bulb-outline"></ion-icon>
-        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Watts}}Watts</span> 
-       </ion-item>
-       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Watts == null">
-        <ion-icon name="flash-off-outline" slot="start"></ion-icon>
-        <span class="account-name"> 0 Watts</span> 
-       </ion-item>
-     </ion-col>
-   </ion-row>
-   <ion-row>
-     <ion-col size="12">
-      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Amps">
-        <ion-icon name="bulb-outline"></ion-icon>
-        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Amps}}Amps</span> 
-       </ion-item>
-       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Amps == null">
-        <ion-icon name="flash-off-outline" slot="start"></ion-icon>
-        <span class="account-name"> 0 Amps</span> 
-       </ion-item>
-     </ion-col>
-   </ion-row>
-   <ion-row>
-     <ion-col size="12">
-      <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Status">
-        <ion-icon name="wifi-outline"></ion-icon>
-        <span class="account-name">{{connectionsRealtimeDataModel.CT1_Status}}</span> 
-       </ion-item>
-       <ion-item lines="none" *ngIf="connectionsRealtimeDataModel.CT1_Status == null">
-        <ion-icon name="earth-outline" slot="start"></ion-icon>
-        <span class="account-name"> Desconectado</span> 
-       </ion-item>
-     </ion-col>
-   </ion-row>
- </ion-grid>
-</ion-card-content>  
-</ion-card>
-<ion-card class="card" fixed="true">
-
-  <ion-card-header>
-      <ion-card-subtitle *ngIf="selected_time=='Mensual'">Este mes</ion-card-subtitle>
-      <ion-card-subtitle *ngIf="selected_time=='Trimestral'">Este trimestre</ion-card-subtitle>
-      <ion-card-subtitle *ngIf="selected_time=='Anual'">Este año</ion-card-subtitle>
-      <ion-card-subtitle *ngIf="selected_time=='Semanal'">Ultimos 7 dias</ion-card-subtitle>
+<ion-content
+  class="container ion-padding"
+  [fullscreen]="false"
+  [scrollEvents]="true"
+  (ionScroll)="logScroll($event)"
+>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="bubbles"
+      refreshingText="Refreshing..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-grid fixed="true" class="intro">
+    <ion-row>
+      <ion-col size="12" class="centered-text">Consumo Total</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" class="centered-text">
+        <h3>{{this.totalConsumptionInKhw}}Kwh</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="2">
+        <ion-icon slot="start" name="arrow-up-outline"> </ion-icon>
+        <h6>{{this.totalConsumptionInAmps}}Amps</h6>
+      </ion-col>
+      <ion-col size="6"> </ion-col>
+      <ion-col size="2">
+        <ion-icon slot="start" name="arrow-down-circle" class="arrow-down">
+        </ion-icon>
+        <h6>{{this.totalConsumptionInWatts}}W</h6>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card class="card" fixed="true">
+    <ion-card-header>
+      <ion-card-title>Consumo en tiempo real</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title
+                  ><ion-icon name="flash-outline"></ion-icon>
+                  Consumo</ion-card-title
+                >
+              </ion-card-header>
+              <ion-card-content>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-label>Estatus</ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <ion-toggle color="primary" disabled></ion-toggle>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="12">
+                    <ion-item lines="none">
+                      <ion-button color="secondary">
+                        <ion-icon name="power-outline"></ion-icon>
+                        encender
+                      </ion-button>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+        <ion-row class="account">
+          <ion-col size="12">
+            <ion-item lines="none">
+              <ngx-gauge
+                [type]="gaugeType"
+                [value]="this.connectionsRealtimeDataModel.CT1_Watts || 0"
+                [append]="gaugeAppendText"
+                [thresholds]="thresholdConfig"
+                [size]="250"
+              >
+              </ngx-gauge>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Watts"
+            >
+              <ion-icon name="bulb-outline"></ion-icon>
+              <span class="account-name"
+                >{{connectionsRealtimeDataModel.CT1_Watts}}Watts</span
+              >
+            </ion-item>
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Watts == null"
+            >
+              <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+              <span class="account-name"> 0 Watts</span>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Amps"
+            >
+              <ion-icon name="bulb-outline"></ion-icon>
+              <span class="account-name"
+                >{{connectionsRealtimeDataModel.CT1_Amps}}Amps</span
+              >
+            </ion-item>
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Amps == null"
+            >
+              <ion-icon name="flash-off-outline" slot="start"></ion-icon>
+              <span class="account-name"> 0 Amps</span>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Status"
+            >
+              <ion-icon name="wifi-outline"></ion-icon>
+              <span class="account-name"
+                >{{connectionsRealtimeDataModel.CT1_Status}}</span
+              >
+            </ion-item>
+            <ion-item
+              lines="none"
+              *ngIf="connectionsRealtimeDataModel.CT1_Status == null"
+            >
+              <ion-icon name="earth-outline" slot="start"></ion-icon>
+              <span class="account-name"> Desconectado</span>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="card" fixed="true">
+    <ion-card-header>
+      <ion-card-subtitle *ngIf="selected_time=='Mensual'"
+        >Este mes</ion-card-subtitle
+      >
+      <ion-card-subtitle *ngIf="selected_time=='Trimestral'"
+        >Este trimestre</ion-card-subtitle
+      >
+      <ion-card-subtitle *ngIf="selected_time=='Anual'"
+        >Este año</ion-card-subtitle
+      >
+      <ion-card-subtitle *ngIf="selected_time=='Semanal'"
+        >Ultimos 7 dias</ion-card-subtitle
+      >
       <ion-card-title>Graficos de consumo</ion-card-title>
       <ion-item lines="none">
         <ion-label>Mostrar valores en Kilowatts?</ion-label>
-         <ion-toggle [(ngModel)]="showKlhw" (ionChange)="changeKhw($event)" [checked]="showKlwChekedchek"></ion-toggle>
+        <ion-toggle
+          [(ngModel)]="showKlhw"
+          (ionChange)="changeKhw($event)"
+          [checked]="showKlwChekedchek"
+        ></ion-toggle>
       </ion-item>
     </ion-card-header>
-  <ion-card-content>
-    <ion-grid fixed>
-      <ion-row>
-        <ion-col size="12" class="ion-align-self-center">
-          <ion-item lines="none">
-            <canvas #barChart>
-
-            </canvas>
-          </ion-item>
-        </ion-col>
-        <ion-col size="6"></ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="5" class="ion-align-self-center">
-        <ion-label></ion-label>
-        </ion-col>
-        <ion-col size="7" class="ion-align-self-center">
-         <ion-label></ion-label>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="5" class="ion-align-self-center">
-          <span id="valor"></span>
-        </ion-col>
-        <!--TODO ADD COMPARATIVES-->
-        <ion-col size="7" class="ion-align-self-center">
-          <ion-label><strong>Resumen de Consumo a nivel general</strong></ion-label>
-          <p class="healthy-text" *ngIf="deviceHealth ==1"> {{healthText}}</p>
-          <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">{{healthText}}</p>
-          <p class="healthy-text" *ngIf="deviceHealth==0">El consumo del dispositivo no ha tenido cambios de consumos ultimamente</p>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    
-  </ion-card-content>
-</ion-card>
+    <ion-card-content>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="12" class="ion-align-self-center">
+            <ion-item lines="none">
+              <canvas #barChart> </canvas>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6"></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="5" class="ion-align-self-center">
+            <ion-label></ion-label>
+          </ion-col>
+          <ion-col size="7" class="ion-align-self-center">
+            <ion-label></ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <!--TODO ADD COMPARATIVES-->
+          <ion-col size="12" class="ion-align-self-center" center>
+            <ion-label
+              ><strong>Resumen de Consumo a nivel general</strong></ion-label
+            >
+            <p class="healthy-text" *ngIf="deviceHealth ==1">{{healthText}}</p>
+            <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">
+              {{healthText}}
+            </p>
+            <p class="healthy-text" *ngIf="deviceHealth==0">
+              El consumo de la conexion no ha tenido cambios de consumos
+              ultimamente
+            </p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
-
-
