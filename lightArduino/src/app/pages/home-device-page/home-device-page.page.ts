@@ -3,7 +3,7 @@ import { RealtimeData } from './../../models/realtime-data';
 import { EnergyService } from './../../data-services/energyService/energy.service';
 import { MessageService } from './../../data-services/messageService/message.service';
 import { DynamoDBAPIService } from './../../data-services/dynamo-db-api.service';
-import { AlertController, LoadingController, ToastController, NavController,ActionSheetController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, NavController, ActionSheetController } from '@ionic/angular';
 import { AwsAmplifyService } from 'src/app/data-services/aws-amplify.service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {  Chart} from 'chart.js';
@@ -44,9 +44,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   Amps = 0;
   Watts = 0;
   selected_time: any;
-  showKlhw:boolean = false;
+  showKlhw = false;
   deviceHealth = 0;
-  selectedElapsedTime= '';
+  selectedElapsedTime = '';
   healthText = '';
 
   /**
@@ -61,7 +61,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    */
 
   constructor(public awsAmplifyService: AwsAmplifyService, public loadingIndicator: LoadingController, public router: Router, public DynamoDBService: DynamoDBAPIService,
-              public ToastController: ToastController, public actionSheetController: ActionSheetController,public messageService: MessageService, public alertController: AlertController, public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public MQTTServiceService: MQTTServiceService) { }
+              public ToastController: ToastController, public actionSheetController: ActionSheetController, public messageService: MessageService, public alertController: AlertController, public energyService: EnergyService, private apolloClient: Apollo, public navController: NavController, public MQTTServiceService: MQTTServiceService) { }
 
   async ngOnInit() {
     try {
@@ -130,33 +130,34 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
 
   }
   /**
-   * 
+   *
    * @param log log model
    */
-  async logDevice(log:LogModel){
+  async logDevice(log: LogModel){
     const url = environment.LoggerEndPoints.ULR;
     const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
     const urlFullPath = `${url}` + `${loggerPath}`;
-    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
+    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() => {
     });
   }
 
 
 /**
- * 
+ *
  */
   async showDetailedChart(){
+    await this.presentLoading();
     const urlRoot = environment.DynamoBDEndPoints.ULR;
     const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceWeekly;
 
-    let curr = new Date; // get current date
-    let first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-    let last = first + 6; // last day is the first day + 6
+    const curr = new Date; // get current date
+    const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+    const last = first + 6; // last day is the first day + 6
 
-    let firstday = new Date(curr.setDate(first));
+    const firstday = new Date(curr.setDate(first));
     firstday.setHours(0, 0, 0);
 
-    let lastday = new Date(curr.setDate(last));
+    const lastday = new Date(curr.setDate(last));
     lastday.setHours(24, 59, 59);
 
 
@@ -188,33 +189,34 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       let fridayDataAmps = 0;
       let saturdayDataAmps = 0;
       let sundayDataAmps = 0;
-      this.DynamoDBService.genericGetMethods(fullUrl).subscribe((response) => {
-
-        this.deviceHealth = response?.health.health || 0;
-        mondayData = response.usage[0].lunes.watts || 0;
-        tuesdayData = response.usage[0].martes.watts || 0;
-        wednesdayData = response.usage[0].miercoles.watts || 0;
-        thursdayData = response.usage[0].jueves.watts || 0;
-        fridayData = response.usage[0].viernes.watts || 0;
-        saturdayData = response.usage[0].sabado.watts || 0;
-        sundayData = response.usage[0].domingo.watts || 0;
-        finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
-        mondayDataAmps = response.usage[0].lunes.amperios || 0;
-        tuesdayDataAmps = response.usage[0].martes.amperios || 0;
-        thursdayDataAmps = response.usage[0].miercoles.amperios || 0;
-        wednesdayDataAmps = response.usage[0].jueves.amperios || 0;
-        fridayDataAmps = response.usage[0].viernes.amperios || 0;
-        saturdayDataAmps = response.usage[0].sabado.amperios || 0;
-        sundayDataAmps = response.usage[0].domingo.amperios || 0;
+      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+        next: (response) => {
+          this.deviceHealth = response?.health.health || 0;
+          this.healthText = response?.health.message || '';
+          mondayData = response?.usage[0].lunes.watts || 0;
+          tuesdayData = response?.usage[0].martes.watts || 0;
+          wednesdayData = response?.usage[0].miercoles.watts || 0;
+          thursdayData = response?.usage[0].jueves.watts || 0;
+          fridayData = response?.usage[0].viernes.watts || 0;
+          saturdayData = response?.usage[0].sabado.watts || 0;
+          sundayData = response?.usage[0].domingo.watts || 0;
+          finalData.push(mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData);
+          mondayDataAmps = response?.usage[0].lunes.amperios || 0;
+          tuesdayDataAmps = response?.usage[0].martes.amperios || 0;
+          thursdayDataAmps = response?.usage[0].miercoles.amperios || 0;
+          wednesdayDataAmps = response?.usage[0].jueves.amperios || 0;
+          fridayDataAmps = response?.usage[0].viernes.amperios || 0;
+          saturdayDataAmps = response?.usage[0].sabado.amperios || 0;
+          sundayDataAmps = response?.usage[0].domingo.amperios || 0;
         // tslint:disable-next-line: max-line-length
-        ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
+          ampsData.push(mondayDataAmps, tuesdayDataAmps, wednesdayDataAmps, thursdayDataAmps, fridayDataAmps, saturdayDataAmps, sundayDataAmps);
 
-        this.Watts = parseInt(response.usage[0].totalWatts || 0);
-        this.Amps = response.usage[0].totalAmps;
-        const ctx = this.barChart.nativeElement;
-        ctx.height = 200;
-        ctx.width = 200;
-        this.bars = new Chart(ctx, {
+          this.Watts = parseInt(response.usage[0].totalWatts || 0);
+          this.Amps = response.usage[0].totalAmps;
+          const ctx = this.barChart.nativeElement;
+          ctx.height = 200;
+          ctx.width = 200;
+          this.bars = new Chart(ctx, {
           type: 'line',
           data: {
             labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
@@ -250,8 +252,18 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             }
           }
         });
+        },
+        error: async (error) => {
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: 'bottom',
+            color: 'dark'
+          });
+          toast.present();
+        }
       });
-
+      this.loading.dismiss();
     } catch (error) {
 
       const logger = new LogModel();
@@ -278,7 +290,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * this method is called one when the view is entered
    */
   async ionViewDidEnter(){
-     const source = interval(1000);
+     const source = interval(10000);
      this.subscription = source.subscribe(() => this.refreshDeviceReadings());
      const cond = interval(10000);
      this.weeklySubscription = cond.subscribe(() => this.showDetailedChart());
@@ -353,7 +365,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    * @method selectTime
    */
   async selectTime(){
-    debugger;
     const actionSheet = await this.actionSheetController.create({
       header: 'Seleccionar Lapso Temporal',
       buttons: [
@@ -371,7 +382,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         },
         {
           text: 'Esta Semana', handler: () => {
-            this.showDetailedChartInCurrentWeek();
+            this.showDetailedChart();
             this.selected_time = 'Esta Semana';
           }
         },
@@ -381,21 +392,165 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             this.selected_time = 'Modal';
           }
         },
-       
+
       ]
     });
     await actionSheet.present();
   }
   /**
+   * @description this method is used to show the detail chart in current year
    *@function showDetailChartInCurrentYear
    */
-  showDetailChartInCurrentYear(){
+  async showDetailChartInCurrentYear(){
+    await this.presentLoading();
+    const urlRoot = environment.DynamoBDEndPoints.ULR;
+    const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadingsByYearHelper;
+    const fullUrl = urlRoot + urlEndpoint;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = fullUrl;
+    logger.action = 'showDetailChartInCurrentYear';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
+    this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+      next: async (response) => {
+        debugger;
+        const ctx = this.barChart.nativeElement;
+        ctx.height = 200;
+        ctx.width = 250;
+        this.deviceHealth = response?.health.health || 0;
+        this.healthText = response?.health.message || '';
+        this.bars = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [''],
+            datasets: [{
+              label: 'Valor en watts',
+                data: response?.usage[0].timeStamp || [],
+              fill: true,
 
+            }]
+          },
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Consumo durante este año'
+            }
+          },
+          scales: {
+            xAxes: [{
+              type: 'time',
+              display: true,
+              distribution: 'series',
+              time: {
+                  unit: 'year',
+                  displayFormats: {year: 'YYYY'},
+                  min: '1970' ,
+                  max: '2022',
+              }
+            }]
+          }
+
+        });
+      },
+      error: async (error) => {
+        const logger = new LogModel();
+        logger.level = 'ERROR';
+        logger.route = 'HTTP';
+        logger.action = 'showDetailChartInCurrentYear';
+        logger.timeStamp = new Date();
+        logger.userName = '';
+        logger.logError = error;
+        logger.timeStamp.toDateString();
+        const toast = await this.ToastController.create({
+          message: `Ha ocurrido un error`,
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+      }
+    });
+    this.loading.dismiss();
   }
   /**
    *@function showDetailChartInCurrentMonth
    */
-  showDetailChartInCurrentMonth(){
+  async showDetailChartInCurrentMonth(){
+    await this.presentLoading();
+    const urlRoot = environment.DynamoBDEndPoints.ULR;
+    const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadingsByMonthHelper;
+    const curr = new Date();
+    const firstsOfMonth = new Date(curr.getFullYear(), curr.getMonth(), 1);
+    const lastOfMonth = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
+    lastOfMonth.setHours(24, 59, 59);
+    firstsOfMonth.setHours(0, 0, 0);
+    const initialDateEpoch = Math.floor(firstsOfMonth.getTime() / 1000);
+    const fullUrl = urlRoot + urlEndpoint + `/${initialDateEpoch}/`;
+    const logger = new LogModel();
+    logger.level = 'INFO';
+    logger.route = fullUrl;
+    logger.action = 'showDetailChartInCurrentMonth';
+    logger.timeStamp = new Date();
+    logger.userName = '';
+    await this.logDevice(logger);
+    this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+      next: async (data) => {
+        debugger;
+        const ctx = this.barChart.nativeElement;
+        ctx.height = 200;
+        ctx.width = 250;
+        this.deviceHealth = data?.health.health || 0;
+        this.healthText = data?.health.message || '';
+        const dataset  =  data?.usage[0].detail.MonthDetails.TimeStamp || [] ;
+        this.bars = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [''],
+            datasets: [{
+              label: 'Valor en watts',
+                data: dataset,
+              fill: true,
+
+            }]
+          },
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Consumo durante este mes'
+            }
+          },
+          scales: {
+            xAxes: [{
+              type: 'time',
+              display: true,
+              distribution: 'series',
+              time: {
+                  unit: 'year',
+                  displayFormats: {year: 'YYYY'},
+                  min: '1970' ,
+                  max: '2022',
+              }
+            }]
+          }
+
+        });
+
+      },
+      error: async (error) => {
+        this.loading.dismiss();
+        const toast = await this.ToastController.create({
+          message: `Ha ocurrido un error`,
+          duration: 2000,
+          position: 'bottom',
+          color: 'dark'
+        });
+        toast.present();
+      }
+    });
 
   }
   /**
@@ -416,13 +571,13 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     }
     // este mes
     if (this.showKlhw === true  && this.selected_time == 'Este Mes') {
-//this.showDetailChartInCurrentMonthKilowatts();
+// this.showDetailChartInCurrentMonthKilowatts();
     }
     if (this.showKlhw == false && this.selected_time == 'Este Mes') {
       this.showDetailChartInCurrentMonth();
     }
     if (this.showKlhw === true  && this.selected_time == 'Esta Semana') {
-      //this.showDetailChartInCurrentWeekKilowatts();
+      // this.showDetailChartInCurrentWeekKilowatts();
     }
     if (this.showKlhw == false && this.selected_time == 'Esta Semana') {
       this.showDetailedChartInCurrentWeek();
@@ -530,8 +685,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     logger.userName = '';
     await this.logDevice(logger);
     // let userEmail:string = this.messageService.getUserEmail();
-    let url = environment.DynamoBDEndPoints.ULR;
-    let urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
+    const url = environment.DynamoBDEndPoints.ULR;
+    const urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
     const urlFullPath = `${url}` + `${urlPath}` + `/${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(async (data) => {
       if (data != null || data != undefined || data.readings == undefined) {

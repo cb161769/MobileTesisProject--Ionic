@@ -32,6 +32,8 @@ export const environment = {
       getDeviceReadingsByCurrentYear: '/IotDevice/getAllDeviceReadingsByMonth',
       getDeviceReadingsByGivenDay: '/IotDevice/getAllDeviceReadingsByGivenDay',
       getDeviceReadingsByGivenMonth: '/IotDevice/getAllDeviceReadingsByGivenMonth',
+      getDeviceReadingsByMonthHelper: '/IotDevice/getMonthly',
+      getDeviceReadingsByYearHelper: '/IotDevice/getDeviceYearly/allConfig',
       DeviceCriteria: {
         Monthly: {
           getAllDeviceReadingsByGivenParametersMonthly: '/IotDevice/getAllDeviceReadingsByGivenParametersMonthly/'
