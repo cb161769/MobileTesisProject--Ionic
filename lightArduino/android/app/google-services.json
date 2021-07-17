@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "320976488921",
+      "project_id": "test-67025",
+      "storage_bucket": "test-67025.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:320976488921:android:3433da792dfe6ab3aa71c8",
+          "android_client_info": {
+            "package_name": "com.claudio.lightArduino"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "320976488921-ld93ermti52lpc69qu072sh4cqgnijcd.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyC36NIqzkme1kZ9_4hUdAeRJe8gUdMHQEI"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "320976488921-ld93ermti52lpc69qu072sh4cqgnijcd.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

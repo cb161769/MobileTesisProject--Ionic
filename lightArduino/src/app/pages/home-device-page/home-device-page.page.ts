@@ -146,7 +146,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
  *
  */
   async showDetailedChart(){
-    await this.presentLoading();
+   // await this.presentLoading();
     const urlRoot = environment.DynamoBDEndPoints.ULR;
     const urlEndpoint = environment.DynamoBDEndPoints.API_PATHS.getDeviceWeekly;
 
@@ -264,7 +264,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           toast.present();
         }
       });
-      this.loading.dismiss();
+   //   this.loading.dismiss();
     } catch (error) {
 
       const logger = new LogModel();
