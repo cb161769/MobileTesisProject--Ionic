@@ -6,9 +6,9 @@ import { Observable, throwError, from, forkJoin  } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { Auth } from 'aws-amplify';
+import { Network } from '@capacitor/network';
 
-
-
+import { LoadingController, AlertController, NavController, ToastController, ActionSheetController } from '@ionic/angular';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +16,7 @@ export class DynamoDBAPIService {
   url: any = environment.DynamoBDEndPoints.ULR;
   getDeviceReadingsEndPoint: any = environment.DynamoBDEndPoints.API_PATHS.getDeviceReadings;
   token: any;
-  constructor(public httpClient: HttpClient, public AwsAmplifyService: AwsAmplifyService, public ErrorService: ErrorService) {
+  constructor(public httpClient: HttpClient, public AwsAmplifyService: AwsAmplifyService, public ErrorService: ErrorService, public toastController: ToastController) {
 
 
    }
@@ -36,6 +36,7 @@ export class DynamoDBAPIService {
     );
 
   }
+
   async asyncGenericGetMethods(url: string){
     const resul = await this.httpClient.get(url).pipe(
       map((data: any[]) => {
@@ -109,34 +110,46 @@ export class DynamoDBAPIService {
   /**
    * @method genericLogMethod
    * @description this method logs to the dynamoDb Database
-   * @param urlPost 
-   * @param bodyPost 
-   * @returns 
+   * @param urlPost
+   * @param bodyPost
+   * @returns
    */
   genericLogMethod(urlPost: string, bodyPost: any){
     // debugger;
-    const log = {
-      userName: bodyPost.userName,
-      timeStamp: bodyPost.timeStamp,
-      action: bodyPost.action,
-      route: bodyPost.route,
-      logLevel: bodyPost.logLevel,
-      logError: bodyPost.logError
-    };
-    const promise = new Promise((resolve, reject) => {
-      this.httpClient.post(urlPost, log)
-      .toPromise().then(
-        (res) => {
-          resolve(res);
-        },
-        (msg) => {
-          reject(msg);
-        }
+    Network.addListener('networkStatusChange', async status => {
+      if (status.connected) {
+        const log = {
+          userName: bodyPost.userName,
+          timeStamp: bodyPost.timeStamp,
+          action: bodyPost.action,
+          route: bodyPost.route,
+          logLevel: bodyPost.logLevel,
+          logError: bodyPost.logError
+        };
+        const promise = new Promise((resolve, reject) => {
+          this.httpClient.post(urlPost, log)
+          .toPromise().then(
+            (res) => {
+              resolve(res);
+            },
+            (msg) => {
+              reject(msg);
+            }
 
-      );
+          );
 
+        });
+        return promise;
+      }
+      else{
+        const toast = await this.toastController.create({
+          message: 'ha ocurrido un error de conexion',
+          duration: 2000
+        });
+        toast.present();
+      }
     });
-    return promise;
+
 
 
   }
@@ -147,22 +160,33 @@ export class DynamoDBAPIService {
    * @returns {Promise<any>}
    */
   async genericGet(urlGet: string ): Promise<any>{
+    Network.addListener('networkStatusChange', async status => {
+      if (status.connected){
+      const promise = new Promise((resolve, reject) => {
+        this.httpClient.get(urlGet)
+        .toPromise().then(
+          (res) => {
+            resolve(res);
+          },
+          (msg) => {
+            reject(msg);
+          }
 
+        );
 
-    const promise = new Promise((resolve, reject) => {
-      this.httpClient.get(urlGet)
-      .toPromise().then(
-        (res) => {
-          resolve(res);
-        },
-        (msg) => {
-          reject(msg);
-        }
-
-      );
+      });
+      return promise;
+      }
+      else{
+        const toast = await this.toastController.create({
+          message: 'ha ocurrido un error de conexion',
+          duration: 2000
+        });
+        toast.present();
+      }
 
     });
-    return promise;
+
 
 
   }

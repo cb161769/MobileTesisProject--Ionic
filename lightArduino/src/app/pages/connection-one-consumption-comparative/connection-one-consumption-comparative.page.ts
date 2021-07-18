@@ -61,7 +61,11 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
 
 
     }).catch( async (error) => {
-      console.log(error);
+     const toast = await this.ToastController.create({
+       message:'ha ocurrido un error consultando la data',
+       duration: 2000,
+     });
+     toast.present();
     });
   }
   /**
