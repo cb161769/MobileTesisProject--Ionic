@@ -61,6 +61,7 @@ export class StatisticsPagePage implements OnInit {
     const urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
     const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(
+
       {
         next: async (data) => {
           if (data != null || data != undefined || data.data != undefined) {
@@ -93,8 +94,14 @@ export class StatisticsPagePage implements OnInit {
             await alert.present();
           }
         },
-        error: (error) => {
-          console.log(error);
+        error: async (error) => {
+          const toast = await this.ToastController.create({
+            message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
+            duration: 2000,
+            position: 'bottom',
+            color: 'dark'
+          });
+          toast.present();
         },
         complete: () => {
           console.log('complete...');
@@ -142,8 +149,14 @@ export class StatisticsPagePage implements OnInit {
 
       }
 
-    }).catch((error) => {
-      console.log(error);
+    }).catch( async (error) => {
+      const toast = await this.ToastController.create({
+        message: 'Ha ocurrido un error, ingrese nuevamente al sistema',
+        duration: 2000,
+        position: 'bottom',
+        color: 'dark'
+      });
+      toast.present();
 
     }).finally(() => {
       this.loading.dismiss();
