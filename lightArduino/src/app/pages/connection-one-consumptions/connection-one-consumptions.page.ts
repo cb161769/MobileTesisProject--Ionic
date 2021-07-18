@@ -12,6 +12,8 @@ import {  Chart} from 'chart.js';
 import 'chartjs-adapter-moment';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LogModel } from 'src/app/models/log-model';
+import { Network } from '@capacitor/network';
+
 @Component({
   selector: 'app-connection-one-consumptions',
   templateUrl: './connection-one-consumptions.page.html',
@@ -216,41 +218,52 @@ export class ConnectionOneConsumptionsPage implements OnInit {
      * @returns String
      */
     getDeviceName(username: string): string{
-      const Connections = this.getDevices(username);
-      const url = environment.DynamoBDEndPoints.ULR;
-      let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
-      let deviceName;
-      const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
-      this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
-        next: (response) => {
-          deviceName = response.configuration[0].deviceName;
-          this.deviceName = deviceName;
-          this.GetDeviceConfiguration(deviceName);
-          const object = [{name: deviceName}];
-          for (let index = 0; index < Connections.length; index++) {
-            const element = Connections[index];
-            object.push(element);
+      Network.addListener('networkStatusChange', async status => {
+        if (status.connected) {
+          const Connections = this.getDevices(username);
+          const url = environment.DynamoBDEndPoints.ULR;
+          let url_path = environment.DynamoBDEndPoints.API_PATHS.getDeviceConfiguration;
+          let deviceName;
+          const urlFullPath = `${url}` + `${url_path}` + `/${username}`;
+          this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
+            next: (response) => {
+              deviceName = response.configuration[0].deviceName;
+              this.deviceName = deviceName;
+              this.GetDeviceConfiguration(deviceName);
+              const object = [{name: deviceName}];
+              for (let index = 0; index < Connections.length; index++) {
+                const element = Connections[index];
+                object.push(element);
 
-          }
-          this.ConnectionConsumptionsModel.Devices = object;
-          return deviceName;
-        },
-        error: async (response) => {
-          const alert = await this.alertController.create({
-            header: 'Error',
-            message: response,
+              }
+              this.ConnectionConsumptionsModel.Devices = object;
+              return deviceName;
+            },
+            error: async (response) => {
+              const alert = await this.alertController.create({
+                header: 'Error',
+                message: response,
+              });
+              await alert.present();
+            },
+            complete: () => {
+              return deviceName;
+            }
           });
-          await alert.present();
-        },
-        complete: () => {
           return deviceName;
+        }else{
+          const toast = await this.ToastController.create({
+            message: 'ha ocurrido un error de conexion',
+            duration: 2000
+          });
+          toast.present();
         }
       });
-      return deviceName;
+      return;
     }
     async GetDeviceConfiguration(username: any){
-      let url = environment.DynamoBDEndPoints.ULR;
-      let urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
+      const url = environment.DynamoBDEndPoints.ULR;
+      const urlPath = environment.DynamoBDEndPoints.API_PATHS.getArduinoDeviceConfiguration;
       const urlFullPath = `${url}` + `${urlPath}` + `/${username}`;
       this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
         next: async (response) => {
@@ -286,8 +299,7 @@ export class ConnectionOneConsumptionsPage implements OnInit {
       const url = environment.LoggerEndPoints.ULR;
       const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
       const urlFullPath = `${url}` + `${loggerPath}`;
-      await this.dynamoDBService.genericLogMethod(urlFullPath, log).then(() => {
-      });
+      await this.dynamoDBService.genericLogMethod(urlFullPath, log);
     }
    async Seacrh(){
     const logger = new LogModel();
@@ -690,10 +702,10 @@ export class ConnectionOneConsumptionsPage implements OnInit {
 
   getDevices(userEmail: any): Array<any>{
 
-      let url = environment.DynamoBDEndPoints.ULR;
-      let urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
+      const url = environment.DynamoBDEndPoints.ULR;
+      const urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
       const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
-   
+
       const devicesArray = [];
       this.dynamoDBService.genericGetMethods(urlFullPath).subscribe({
       next: (data) => {

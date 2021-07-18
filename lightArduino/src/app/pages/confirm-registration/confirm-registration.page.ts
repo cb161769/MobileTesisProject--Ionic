@@ -46,8 +46,7 @@ export class ConfirmRegistrationPage implements OnInit {
     const url = environment.LoggerEndPoints.ULR;
     const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
     const urlFullPath = `${url}` + `${loggerPath}`;
-    await this.DynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
-    });
+    await this.DynamoDBService.genericLogMethod(urlFullPath, log);
   }
   async confirmRegistration(){
     const logger = new LogModel();

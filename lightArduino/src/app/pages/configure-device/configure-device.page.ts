@@ -54,8 +54,7 @@ export class ConfigureDevicePage implements OnInit {
     const url = environment.LoggerEndPoints.ULR;
     const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
     const urlFullPath = `${url}` + `${loggerPath}`;
-    await this.dynamoDBService.genericLogMethod(urlFullPath, log).then(() =>{
-    });
+    await this.dynamoDBService.genericLogMethod(urlFullPath, log);
   }
   async deviceConfiguration(){
     await this.PresentLoading();

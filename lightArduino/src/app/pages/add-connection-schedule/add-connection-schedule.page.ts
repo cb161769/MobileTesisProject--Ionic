@@ -100,8 +100,7 @@ export class AddConnectionSchedulePage implements OnInit {
       const url = environment.LoggerEndPoints.ULR;
       const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
       const urlFullPath = `${url}` + `${loggerPath}`;
-      await this.dynamoDBService.genericLogMethod(urlFullPath, log).then(() => {
-      });
+      await this.dynamoDBService.genericLogMethod(urlFullPath, log);
     }
   async addConfiguration(){
     const connectionModel: ConfigConnections[] = [];
