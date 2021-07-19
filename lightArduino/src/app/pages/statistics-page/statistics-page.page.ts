@@ -60,19 +60,38 @@ export class StatisticsPagePage implements OnInit {
     const url = environment.DynamoBDEndPoints.ULR;
     const urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
     const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
+    debugger;
     this.DynamoDBService.genericGetMethods(urlFullPath).subscribe(
 
       {
         next: async (data) => {
+          debugger;
           if (data != null || data != undefined || data.data != undefined) {
-            if (data.data.length > 0) {
-              this.relaysList = data.data;
-              let relays$: Observable<RelaysModel[]>;
-              for (let index = 0; index < this.relaysList.length; index++) {
-                this.relaysModel.push(this.relaysList[index]);
-                relays$ = of([{Name: this.relaysList[index].Name}]);
+
+            if (data.error == true) {
+              const alert = await this.alertController.create({
+                header: 'Advertencia',
+                subHeader: 'no tiene conexiones registradas',
+                message: data.message,
+                buttons: [
+                  {
+                    text: 'Aceptar',
+                    
+                  }
+                ]
+              });
+              await alert.present();
+            }
+            else{
+              if (data.data.length>0) {
+                this.relaysList = data.data;
+                let relays$: Observable<RelaysModel[]>;
+                for (let index = 0; index < this.relaysList.length; index++) {
+                  this.relaysModel.push(this.relaysList[index]);
+                  relays$ = of([{Name: this.relaysList[index].Name}]);
+                }
+                this.relays = relays$;
               }
-              this.relays = relays$;
             }
 
           }
@@ -119,7 +138,6 @@ export class StatisticsPagePage implements OnInit {
     await this.presentLoading();
     this.awsAmplifyService.singOut().then((result) => {
       if (result != undefined) {
-      }else{
       }
     }).catch(() => {
 
