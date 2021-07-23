@@ -19,7 +19,10 @@ import { LogModel } from "src/app/models/log-model";
 import { ConnectionsRealtimeDataModel } from "src/app/models/connections-realtime-data-model";
 import { Subscription } from "rxjs";
 import { Network } from "@ionic-native/network/ngx";
-import { ConnectionStatus, NetworkService } from "src/app/data-services/network.service";
+import {
+  ConnectionStatus,
+  NetworkService,
+} from "src/app/data-services/network.service";
 @Component({
   selector: "app-connexion1",
   templateUrl: "./connexion1.page.html",
@@ -33,6 +36,7 @@ export class Connexion1Page implements OnInit {
   gaugeType = "semi";
   gaugeValue = 21000;
   bars: any;
+  circle: any;
   public healthy = 0;
   private querySubscription: Subscription;
   connectionsRealtimeDataModel: ConnectionsRealtimeDataModel =
@@ -46,6 +50,7 @@ export class Connexion1Page implements OnInit {
   deviceHealth = 0;
   selectedElapsedTime = "";
   healthText = "";
+  @ViewChild("cicleChart") circleChart;
   thresholdConfig = {
     0: { color: "green" },
     40: { color: "orange" },
@@ -66,22 +71,23 @@ export class Connexion1Page implements OnInit {
     private apolloClient: Apollo,
     public navController: NavController,
     public actionSheetController: ActionSheetController,
-    public actrouter: ActivatedRoute, 
+    public actrouter: ActivatedRoute,
     public networkService: NetworkService
   ) {}
 
   /**  This method is launched when  the page is entered*/
   async ionViewDidEnter() {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       this.connectionName = this.messageService.getConnectionName();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-   
   }
   async dismissModal() {}
   ngOnInit(): void {
@@ -183,7 +189,9 @@ export class Connexion1Page implements OnInit {
     await this.loading.present();
   }
   async showDetailedChartInCurrentWeek(Connection?: any) {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -193,13 +201,13 @@ export class Connexion1Page implements OnInit {
       const curr = new Date(); // get current date
       const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
       const last = first + 6; // last day is the first day + 6
-  
+
       const firstday = new Date(curr.setDate(first));
       firstday.setHours(0, 0, 0);
-  
+
       const lastday = new Date(curr.setDate(last));
       lastday.setHours(24, 59, 59);
-  
+
       const initialDateEpoch = Math.floor(firstday.getTime() / 1000);
       const finalDateEpoch = Math.floor(lastday.getTime() / 1000);
       const fullUrl =
@@ -232,7 +240,7 @@ export class Connexion1Page implements OnInit {
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: async (response) => {
           this.deviceHealth = response?.health.health || 0;
-  
+
           this.healthText = response?.health.message || "";
           mondayData = response?.usage[0].lunes.watts || 0;
           tuesdayData = response?.usage[0].martes.watts || 0;
@@ -320,23 +328,41 @@ export class Connexion1Page implements OnInit {
               },
             },
           });
+          const circle = this.circleChart.nativeElement;
+          circle.height = 200;
+          circle.width = 200;
+          this.circle = new Chart(circle, {
+            type: "pie",
+            data: response?.dayNight,
+          });
+        },
+        error: async (error) => {
+          this.loading.dismiss();
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: "bottom",
+            color: "dark",
+          });
+          toast.present();
         },
       });
       this.loading.dismiss();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
   async ionViewWillEnter() {
     this.showDetailedChartInCurrentWeek();
   }
   async showDetailChartInCurrentMonth() {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -364,12 +390,13 @@ export class Connexion1Page implements OnInit {
           ctx.height = 200;
           ctx.width = 250;
           const dataset = data?.usage[0].detail.MonthDetails.TimeStamp || 0;
-          this.totalConsumptionInWatts = data?.usage[0].detail.allMonthWatts || 0;
+          this.totalConsumptionInWatts =
+            data?.usage[0].detail.allMonthWatts || 0;
           this.totalConsumptionInAmps = data?.usage[0].detail.allMonthAmps || 0;
           this.totalConsumptionInKhw =
             data?.usage[0].detail.allMonthKiloWatts || 0;
           const month = new Date();
-  
+
           month.toLocaleDateString("es-Es");
           this.bars = new Chart(ctx, {
             type: "line",
@@ -406,23 +433,41 @@ export class Connexion1Page implements OnInit {
               ],
             },
           });
+          const circle = this.circleChart.nativeElement;
+          circle.height = 200;
+          circle.width = 200;
+          this.circle = new Chart(circle, {
+            type: "pie",
+            data: data?.dayNight,
+          });
+        },
+        error: async (error) => {
+          this.loading.dismiss();
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: "bottom",
+            color: "dark",
+          });
+          toast.present();
         },
       });
       this.loading.dismiss();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
   /**
    *
    */
   async showDetailChartInCurrentYear() {
-    if ( this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online) {
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -480,25 +525,42 @@ export class Connexion1Page implements OnInit {
               ],
             },
           });
+          const circle = this.circleChart.nativeElement;
+          circle.height = 200;
+          circle.width = 200;
+          this.circle = new Chart(circle, {
+            type: "pie",
+            data: response?.dayNight,
+          });
+        },
+        error: async (error) => {
+          this.loading.dismiss();
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: "bottom",
+            color: "dark",
+          });
+          toast.present();
         },
       });
       this.loading.dismiss();
-    }
-    else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
   /**
    *
    * @param ConnectionN ConnectionName
    */
   async showDetailChartInCurrentYearInKiloWatts(ConnectionN?) {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.presentLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -553,21 +615,39 @@ export class Connexion1Page implements OnInit {
               ],
             },
           });
+          const circle = this.circleChart.nativeElement;
+          circle.height = 200;
+          circle.width = 200;
+          this.circle = new Chart(circle, {
+            type: "pie",
+            data: response?.dayNight,
+          });
+        },
+        error: async (error) => {
+          this.loading.dismiss();
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: "bottom",
+            color: "dark",
+          });
+          toast.present();
         },
       });
       this.loading.dismiss();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
 
   async showDetailChartInCurrentMonthKilowatts(Connection?) {
-    if(this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.presentLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -588,14 +668,15 @@ export class Connexion1Page implements OnInit {
           ctx.height = 200;
           ctx.width = 250;
           const dataset = data.usage[0].detail.MonthDetails.kwhTimesTamp || 0;
-          this.totalConsumptionInWatts = data.usage[0].detail.allMonthWatts || 0;
+          this.totalConsumptionInWatts =
+            data.usage[0].detail.allMonthWatts || 0;
           this.totalConsumptionInAmps = data.usage[0].detail.allMonthAmps || 0;
           this.totalConsumptionInKhw =
             data.usage[0].detail.allMonthKiloWatts || 0;
           this.deviceHealth = data?.health.health || 0;
           this.healthText = data?.health.message || "";
           const month = new Date();
-  
+
           month.toLocaleDateString("es-Es");
           this.bars = new Chart(ctx, {
             type: "line",
@@ -635,17 +716,18 @@ export class Connexion1Page implements OnInit {
         },
       });
       this.loading.dismiss();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
-    } 
-
+    }
   }
   async showDetailChartInCurrentWeekKilowatts(Connection?) {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.showLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -655,13 +737,13 @@ export class Connexion1Page implements OnInit {
       const curr = new Date(); // get current date
       const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
       const last = first + 6; // last day is the first day + 6
-  
+
       const firstday = new Date(curr.setDate(first));
       firstday.setHours(0, 0, 0);
-  
+
       const lastday = new Date(curr.setDate(last));
       lastday.setHours(24, 59, 59);
-  
+
       const initialDateEpoch = Math.floor(firstday.getTime() / 1000);
       const finalDateEpoch = Math.floor(lastday.getTime() / 1000);
       const fullUrl =
@@ -680,7 +762,7 @@ export class Connexion1Page implements OnInit {
           this.totalConsumptionInKhw = data?.usage[0].totalKhw || 0;
           this.totalConsumptionInWatts = data?.usage[0].totalWatts || 0;
           const month = new Date();
-  
+
           if (dataset == []) {
             dataset.push({ t: new Date().toISOString(), y: 0 });
           }
@@ -720,24 +802,42 @@ export class Connexion1Page implements OnInit {
               ],
             },
           });
+          const circle = this.circleChart.nativeElement;
+          circle.height = 200;
+          circle.width = 200;
+          this.circle = new Chart(circle, {
+            type: "pie",
+            data: response?.dayNight,
+          });
+        },
+        error: async (error) => {
+          this.loading.dismiss();
+          const toast = await this.ToastController.create({
+            message: `Ha ocurrido un error`,
+            duration: 2000,
+            position: "bottom",
+            color: "dark",
+          });
+          toast.present();
         },
       });
       this.loading.dismiss();
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
   /**
    * @function refreshConnectionDeviceReadings
    * @param ConnectionName the Device ConnectionName
    */
   public async refreshConnectionDeviceReadings(ConnectionName?) {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       const beginning = Math.floor(Date.now() / 1000);
       const testConnectionName = ConnectionName;
       const logger = new LogModel();
@@ -776,7 +876,8 @@ export class Connexion1Page implements OnInit {
                   // this.connectionsRealtimeDataModel.Name = data.Name;
                   if (data.Name == this.connectionName) {
                     this.connectionsRealtimeDataModel.CT1_Amps = data.CT1_Amps;
-                    this.connectionsRealtimeDataModel.CT1_Watts = data.CT1_Watts;
+                    this.connectionsRealtimeDataModel.CT1_Watts =
+                      data.CT1_Watts;
                     this.connectionsRealtimeDataModel.CT1_Status =
                       data.CT1_Status;
                     this.connectionsRealtimeDataModel.Name = data.Name;
@@ -811,13 +912,12 @@ export class Connexion1Page implements OnInit {
         });
         toast.present();
       }
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
       });
       toast.present();
     }
-
   }
 }
