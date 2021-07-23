@@ -103,6 +103,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           message:
             "su dispositivo no esta conectado a la red internet, por favor debe conectarse a la red de internet",
         });
+        alert.present();
       }
     } catch (error) {
       const logger = new LogModel();
