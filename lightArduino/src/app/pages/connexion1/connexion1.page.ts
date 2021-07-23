@@ -807,7 +807,7 @@ export class Connexion1Page implements OnInit {
           circle.width = 200;
           this.circle = new Chart(circle, {
             type: "pie",
-            data: response?.dayNight,
+            data: data?.dayNight,
           });
         },
         error: async (error) => {
