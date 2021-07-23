@@ -14,7 +14,7 @@ import { NgxGaugeModule } from 'ngx-gauge';
 import Amplify from 'aws-amplify';
 import { GraphQLModule } from './graphql.module';
 import { HighchartsChartModule } from 'highcharts-angular';
-
+import { Network } from '@ionic-native/network/ngx';
 /**configure AWS_amplify */
 Amplify.configure({
   Auth:
@@ -32,7 +32,8 @@ Amplify.configure({
   providers: [
     StatusBar,
     SplashScreen,HttpClientModule,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Network
   ],
   bootstrap: [AppComponent]
 
