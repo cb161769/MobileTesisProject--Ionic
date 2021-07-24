@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   LoadingController,
@@ -18,17 +18,20 @@ import "chartjs-adapter-moment";
 import { LogModel } from "src/app/models/log-model";
 import { ConnectionsRealtimeDataModel } from "src/app/models/connections-realtime-data-model";
 import { Subscription } from "rxjs";
-import { Network } from "@ionic-native/network/ngx";
 import {
   ConnectionStatus,
   NetworkService,
 } from "src/app/data-services/network.service";
+import { DevicesEnum } from "src/app/utils/utilities";
+import { AwsSdkService } from "./../../data-services/awsIoT/aws-sdk.service";
+
 @Component({
   selector: "app-connexion1",
   templateUrl: "./connexion1.page.html",
   styleUrls: ["./connexion1.page.scss"],
 })
-export class Connexion1Page implements OnInit {
+export class Connexion1Page implements OnInit, OnDestroy {
+  devicesNames = Object.values(DevicesEnum);
   @ViewChild("barChart") barChart;
   loading: any;
   selected_time: any;
@@ -37,6 +40,7 @@ export class Connexion1Page implements OnInit {
   gaugeValue = 21000;
   bars: any;
   circle: any;
+  private turnedOff = false;
   public healthy = 0;
   private querySubscription: Subscription;
   connectionsRealtimeDataModel: ConnectionsRealtimeDataModel =
@@ -72,7 +76,8 @@ export class Connexion1Page implements OnInit {
     public navController: NavController,
     public actionSheetController: ActionSheetController,
     public actrouter: ActivatedRoute,
-    public networkService: NetworkService
+    public networkService: NetworkService,
+    public AwsSdkService: AwsSdkService
   ) {}
 
   /**  This method is launched when  the page is entered*/
@@ -93,6 +98,7 @@ export class Connexion1Page implements OnInit {
   ngOnInit(): void {
     // this.connectionName = this.messageService.getConnectionName();
   }
+  ngOnDestroy(): void {}
   async logDevice(log: LogModel) {
     const url = environment.LoggerEndPoints.ULR;
     const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
@@ -359,6 +365,52 @@ export class Connexion1Page implements OnInit {
   async ionViewWillEnter() {
     this.showDetailedChartInCurrentWeek();
   }
+  async turnOffDevice() {
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
+      for (let index = 0; index < this.devicesNames.length; index++) {
+        const element = this.devicesNames[index];
+        if (element == this.connectionName) {
+          const remix = environment?.device_TOPICS.topicsArray.filter(
+            (item) => item.connectionName == element
+          );
+          const topic = remix[0].turnOffTopics;
+          const payload = "hello";
+          const responses = (await this.AwsSdkService.publishMessage(
+            topic,
+            payload
+          )) as any;
+          if (responses?.response.error != null) {
+            const toast = await this.ToastController.create({
+              message: "Ha ocurrido un error desactivando el dispositivo",
+              duration: 2000,
+              position: "bottom",
+              color: "dark",
+            });
+            toast.present();
+            return;
+          } else {
+            this.turnedOff = true;
+            const toast = await this.ToastController.create({
+              message: `se ha desactivado el dispositivo ${element} de manera satisfactoria`,
+              duration: 2000,
+              position: "bottom",
+              color: "dark",
+            });
+            toast.present();
+          }
+        }
+      }
+    }else{
+      const toast = await this.ToastController.create({
+        message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
+        duration: 2000,
+      });
+      toast.present();
+    }
+  }
+  async turnOnDevice() {}
   async showDetailChartInCurrentMonth() {
     if (
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
