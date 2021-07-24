@@ -78,10 +78,16 @@
                     </ion-item>
                   </ion-col>
                   <ion-col size="12">
-                    <ion-item lines="none">
-                      <ion-button color="secondary">
+                    <ion-item lines="none" *ngIf="true">
+                      <ion-button color="secondary" [disabled]="connectionsRealtimeDataModel.CT1_Status == null" (click)="turnOnDevice()">
                         <ion-icon name="power-outline"></ion-icon>
                         encender
+                      </ion-button>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="false">
+                      <ion-button color="secondary" [disabled]="connectionsRealtimeDataModel.CT1_Status == null" (click)="turnOffDevice()">
+                        <ion-icon name="power-outline"></ion-icon>
+                        apagar
                       </ion-button>
                     </ion-item>
                   </ion-col>
