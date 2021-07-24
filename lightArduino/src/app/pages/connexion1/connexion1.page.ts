@@ -6,6 +6,7 @@ import {
   NavController,
   ToastController,
   ActionSheetController,
+  ModalController,
 } from "@ionic/angular";
 import { Apollo, gql } from "apollo-angular";
 import { Chart } from "chart.js";
@@ -77,7 +78,8 @@ export class Connexion1Page implements OnInit, OnDestroy {
     public actionSheetController: ActionSheetController,
     public actrouter: ActivatedRoute,
     public networkService: NetworkService,
-    public AwsSdkService: AwsSdkService
+    public AwsSdkService: AwsSdkService,
+    private modalController: ModalController
   ) {}
 
   /**  This method is launched when  the page is entered*/
@@ -94,7 +96,15 @@ export class Connexion1Page implements OnInit, OnDestroy {
       toast.present();
     }
   }
-  async dismissModal() {}
+  async dismissModal() {
+    const modal = await this.modalController.create({
+      component: '',
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
+    });
+    return await modal.present();
+  }
   ngOnInit(): void {
     // this.connectionName = this.messageService.getConnectionName();
   }
@@ -152,7 +162,9 @@ export class Connexion1Page implements OnInit, OnDestroy {
   /**
    * @function showModal
    */
-  showModal() {}
+  showModal() {
+
+  }
   changeKhw(event: any) {
     if (this.showKlhw == true && this.selected_time == "Este Año") {
       this.showDetailChartInCurrentYearInKiloWatts();

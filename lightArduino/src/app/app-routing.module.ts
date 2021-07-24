@@ -173,7 +173,11 @@ const routes: Routes = [
     path: 'connections-config-schedule',
     canActivate: [AuthGuard],
     loadChildren: () => import('./pages/connections-config-schedule/connections-config-schedule.module').then( m => m.ConnectionsConfigSchedulePageModule)
+  },  {
+    path: 'dates',
+    loadChildren: () => import('./pages/dates-filter/dates/dates.module').then( m => m.DatesPageModule)
   },
+
 
 
 
