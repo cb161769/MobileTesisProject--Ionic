@@ -1,3 +1,4 @@
+import { DatesPage } from './../dates-filter/dates/dates.page';
 import {
   NetworkService,
   ConnectionStatus,
@@ -13,6 +14,7 @@ import {
   ToastController,
   NavController,
   ActionSheetController,
+  ModalController,
 } from "@ionic/angular";
 import { AwsAmplifyService } from "src/app/data-services/aws-amplify.service";
 import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
@@ -88,14 +90,17 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
     public navController: NavController,
     public MQTTServiceService: MQTTServiceService,
     private network: Network,
-    public networkService: NetworkService
+    public networkService: NetworkService,
+    private modalController: ModalController
   ) {}
 
   async ngOnInit() {
     try {
+      debugger;
       if (
         this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
       ) {
+        debugger;
         await this.validateLoggedUser();
         await this.showDetailedChart();
       } else {
@@ -680,7 +685,15 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   async showDetailedChartInCurrentWeek() {
     await this.showDetailedChart();
   }
-  showModal() {}
+ async showModal() {
+    const modal = await this.modalController.create({
+      component: DatesPage,
+      cssClass: 'my-custom-class',
+      swipeToClose: true,
+      presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
+    });
+    return await modal.present();
+  }
   changeKhw(event: any) {
     if (this.showKlhw == true && this.selected_time == "Este Año") {
       // this.showDetailChartInCurrentYearInKiloWatts();
