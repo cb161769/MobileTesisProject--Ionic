@@ -25,6 +25,7 @@ import {
 } from "src/app/data-services/network.service";
 import { DevicesEnum } from "src/app/utils/utilities";
 import { AwsSdkService } from "./../../data-services/awsIoT/aws-sdk.service";
+import { DatesPage } from "../dates-filter/dates/dates.page";
 
 @Component({
   selector: "app-connexion1",
@@ -98,7 +99,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
   }
   async dismissModal() {
     const modal = await this.modalController.create({
-      component: '',
+      component: DatesPage,
       cssClass: 'my-custom-class',
       swipeToClose: true,
       presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
