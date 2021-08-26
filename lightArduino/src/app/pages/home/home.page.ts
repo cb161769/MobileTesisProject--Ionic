@@ -10,7 +10,7 @@ export class HomePage implements OnInit {
   slides = [
     {
       img:'../../../assets/icon/save-energy.svg',
-      title:'Bienvenido a la aplicación Móvil <br> he aquí ciertos beneficios de la Aplicación:'
+      title:'Bienvenido a la aplicación ligthArduino <br> he aquí ciertos beneficios de la Aplicación:'
     },
     {
       img: '../../../assets/icon/budget.svg',

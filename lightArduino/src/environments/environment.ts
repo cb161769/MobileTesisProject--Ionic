@@ -53,6 +53,9 @@ export const environment = {
         ConnectionsGetAllDeviceReadingsByGivenMonth: '/IotDevice/Connections/getAllDeviceReadingsByGivenMonth',
         ConnectionsGetConnectionYearly: '/IotDevice/Connections/GetConnectionYearly/allConfig',
         ConnectionsGetReadingsByGivenYear: '/IotDevice/Connections/GetConnectionsReadingsByGivenDay'
+      },
+      token:{
+        insertToken:'/IotDevice/insertToken'
       }
     }
   },
