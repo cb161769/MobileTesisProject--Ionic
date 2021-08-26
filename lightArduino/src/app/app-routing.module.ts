@@ -50,12 +50,12 @@ const routes: Routes = [
   },
   {
     path: 'home-tabs',
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     loadChildren: () => import('./pages/home-tabs/home-tabs.module').then( m => m.HomeTabsPageModule)
   },
   {
     path: 'home-device-page',
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     loadChildren: () => import('./pages/home-device-page/home-device-page.module').then( m => m.HomeDevicePagePageModule)
   },
   {

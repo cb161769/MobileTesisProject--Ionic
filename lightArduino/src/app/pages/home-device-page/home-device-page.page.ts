@@ -25,6 +25,7 @@ import { Apollo, gql } from "apollo-angular";
 import { interval, Subscription } from "rxjs";
 import { LogModel } from "src/app/models/log-model";
 import { Network } from "@ionic-native/network/ngx";
+import { mod } from '@tensorflow/tfjs';
 
 @Component({
   selector: "app-home-device-page",
@@ -96,7 +97,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      debugger;
+      // debugger;
       if (
         this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
       ) {
@@ -692,7 +693,10 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       swipeToClose: true,
       presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
     });
-    return await modal.present();
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    console.log('data de la pagina date', data);
+    
   }
   changeKhw(event: any) {
     if (this.showKlhw == true && this.selected_time == "Este Año") {
