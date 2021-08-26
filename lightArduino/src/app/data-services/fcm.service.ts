@@ -8,11 +8,16 @@ import {
   PushNotifications,
   Token,
 } from '@capacitor/push-notifications';
+import { environment } from 'src/environments/environment';
+import { LogModel } from '../models/log-model';
 @Injectable({
   providedIn: 'root',
 })
 export class FcmService {
   constructor(private router: Router,private dynamoDBService: DynamoDBAPIService) {}
+   baseUrl = environment.DynamoBDEndPoints.ULR;
+   urlPath = environment.DynamoBDEndPoints.API_PATHS.token.insertToken;
+
   initPush() {
     if (Capacitor.platform !== 'web') {
       this.registerPush();
@@ -30,7 +35,7 @@ export class FcmService {
 
     // On success, we should be able to receive notifications
     PushNotifications.addListener('registration', (token: Token) => {
-      this.dynamoDBService
+      this.insertToken(token);
       // alert('Push registration success, token: ' + token.value);
     });
 
@@ -54,5 +59,37 @@ export class FcmService {
         // alert('Push action performed: ' + JSON.stringify(notification));
       }
     );
+  }
+  private insertToken(values){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.DynamoBDEndPoints.API_PATHS.token.insertToken;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    const value = {
+      token:values
+    };
+    this.dynamoDBService.genericPostMethod(urlFullPath,value).subscribe({
+      next:(async response =>{
+        if (response.status==true) {
+          const logger = new LogModel();
+          logger.level = 'INFO';
+          logger.action = 'insert token';
+          logger.userName = '';
+          this.logDevice(logger);
+        }else{
+          const logger = new LogModel();
+          logger.level = 'ERROR';
+          logger.action = 'insert token';
+          logger.userName = '';
+          logger.logError = response.error || '';
+          this.logDevice(logger);
+        }
+      })
+    })
+  }
+ private  logDevice(log:LogModel){
+    const url = environment.LoggerEndPoints.ULR;
+    const loggerPath = environment.LoggerEndPoints.DatabaseLogger;
+    const urlFullPath = `${url}` + `${loggerPath}`;
+    this.dynamoDBService.genericLogMethod(urlFullPath, log);
   }
 }
