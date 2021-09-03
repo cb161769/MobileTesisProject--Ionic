@@ -34,6 +34,7 @@ import { DatesPage } from "../dates-filter/dates/dates.page";
 })
 export class Connexion1Page implements OnInit, OnDestroy {
   devicesNames = Object.values(DevicesEnum);
+  devoicesList:DevicesEnum;
   @ViewChild("barChart") barChart;
   loading: any;
   selected_time: any;
@@ -89,6 +90,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
     ) {
       this.connectionName = this.messageService.getConnectionName();
+      await  this.refreshConnectionDeviceReadings(this.connectionName);
     } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
@@ -957,11 +959,14 @@ export class Connexion1Page implements OnInit, OnDestroy {
       logger.userName = "";
       await this.logDevice(logger);
       try {
-        this.querySubscription = this.apolloClient
+        if(this.connectionName == DevicesEnum.DeviceOne){
+          debugger;
+          const connectionNumber = 1;
+          this.querySubscription = this.apolloClient
           .watchQuery<any>({
             query: gql`
           {
-            Ct1_readings(timeStamp:${beginning}){
+            Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
               CT1_Amps,
               CT1_Watts,
               CT1_Status,
@@ -973,7 +978,8 @@ export class Connexion1Page implements OnInit, OnDestroy {
           .valueChanges.subscribe(async ({ data, loading }) => {
             if (!loading) {
               if (Object.keys(data).length > 0) {
-                if (data.CT1_Status == null || data.CT1_Status == undefined) {
+                debugger;
+                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
                   const toast = await this.ToastController.create({
                     message: `la ${ConnectionName} No esta conectado`,
                     duration: 2000,
@@ -983,13 +989,15 @@ export class Connexion1Page implements OnInit, OnDestroy {
                   toast.present();
                 } else {
                   // this.connectionsRealtimeDataModel.Name = data.Name;
-                  if (data.Name == this.connectionName) {
-                    this.connectionsRealtimeDataModel.CT1_Amps = data.CT1_Amps;
+                  if (data.Ct1_readings.Name == this.connectionName) {
+                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
                     this.connectionsRealtimeDataModel.CT1_Watts =
-                      data.CT1_Watts;
+                      data.Ct1_readings.CT1_Watts;
                     this.connectionsRealtimeDataModel.CT1_Status =
-                      data.CT1_Status;
-                    this.connectionsRealtimeDataModel.Name = data.Name;
+                      data.Ct1_readings.CT1_Status;
+                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
+                    debugger;
+
                   } else {
                     const toast = await this.ToastController.create({
                       message: `Data de la conexion no encontrada`,
@@ -1003,6 +1011,117 @@ export class Connexion1Page implements OnInit, OnDestroy {
               }
             }
           });
+
+        }
+        if(this.connectionName == DevicesEnum.DeviceTwo){
+          debugger;
+          const connectionNumber = 2;
+          this.querySubscription = this.apolloClient
+          .watchQuery<any>({
+            query: gql`
+          {
+            Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
+              CT1_Amps,
+              CT1_Watts,
+              CT1_Status,
+              Name,
+            }
+          }
+          `,
+          })
+          .valueChanges.subscribe(async ({ data, loading }) => {
+            if (!loading) {
+              if (Object.keys(data).length > 0) {
+
+                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
+                  const toast = await this.ToastController.create({
+                    message: `la ${ConnectionName} No esta conectado`,
+                    duration: 2000,
+                    position: "bottom",
+                    color: "dark",
+                  });
+                  toast.present();
+                } else {
+                  // this.connectionsRealtimeDataModel.Name = data.Name;
+                  if (data.Ct1_readings.Name == this.connectionName) {
+                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
+                    this.connectionsRealtimeDataModel.CT1_Watts =
+                      data.Ct1_readings.CT1_Watts;
+                    this.connectionsRealtimeDataModel.CT1_Status =
+                      data.Ct1_readings.CT1_Status;
+                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
+                    debugger;
+                    console.log(this.connectionsRealtimeDataModel)
+                  } else {
+                    const toast = await this.ToastController.create({
+                      message: `Data de la conexion no encontrada`,
+                      duration: 2000,
+                      position: "bottom",
+                      color: "dark",
+                    });
+                    toast.present();
+                  }
+                }
+              }
+            }
+          });
+
+        }
+        if(this.connectionName == DevicesEnum.DeviceThree){
+          debugger;
+          const connectionNumber = 3;
+          this.querySubscription = this.apolloClient
+          .watchQuery<any>({
+            query: gql`
+          {
+            Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
+              CT1_Amps,
+              CT1_Watts,
+              CT1_Status,
+              Name,
+            }
+          }
+          `,
+          })
+          .valueChanges.subscribe(async ({ data, loading }) => {
+            if (!loading) {
+              if (Object.keys(data).length > 0) {
+                debugger;
+                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
+                  const toast = await this.ToastController.create({
+                    message: `la ${ConnectionName} No esta conectado`,
+                    duration: 2000,
+                    position: "bottom",
+                    color: "dark",
+                  });
+                  toast.present();
+                } else {
+                  // this.connectionsRealtimeDataModel.Name = data.Name;
+                  if (data.Ct1_readings.Name == this.connectionName) {
+                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
+                    this.connectionsRealtimeDataModel.CT1_Watts =
+                      data.Ct1_readings.CT1_Watts;
+                    this.connectionsRealtimeDataModel.CT1_Status =
+                      data.Ct1_readings.CT1_Status;
+                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
+                    debugger;
+                    console.log(this.connectionsRealtimeDataModel)
+                  } else {
+                    const toast = await this.ToastController.create({
+                      message: `Data de la conexion no encontrada`,
+                      duration: 2000,
+                      position: "bottom",
+                      color: "dark",
+                    });
+                    toast.present();
+                  }
+                }
+              }
+            }
+          });
+
+        }
+
       } catch (error) {
         const logger = new LogModel();
         logger.level = "ERROR";
