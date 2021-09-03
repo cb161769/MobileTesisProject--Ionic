@@ -28,7 +28,7 @@ export class AwsSdkService {
     };
    const response =  iotdata.publish(params, async (err, data) => {
      if (err) {
-
+      debugger;
      }
     });
    return response;

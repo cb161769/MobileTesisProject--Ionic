@@ -81,7 +81,7 @@ export class StatisticsPagePage implements OnInit {
   }
   async redirectToConnectionsRelay(relay: any) {
     this.messageService.setConnectionName(relay.Name);
-    this.router.navigate(["/connection-one-tabs/connection-one-tab/tab1"]);
+    this.router.navigate(['/connection-one-tabs/connection-one-tab/tab1']);
   }
   async loadAllRelays(userEmail: any) {
     if (
@@ -90,6 +90,7 @@ export class StatisticsPagePage implements OnInit {
       const url = environment.DynamoBDEndPoints.ULR;
       const urlPath = environment.DynamoBDEndPoints.API_PATHS.getDeviceRelays;
       const urlFullPath = `${url}` + `${urlPath}` + `${userEmail}`;
+      let defaultArray:Array<any> = [];
       this.DynamoDBService.genericGetMethods(urlFullPath).subscribe({
         next: async (data) => {
           if (data != null || data != undefined || data.data != undefined) {
@@ -108,12 +109,16 @@ export class StatisticsPagePage implements OnInit {
             } else {
               if (data.data.length > 0) {
                 this.relaysList = data.data;
-                let relays$: Observable<RelaysModel[]>;
+
+                let relays$: Observable<Array<any>>;
                 for (let index = 0; index < this.relaysList.length; index++) {
                   this.relaysModel.push(this.relaysList[index]);
-                  relays$ = of([{ Name: this.relaysList[index].Name }]);
+                  
                 }
+                defaultArray = this.dataMapped(this.relaysModel);
+                relays$ = of(defaultArray);
                 this.relays = relays$;
+                this.loading.dismiss();
               }
             }
           } else {
@@ -218,5 +223,19 @@ export class StatisticsPagePage implements OnInit {
       alert.present();
     }
 
+  }
+  /**
+   * 
+   * @param array array that will be mapped
+   * @returns Array<any>
+   */
+  private dataMapped(array:any[]){
+    if (array === null) {
+      return [];
+      
+    }
+    return array.map((item) =>({
+      Name: item.Name
+    }));
   }
 }

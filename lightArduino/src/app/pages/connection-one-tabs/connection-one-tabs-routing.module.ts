@@ -13,18 +13,18 @@ const routes: Routes = [
       {
         path:'tab1',
         loadChildren:() => import('../connexion1/connexion1.module').then( m => m.Connexion1PageModule),
-        canActivate:[AuthGuard]
+       // canActivate:[AuthGuard]
       },
       {
         path: 'tab2',
         loadChildren:() => import('../connection-one-schedule/connection-one-schedule-routing.module').then( m => m.ConnectionOneSchedulePageRoutingModule),
-        canActivate:[AuthGuard]
+      //  canActivate:[AuthGuard]
       },
         
       {
         path:'tab3',
         loadChildren:() => import('../connection-one-statistics/connection-one-statistics.module').then( m => m.ConnectionOneStatisticsPageModule),
-        canActivate:[AuthGuard]
+      //  canActivate:[AuthGuard]
       }
     ]
   },
