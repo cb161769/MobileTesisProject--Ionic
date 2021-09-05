@@ -223,7 +223,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
       const urlEndpoint =
         environment.DynamoBDEndPoints.API_PATHS.Connections
           .ConnectionReadingsCurrentWeek;
-      const ConnectionName = "Conexion 1";
+      const ConnectionName = this.connectionName;
       const curr = new Date(); // get current date
       const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
       const last = first + 6; // last day is the first day + 6
@@ -239,7 +239,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
       const fullUrl =
         urlRoot +
         urlEndpoint +
-        `/${initialDateEpoch}/${finalDateEpoch}/${ConnectionName}`;
+        `/${initialDateEpoch}/${finalDateEpoch}/${this.connectionName.trim()}`;
       const finalData = [];
       const ampsData = [];
       let mondayData = 0;
@@ -265,6 +265,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
       await this.logDevice(logger);
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: async (response) => {
+          debugger;
           this.deviceHealth = response?.health.health || 0;
 
           this.healthText = response?.health.message || "";
