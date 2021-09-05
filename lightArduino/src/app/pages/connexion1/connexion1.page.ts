@@ -18,7 +18,7 @@ import { environment } from "src/environments/environment";
 import "chartjs-adapter-moment";
 import { LogModel } from "src/app/models/log-model";
 import { ConnectionsRealtimeDataModel } from "src/app/models/connections-realtime-data-model";
-import { Subscription } from "rxjs";
+import { interval, Subscription } from "rxjs";
 import {
   ConnectionStatus,
   NetworkService,
@@ -34,7 +34,7 @@ import { DatesPage } from "../dates-filter/dates/dates.page";
 })
 export class Connexion1Page implements OnInit, OnDestroy {
   devicesNames = Object.values(DevicesEnum);
-  devoicesList:DevicesEnum;
+  devoicesList: DevicesEnum;
   @ViewChild("barChart") barChart;
   loading: any;
   selected_time: any;
@@ -61,9 +61,10 @@ export class Connexion1Page implements OnInit, OnDestroy {
   thresholdConfig = {
     0: { color: "green" },
     40: { color: "orange" },
-    75.5: { color: "red" },
+    7500.5: { color: "red" },
   };
   connectionName: any;
+  subscription: Subscription;
 
   gaugeAppendText = "Watts";
   constructor(
@@ -90,7 +91,10 @@ export class Connexion1Page implements OnInit, OnDestroy {
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
     ) {
       this.connectionName = this.messageService.getConnectionName();
-      await  this.refreshConnectionDeviceReadings(this.connectionName);
+      const source = interval(10000);
+      this.subscription = source.subscribe(async() => await this.refreshConnectionDeviceReadings(this.connectionName));
+
+
     } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
@@ -99,12 +103,15 @@ export class Connexion1Page implements OnInit, OnDestroy {
       toast.present();
     }
   }
+  async ionViewDidLeave(){
+    this.subscription && this.subscription.unsubscribe();
+  }
   async dismissModal() {
     const modal = await this.modalController.create({
       component: DatesPage,
-      cssClass: 'my-custom-class',
+      cssClass: "my-custom-class",
       swipeToClose: true,
-      presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
+      presentingElement: await this.modalController.getTop(), // Get the top-most ion-modal
     });
     return await modal.present();
   }
@@ -165,9 +172,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
   /**
    * @function showModal
    */
-  showModal() {
-
-  }
+  showModal() {}
   changeKhw(event: any) {
     if (this.showKlhw == true && this.selected_time == "Este Año") {
       this.showDetailChartInCurrentYearInKiloWatts();
@@ -417,7 +422,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
           }
         }
       }
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
@@ -462,7 +467,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
           }
         }
       }
-    }else{
+    } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,
         duration: 2000,
@@ -950,7 +955,6 @@ export class Connexion1Page implements OnInit, OnDestroy {
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
     ) {
       const beginning = Math.floor(Date.now() / 1000);
-      const testConnectionName = ConnectionName;
       const logger = new LogModel();
       logger.level = "INFO";
       logger.route = "GQL";
@@ -959,12 +963,11 @@ export class Connexion1Page implements OnInit, OnDestroy {
       logger.userName = "";
       await this.logDevice(logger);
       try {
-        if(this.connectionName == DevicesEnum.DeviceOne){
-          debugger;
+        if (this.connectionName == DevicesEnum.DeviceOne) {
           const connectionNumber = 1;
           this.querySubscription = this.apolloClient
-          .watchQuery<any>({
-            query: gql`
+            .watchQuery<any>({
+              query: gql`
           {
             Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
               CT1_Amps,
@@ -974,51 +977,51 @@ export class Connexion1Page implements OnInit, OnDestroy {
             }
           }
           `,
-          })
-          .valueChanges.subscribe(async ({ data, loading }) => {
-            if (!loading) {
-              if (Object.keys(data).length > 0) {
-                debugger;
-                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
-                  const toast = await this.ToastController.create({
-                    message: `la ${ConnectionName} No esta conectado`,
-                    duration: 2000,
-                    position: "bottom",
-                    color: "dark",
-                  });
-                  toast.present();
-                } else {
-                  // this.connectionsRealtimeDataModel.Name = data.Name;
-                  if (data.Ct1_readings.Name == this.connectionName) {
-                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
-                    this.connectionsRealtimeDataModel.CT1_Watts =
-                      data.Ct1_readings.CT1_Watts;
-                    this.connectionsRealtimeDataModel.CT1_Status =
-                      data.Ct1_readings.CT1_Status;
-                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
-                    debugger;
-
-                  } else {
+            })
+            .valueChanges.subscribe(async ({ data, loading }) => {
+              if (!loading) {
+                if (Object.keys(data).length > 0) {
+                  if (
+                    data.Ct1_readings.CT1_Status == null ||
+                    data.Ct1_readings.CT1_Status == undefined
+                  ) {
                     const toast = await this.ToastController.create({
-                      message: `Data de la conexion no encontrada`,
+                      message: `la ${ConnectionName} No esta conectado`,
                       duration: 2000,
                       position: "bottom",
                       color: "dark",
                     });
                     toast.present();
+                  } else {
+                    // this.connectionsRealtimeDataModel.Name = data.Name;
+                    if (data.Ct1_readings.Name == this.connectionName) {
+                      this.connectionsRealtimeDataModel.CT1_Amps =
+                        data.Ct1_readings.CT1_Amps;
+                      this.connectionsRealtimeDataModel.CT1_Watts =
+                        data.Ct1_readings.CT1_Watts;
+                      this.connectionsRealtimeDataModel.CT1_Status =
+                        data.Ct1_readings.CT1_Status;
+                      this.connectionsRealtimeDataModel.Name =
+                        data.Ct1_readings.Name;
+                    } else {
+                      const toast = await this.ToastController.create({
+                        message: `Data de la conexion no encontrada`,
+                        duration: 2000,
+                        position: "bottom",
+                        color: "dark",
+                      });
+                      toast.present();
+                    }
                   }
                 }
               }
-            }
-          });
-
+            });
         }
-        if(this.connectionName == DevicesEnum.DeviceTwo){
-          debugger;
+        if (this.connectionName == DevicesEnum.DeviceTwo) {
           const connectionNumber = 2;
           this.querySubscription = this.apolloClient
-          .watchQuery<any>({
-            query: gql`
+            .watchQuery<any>({
+              query: gql`
           {
             Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
               CT1_Amps,
@@ -1028,51 +1031,53 @@ export class Connexion1Page implements OnInit, OnDestroy {
             }
           }
           `,
-          })
-          .valueChanges.subscribe(async ({ data, loading }) => {
-            if (!loading) {
-              if (Object.keys(data).length > 0) {
-
-                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
-                  const toast = await this.ToastController.create({
-                    message: `la ${ConnectionName} No esta conectado`,
-                    duration: 2000,
-                    position: "bottom",
-                    color: "dark",
-                  });
-                  toast.present();
-                } else {
-                  // this.connectionsRealtimeDataModel.Name = data.Name;
-                  if (data.Ct1_readings.Name == this.connectionName) {
-                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
-                    this.connectionsRealtimeDataModel.CT1_Watts =
-                      data.Ct1_readings.CT1_Watts;
-                    this.connectionsRealtimeDataModel.CT1_Status =
-                      data.Ct1_readings.CT1_Status;
-                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
-                    debugger;
-                    console.log(this.connectionsRealtimeDataModel)
-                  } else {
+            })
+            .valueChanges.subscribe(async ({ data, loading }) => {
+              if (!loading) {
+                if (Object.keys(data).length > 0) {
+                  if (
+                    data.Ct1_readings.CT1_Status == null ||
+                    data.Ct1_readings.CT1_Status == undefined
+                  ) {
                     const toast = await this.ToastController.create({
-                      message: `Data de la conexion no encontrada`,
+                      message: `la ${ConnectionName} No esta conectado`,
                       duration: 2000,
                       position: "bottom",
                       color: "dark",
                     });
                     toast.present();
+                  } else {
+                    // this.connectionsRealtimeDataModel.Name = data.Name;
+                    if (data.Ct1_readings.Name == this.connectionName) {
+                      this.connectionsRealtimeDataModel.CT1_Amps =
+                        data.Ct1_readings.CT1_Amps;
+                      this.connectionsRealtimeDataModel.CT1_Watts =
+                        data.Ct1_readings.CT1_Watts;
+                      this.connectionsRealtimeDataModel.CT1_Status =
+                        data.Ct1_readings.CT1_Status;
+                      this.connectionsRealtimeDataModel.Name =
+                        data.Ct1_readings.Name;
+
+                      console.log(this.connectionsRealtimeDataModel);
+                    } else {
+                      const toast = await this.ToastController.create({
+                        message: `Data de la conexion no encontrada`,
+                        duration: 2000,
+                        position: "bottom",
+                        color: "dark",
+                      });
+                      toast.present();
+                    }
                   }
                 }
               }
-            }
-          });
-
+            });
         }
-        if(this.connectionName == DevicesEnum.DeviceThree){
-          debugger;
+        if (this.connectionName == DevicesEnum.DeviceThree) {
           const connectionNumber = 3;
           this.querySubscription = this.apolloClient
-          .watchQuery<any>({
-            query: gql`
+            .watchQuery<any>({
+              query: gql`
           {
             Ct1_readings(timeStamp:${beginning},connectionName:${connectionNumber}){
               CT1_Amps,
@@ -1082,46 +1087,48 @@ export class Connexion1Page implements OnInit, OnDestroy {
             }
           }
           `,
-          })
-          .valueChanges.subscribe(async ({ data, loading }) => {
-            if (!loading) {
-              if (Object.keys(data).length > 0) {
-                debugger;
-                if (data.Ct1_readings.CT1_Status == null || data.Ct1_readings.CT1_Status == undefined) {
-                  const toast = await this.ToastController.create({
-                    message: `la ${ConnectionName} No esta conectado`,
-                    duration: 2000,
-                    position: "bottom",
-                    color: "dark",
-                  });
-                  toast.present();
-                } else {
-                  // this.connectionsRealtimeDataModel.Name = data.Name;
-                  if (data.Ct1_readings.Name == this.connectionName) {
-                    this.connectionsRealtimeDataModel.CT1_Amps = data.Ct1_readings.CT1_Amps;
-                    this.connectionsRealtimeDataModel.CT1_Watts =
-                      data.Ct1_readings.CT1_Watts;
-                    this.connectionsRealtimeDataModel.CT1_Status =
-                      data.Ct1_readings.CT1_Status;
-                    this.connectionsRealtimeDataModel.Name = data.Ct1_readings.Name;
-                    debugger;
-                    console.log(this.connectionsRealtimeDataModel)
-                  } else {
+            })
+            .valueChanges.subscribe(async ({ data, loading }) => {
+              if (!loading) {
+                if (Object.keys(data).length > 0) {
+                  if (
+                    data.Ct1_readings.CT1_Status == null ||
+                    data.Ct1_readings.CT1_Status == undefined
+                  ) {
                     const toast = await this.ToastController.create({
-                      message: `Data de la conexion no encontrada`,
+                      message: `la ${ConnectionName} No esta conectado`,
                       duration: 2000,
                       position: "bottom",
                       color: "dark",
                     });
                     toast.present();
+                  } else {
+                    // this.connectionsRealtimeDataModel.Name = data.Name;
+                    if (data.Ct1_readings.Name == this.connectionName) {
+                      this.connectionsRealtimeDataModel.CT1_Amps =
+                        data.Ct1_readings.CT1_Amps;
+                      this.connectionsRealtimeDataModel.CT1_Watts =
+                        data.Ct1_readings.CT1_Watts;
+                      this.connectionsRealtimeDataModel.CT1_Status =
+                        data.Ct1_readings.CT1_Status;
+                      this.connectionsRealtimeDataModel.Name =
+                        data.Ct1_readings.Name;
+
+                      console.log(this.connectionsRealtimeDataModel);
+                    } else {
+                      const toast = await this.ToastController.create({
+                        message: `Data de la conexion no encontrada`,
+                        duration: 2000,
+                        position: "bottom",
+                        color: "dark",
+                      });
+                      toast.present();
+                    }
                   }
                 }
               }
-            }
-          });
-
+            });
         }
-
       } catch (error) {
         const logger = new LogModel();
         logger.level = "ERROR";

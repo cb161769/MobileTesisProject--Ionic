@@ -1,4 +1,4 @@
-import { DatesPage } from './../dates-filter/dates/dates.page';
+import { DatesPage } from "./../dates-filter/dates/dates.page";
 import {
   NetworkService,
   ConnectionStatus,
@@ -35,8 +35,10 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   now = Date.now();
   @ViewChild("barChart") barChart;
   @ViewChild("cicleChart") circleChart;
+  @ViewChild("cicleChartKwh") cicleChartKwh;
   bars: any;
   circle: any;
+  circleKwh: any;
   logClass: LogModel = new LogModel();
   colorArray: any;
   gaugeType = "semi";
@@ -58,6 +60,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   intervalId: number;
   Amps = 0;
   Watts = 0;
+  KWH = 0;
   selected_time: any;
   showKlhw = false;
   deviceHealth = 0;
@@ -96,11 +99,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      debugger;
       if (
         this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
       ) {
-        debugger;
         await this.validateLoggedUser();
         await this.showDetailedChart();
       } else {
@@ -193,15 +194,17 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       const last = first + 6; // last day is the first day + 6
 
       const firstday = new Date(curr.setDate(first));
-      firstday.setHours(0, 0, 0);
+      firstday.setHours(0, 0, 0, 0);
 
-      const lastday = new Date(curr.setDate(last));
-      lastday.setHours(24, 59, 59);
+      const lastday = new Date(
+        curr.setDate(curr.getDate() - curr.getDay() + 6)
+      );
+      lastday.setHours(24, 59, 59, 59);
 
       const initialDateEpoch = Math.floor(firstday.getTime() / 1000);
       const finalDateEpoch = Math.floor(lastday.getTime() / 1000);
       const fullUrl =
-        urlRoot + urlEndpoint + `${initialDateEpoch}/${finalDateEpoch}`;
+        urlRoot + urlEndpoint + `${finalDateEpoch}/${initialDateEpoch}`;
       const logger = new LogModel();
       logger.level = "INFO";
       logger.route = fullUrl;
@@ -231,6 +234,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
         this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
           next: (response) => {
             this.deviceHealth = response?.health.health || 0;
+
             this.healthText = response?.health.message || "";
             mondayData = response?.usage[0].lunes.watts || 0;
             tuesdayData = response?.usage[0].martes.watts || 0;
@@ -266,8 +270,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
               sundayDataAmps
             );
 
-            this.Watts = parseInt(response.usage[0].totalWatts || 0);
+            this.Watts = parseInt(response.usage[0].totalWatts) || 0;
             this.Amps = response.usage[0].totalAmps;
+            this.KWH = response.usage[0].KHWProms || 0;
             const ctx = this.barChart.nativeElement;
             ctx.height = 200;
             ctx.width = 200;
@@ -302,6 +307,11 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
                 ],
               },
               options: {
+                responsive: true,
+                title: {
+                  display: true,
+                  text: "Lecturas de la Semana en curso",
+                },
                 scales: {
                   yAxes: [
                     {
@@ -324,6 +334,25 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             this.circle = new Chart(circle, {
               type: "pie",
               data: response?.dayNight,
+              options: {
+                title: {
+                  display: true,
+                  text: "Lecturas de la Semana en curso",
+                },
+              },
+            });
+            const circleKilowatts = this.cicleChartKwh.nativeElement;
+            circleKilowatts.height = 200;
+            circleKilowatts.width = 200;
+            this.circleKwh = new Chart(circleKilowatts, {
+              type: "pie",
+              data: response?.dayNightKilowatts,
+              options: {
+                title: {
+                  display: true,
+                  text: "Lecturas de la Semana en curso",
+                },
+              },
             });
           },
           error: async (error) => {
@@ -380,10 +409,6 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       });
       alert.present();
     }
-
-    //  const cond = interval(10000);
-    //  this.weeklySubscription = cond.subscribe(() => this.showDetailedChart());
-    // this.showDetailedChart();
   }
   /**
    * this method is called once when the view is gone
@@ -493,6 +518,24 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    *@function showDetailChartInCurrentYear
    */
   async showDetailChartInCurrentYear() {
+    let wattsData = [];
+    let ampsData = [];
+    let KHWData = [];
+    //watts
+    let Q1watts = 0;
+    let Q2watts = 0;
+    let Q3watts = 0;
+    let Q4watts = 0;
+    //kwh/h
+    let Q1kwatts = 0;
+    let Q2kwatts = 0;
+    let Q3kwatts = 0;
+    let Q4kwatts = 0;
+    //amps
+    let Q1Amps = 0;
+    let Q2Amps = 0;
+    let Q3Amps = 0;
+    let Q4Amps = 0;
     if (
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
     ) {
@@ -510,44 +553,86 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       await this.logDevice(logger);
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: async (response) => {
+          this.Watts =
+            response?.usage[0].dayWattsProm + response?.usage[0].NightWattsProm;
+          this.KWH = response?.usage[0].khwProms || 0;
+          this.Amps = parseInt(response?.usage[0].totalAmps);
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
           this.deviceHealth = response?.health.health || 0;
           this.healthText = response?.health.message || "";
+          //watts
+          Q1watts = response?.usage[0].firstQuater.watts || 0;
+          Q2watts = response?.usage[0].secondQuater.watts || 0;
+          Q3watts = response?.usage[0].thirdQuater.watts || 0;
+          Q4watts = response?.usage[0].FourthQuater.watts || 0;
+          wattsData.push(Q1watts, Q2watts, Q3watts, Q4watts);
+          //kwh/h 
+          Q1kwatts = response?.usage[0].firstQuater.kilowatts || 0;
+          Q2kwatts = response?.usage[0].secondQuater.kilowatts || 0;
+          Q3kwatts = response?.usage[0].thirdQuater.kilowatts || 0;
+          Q4kwatts = response?.usage[0].FourthQuater.kilowatts || 0;
+          KHWData.push(Q1kwatts, Q2kwatts, Q3kwatts, Q4kwatts);
+          //amps
+
+          Q1Amps = response?.usage[0].firstQuater.amps || 0;
+          Q2Amps = response?.usage[0].secondQuater.amps || 0;
+          Q3Amps = response?.usage[0].thirdQuater.amps || 0;
+          Q4Amps = response?.usage[0].FourthQuater.amps || 0;
+          ampsData.push(Q1Amps, Q2Amps, Q3Amps, Q4Amps);
           this.bars = new Chart(ctx, {
             type: "line",
             data: {
-              labels: [""],
+              labels: ["(ene-mar)", "(abr-jun)", "(jul-sept)", "(oct-dic)"],
+
               datasets: [
                 {
-                  label: "Valor en watts",
-                  data: response?.usage[0].timeStamp || [],
+                  label: "Cantidad Consumida en Watts",
+                  data: wattsData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "rgb(38, 194, 129)",
+                  borderWidth: 3,
                   fill: true,
                 },
+                {
+                  label: "Cantidad Consumida en Kw/h",
+                  data: KHWData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#05fcf8",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Amperios",
+                  data: ampsData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#dd1144",
+                  borderWidth: 3,
+                  fill: true,
+                }
               ],
             },
             options: {
               responsive: true,
               title: {
                 display: true,
-                text: "Consumo durante este año",
+                text: "Consumo durante este año, dividido en cuartos",
               },
-            },
-            scales: {
-              xAxes: [
-                {
-                  type: "time",
-                  display: true,
-                  distribution: "series",
-                  time: {
-                    unit: "year",
-                    displayFormats: { year: "YYYY" },
-                    min: "1970",
-                    max: "2022",
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
                   },
-                },
-              ],
+                ],
+                xAxes: [
+                  {
+                    barPercentage: 0.9,
+                  },
+                ],
+              },
             },
           });
           const circle = this.circleChart.nativeElement;
@@ -556,7 +641,27 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           this.circle = new Chart(circle, {
             type: "pie",
             data: response?.dayNight,
+            options:{
+              title: {
+                display: true,
+                text: "Lecturas del año en curso",
+              },
+            }
           });
+          const circleKilowatts = this.cicleChartKwh.nativeElement;
+          circleKilowatts.height = 200;
+          circleKilowatts.width = 200;
+          this.circleKwh = new Chart(circleKilowatts, {
+            type: "pie",
+            data: response?.dayNightKilowatts,
+            options: {
+              title: {
+                display: true,
+                text: "Lecturas del año en curso",
+              },
+            },
+          });
+          this.loading.dismiss();
         },
         error: async (error) => {
           const logger = new LogModel();
@@ -576,7 +681,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           toast.present();
         },
       });
-      this.loading.dismiss();
+
     } else {
       this.userInternet = false;
       const alert = await this.alertController.create({
@@ -589,7 +694,9 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
    *@function showDetailChartInCurrentMonth
    */
   async showDetailChartInCurrentMonth() {
-    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online){
+    if (
+      this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
+    ) {
       await this.presentLoading();
       const urlRoot = environment.DynamoBDEndPoints.ULR;
       const urlEndpoint =
@@ -607,23 +714,105 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
       logger.action = "showDetailChartInCurrentMonth";
       logger.timeStamp = new Date();
       logger.userName = "";
+      let firstWeekDataKWH = 0;
+      let secondWeekDataKWH = 0;
+      let thirdWeekDataKWH = 0;
+      let fourthWeekDataKWH = 0;
+      let finalDataKWH = [];
+      let firstWeekDataWatts = 0;
+      let secondWeekDataWatts = 0;
+      let thirdWeekDataWatts = 0;
+      let fourthWeekDataWatts = 0;
+      let finalDataWatts = [];
+      let firstWeekDataAmps = 0;
+      let secondWeekDataAmps = 0;
+      let thirdWeekDataAmps = 0;
+      let fourthWeekDataAmps = 0;
+      let finalDataAmps = [];
       await this.logDevice(logger);
       this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
         next: async (data) => {
+          this.Amps = data.usage[0].detail.allMonthAmps || 0;
+          this.Watts = data.usage[0].detail.allMonthWatts || 0;
+          this.KWH = data.usage[0].detail.allMonthKiloWatts || 0;
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
           ctx.width = 250;
           this.deviceHealth = data?.health.health || 0;
           this.healthText = data?.health.message || "";
-          const dataset = data?.usage[0].detail.MonthDetails.TimeStamp || [];
+          firstWeekDataKWH =
+            data?.usage[0].detail.MonthDetails.firstWeek.totalKwhPerWeek || 0;
+          secondWeekDataKWH =
+            data?.usage[0].detail.MonthDetails.secondWeek.totalKwhPerWeek || 0;
+          thirdWeekDataKWH =
+            data?.usage[0].detail.MonthDetails.thirdweek.totalKwhPerWeek || 0;
+          fourthWeekDataKWH =
+            data?.usage[0].detail.MonthDetails.fourthweek.totalKwhPerWeek || 0;
+          finalDataKWH.push(
+            firstWeekDataKWH,
+            secondWeekDataKWH,
+            thirdWeekDataKWH,
+            fourthWeekDataKWH
+          );
+          firstWeekDataWatts =
+            data?.usage[0].detail.MonthDetails.firstWeek.totalWattsPerWeek || 0;
+          secondWeekDataWatts =
+            data?.usage[0].detail.MonthDetails.secondWeek.totalWattsPerWeek ||
+            0;
+          thirdWeekDataWatts =
+            data?.usage[0].detail.MonthDetails.thirdweek.totalWattsPerWeek || 0;
+          fourthWeekDataWatts =
+            data?.usage[0].detail.MonthDetails.fourthweek.totalWattsPerWeek ||
+            0;
+          finalDataWatts.push(
+            firstWeekDataWatts,
+            secondWeekDataWatts,
+            thirdWeekDataWatts,
+            fourthWeekDataWatts
+          );
+          // amperios
+          firstWeekDataAmps =
+            data?.usage[0].detail.MonthDetails.firstWeek.totalAmpsPerWeek || 0;
+          secondWeekDataAmps =
+            data?.usage[0].detail.MonthDetails.secondWeek.totalAmpsPerWeek || 0;
+          thirdWeekDataAmps =
+            data?.usage[0].detail.MonthDetails.thirdweek.totalAmpsPerWeek || 0;
+          fourthWeekDataAmps =
+            data?.usage[0].detail.MonthDetails.fourthweek.totalAmpsPerWeek || 0;
+          finalDataAmps.push(
+            firstWeekDataAmps,
+            secondWeekDataAmps,
+            thirdWeekDataAmps,
+            fourthWeekDataAmps
+          );
+
           this.bars = new Chart(ctx, {
             type: "line",
             data: {
-              labels: [""],
+              labels: ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
               datasets: [
                 {
-                  label: "Valor en watts",
-                  data: dataset,
+                  label: "Cantidad Consumida en Kw/h",
+                  data: finalDataKWH,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#05fcf8",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Watts",
+                  data: finalDataWatts,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "rgb(38, 194, 129)",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Amperios",
+                  data: finalDataAmps,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#dd1144",
+                  borderWidth: 3,
                   fill: true,
                 },
               ],
@@ -632,23 +821,22 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
               responsive: true,
               title: {
                 display: true,
-                text: "Consumo durante este mes",
+                text: "Consumo durante este mes, por semanas",
               },
-            },
-            scales: {
-              xAxes: [
-                {
-                  type: "time",
-                  display: true,
-                  distribution: "series",
-                  time: {
-                    unit: "year",
-                    displayFormats: { year: "YYYY" },
-                    min: "1970",
-                    max: "2022",
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
                   },
-                },
-              ],
+                ],
+                xAxes: [
+                  {
+                    barPercentage: 0.9,
+                  },
+                ],
+              },
             },
           });
           const circle = this.circleChart.nativeElement;
@@ -657,7 +845,27 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           this.circle = new Chart(circle, {
             type: "pie",
             data: data?.dayNight,
+            options: {
+              title: {
+                display: true,
+                text: "Lecturas del Mes en curso",
+              },
+            },
           });
+          const circleKilowatts = this.cicleChartKwh.nativeElement;
+          circleKilowatts.height = 200;
+          circleKilowatts.width = 200;
+          this.circleKwh = new Chart(circleKilowatts, {
+            type: "pie",
+            data: data?.dayNightKilowatts,
+            options: {
+              title: {
+                display: true,
+                text: "Lecturas del Mes en curso",
+              },
+            },
+          });
+          this.loading.dismiss();
         },
         error: async (error) => {
           this.loading.dismiss();
@@ -670,14 +878,13 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
           toast.present();
         },
       });
-    }else{
+    } else {
       this.userInternet = false;
       const alert = await this.alertController.create({
         message: "ha ocurrido un error de conexion, intentelo nuevamente",
       });
       alert.present();
     }
-
   }
   /**
    *@function showDetailedChartInCurrentWeek
@@ -685,12 +892,12 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   async showDetailedChartInCurrentWeek() {
     await this.showDetailedChart();
   }
- async showModal() {
+  async showModal() {
     const modal = await this.modalController.create({
       component: DatesPage,
-      cssClass: 'my-custom-class',
+      cssClass: "my-custom-class",
       swipeToClose: true,
-      presentingElement: await this.modalController.getTop() // Get the top-most ion-modal
+      presentingElement: await this.modalController.getTop(), // Get the top-most ion-modal
     });
     return await modal.present();
   }
