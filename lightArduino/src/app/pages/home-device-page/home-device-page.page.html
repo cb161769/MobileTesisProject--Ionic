@@ -96,13 +96,11 @@
               <ion-icon name="earth-outline" slot="start"></ion-icon>
               <ion-label><strong>Dispositivo no conectado</strong></ion-label>
             </ion-item>
-            <ion-item *ngIf="realtimeDataModel.wifi_Name">
+            <ion-item lines="none" *ngIf="realtimeDataModel.wifi_Name">
               <ion-icon name="earth-outline" slot="start"></ion-icon>
-              <ion-label
-                >Dispositivo no conectado<strong
-                  >{{realtimeDataModel.wifi_Name || ''}}</strong
-                ></ion-label
-              >
+              <ion-label>
+                <strong>{{realtimeDataModel.wifi_Name}}</strong>
+              </ion-label>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -122,8 +120,8 @@
             <ion-item lines="none">
               <ion-icon name="calculator-outline" slot="start"></ion-icon>
               <ion-label
-                >Total de Watts Consumidos
-                <strong>{{this.Watts || 0}}</strong></ion-label
+                > Watts Consumidos
+                <strong>{{this.Watts.toFixed() || 0}}</strong></ion-label
               >
             </ion-item>
           </ion-col>
@@ -131,8 +129,18 @@
             <ion-item lines="none">
               <ion-icon name="calculator-outline" slot="start"></ion-icon>
               <ion-label
-                >Total Amperios Consumidos<strong
-                  >{{this.Amps || 0}}</strong
+                > Amperios Consumidos <strong
+                  >{{this.Amps.toFixed() || 0}}</strong
+                ></ion-label
+              >
+            </ion-item>
+          </ion-col>
+          <ion-col center text-center col6>
+            <ion-item lines="none">
+              <ion-icon name="calculator-outline" slot="start"></ion-icon>
+              <ion-label
+                > kw/h consumidos <strong
+                  >{{this.KWH.toFixed(3) || 0}}</strong
                 ></ion-label
               >
             </ion-item>
@@ -145,11 +153,8 @@
             <ion-label
               ><strong>Resumen de Consumo a nivel general</strong></ion-label
             >
-            <p class="healthy-text" *ngIf="deviceHealth ==1">{{healthText}}</p>
-            <p class="healthy-text" *ngIf="deviceHealth<1 && deviceHealth>0">
-              {{healthText}}
-            </p>
-            <p class="healthy-text" *ngIf="deviceHealth==0">
+            <p class="" *ngIf="healthText != ''">{{healthText}}</p>
+            <p class="healthy-text" *ngIf="healthText == ''">
               El consumo del dispositivo no ha tenido cambios de consumos
               ultimamente
             </p>
@@ -161,12 +166,21 @@
   <br />
   <ion-card>
     <ion-card-header>
-      Analisis de consumo día vs noche
+      Analisis de consumo día vs noche (Watts)
     </ion-card-header>
     <ion-card-content>
       <ion-item lines="none">
         <canvas #cicleChart></canvas>
       </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <br />
+  <ion-card>
+    <ion-card-header>
+      Analisis de consumo dia vs noche (KiloWatts/Hora)
+    </ion-card-header>
+    <ion-card-content lines="none">
+      <canvas #cicleChartKwh></canvas>
     </ion-card-content>
   </ion-card>
 </ion-content>
