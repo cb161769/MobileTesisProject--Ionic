@@ -43,7 +43,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
   gaugeValue = 21000;
   bars: any;
   circle: any;
-  circleKwh:any;
+  circleKwh: any;
   private turnedOff = false;
   public healthy = 0;
   private querySubscription: Subscription;
@@ -62,7 +62,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
   @ViewChild("circleChartKilowatts") circleChartKilowatts;
   thresholdConfig = {
     0: { color: "green" },
-    40: { color: "orange" },
+    4000: { color: "orange" },
     7500.5: { color: "red" },
   };
   connectionName: any;
@@ -278,7 +278,6 @@ export class Connexion1Page implements OnInit, OnDestroy {
       await this.logDevice(logger);
       this.DynamoDBService.genericPostMethod(fullUrl, postObject).subscribe({
         next: async (response) => {
-          debugger;
           this.deviceHealth = response?.health.health || 0;
 
           this.healthText = response?.health.message || "";
@@ -316,13 +315,13 @@ export class Connexion1Page implements OnInit, OnDestroy {
             sundayDataAmps
           );
           //kwh
-          mondayKwh  = response?.usage[0].lunes.kwh || 0;
-          tuesdayKwh  = response?.usage[0].martes.kwh || 0;
-          thursdayKwh  = response?.usage[0].miercoles.kwh || 0;
-          wednesdayKwh  = response?.usage[0].jueves.kwh || 0;
-          fridayKwh  = response?.usage[0].viernes.kwh || 0;
-          saturdayKwh  = response?.usage[0].sabado.kwh || 0;
-          sundayKwh  = response?.usage[0].domingo.kwh || 0;
+          mondayKwh = response?.usage[0].lunes.kwh || 0;
+          tuesdayKwh = response?.usage[0].martes.kwh || 0;
+          thursdayKwh = response?.usage[0].miercoles.kwh || 0;
+          wednesdayKwh = response?.usage[0].jueves.kwh || 0;
+          fridayKwh = response?.usage[0].viernes.kwh || 0;
+          saturdayKwh = response?.usage[0].sabado.kwh || 0;
+          sundayKwh = response?.usage[0].domingo.kwh || 0;
           KwhData.push(
             mondayKwh,
             tuesdayKwh,
@@ -359,7 +358,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
                   borderWidth: 3,
                   fill: true,
                 },
-                
+
                 {
                   label: "Cantidad Consumida en Watts",
                   data: finalData,
@@ -376,14 +375,13 @@ export class Connexion1Page implements OnInit, OnDestroy {
                   borderWidth: 3,
                   fill: false,
                 },
-              
               ],
             },
             options: {
               responsive: true,
-              title:{
-                display:true,
-                text:'Consumo durante esta semana'
+              title: {
+                display: true,
+                text: "Consumo durante esta semana",
               },
               scales: {
                 yAxes: [
@@ -407,12 +405,12 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.circle = new Chart(circle, {
             type: "pie",
             data: response?.dayNight,
-            options:{
-              title:{
+            options: {
+              title: {
                 display: true,
-                text:`Lecturas del Mes en curso del ${this.connectionName}`
-              }
-            }
+                text: `Lecturas de Mes en curso de la ${this.connectionName}`,
+              },
+            },
           });
           const circleKilowatts = this.circleChartKilowatts.nativeElement;
           circleKilowatts.height = 200;
@@ -420,13 +418,13 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.circleChartKilowatts = new Chart(circleKilowatts, {
             type: "pie",
             data: response?.dayNightKilowatts,
-            options:{
-              title:{
+            options: {
+              title: {
                 display: true,
-                text:`Lecturas del Mes en curso del ${this.connectionName}`
-              }
-            }
-          })
+                text: `Lecturas del Mes en curso de la ${this.connectionName}`,
+              },
+            },
+          });
         },
         error: async (error) => {
           this.loading.dismiss();
@@ -558,15 +556,35 @@ export class Connexion1Page implements OnInit, OnDestroy {
       firstsOfMonth.setHours(0, 0, 0);
       const initialDateEpoch = Math.floor(firstsOfMonth.getTime() / 1000);
       const fullUrl =
-        urlRoot + urlEndpoint + `/${initialDateEpoch}/${ConnectionName}`;
+        urlRoot + urlEndpoint;
       const logger = new LogModel();
       logger.level = "INFO";
       logger.route = fullUrl;
       logger.action = "showDetailChartInCurrentMonth";
       logger.timeStamp = new Date();
       logger.userName = "";
+      let firstWeekDataKWH = 0;
+      let secondWeekDataKWH = 0;
+      let thirdWeekDataKWH = 0;
+      let fourthWeekDataKWH = 0;
+      let finalDataKWH = [];
+      let firstWeekDataWatts = 0;
+      let secondWeekDataWatts = 0;
+      let thirdWeekDataWatts = 0;
+      let fourthWeekDataWatts = 0;
+      let finalDataWatts = [];
+      let firstWeekDataAmps = 0;
+      let secondWeekDataAmps = 0;
+      let thirdWeekDataAmps = 0;
+      let fourthWeekDataAmps = 0;
+      let finalDataAmps = [];
       await this.logDevice(logger);
-      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+      const postObject ={
+        day:initialDateEpoch,
+        ConnectionName: this.connectionName,
+      };
+      debugger;
+      this.DynamoDBService.genericPostMethod(fullUrl, postObject).subscribe({
         next: (data) => {
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
@@ -577,17 +595,82 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.totalConsumptionInAmps = data?.usage[0].detail.allMonthAmps || 0;
           this.totalConsumptionInKhw =
             data?.usage[0].detail.allMonthKiloWatts || 0;
+            this.deviceHealth = data?.health.health || 0;
+            this.healthText = data?.health.message || "";
           const month = new Date();
-
+          firstWeekDataKWH =
+          data?.usage[0].detail.MonthDetails.firstWeek.totalKwhPerWeek || 0;
+          secondWeekDataKWH =
+          data?.usage[0].detail.MonthDetails.secondWeek.totalKwhPerWeek || 0;
+          thirdWeekDataKWH =
+          data?.usage[0].detail.MonthDetails.thirdweek.totalKwhPerWeek || 0;
+          fourthWeekDataKWH =
+          data?.usage[0].detail.MonthDetails.fourthweek.totalKwhPerWeek || 0;
+          finalDataKWH.push(
+          firstWeekDataKWH,
+          secondWeekDataKWH,
+          thirdWeekDataKWH,
+          fourthWeekDataKWH
+        );
+          firstWeekDataWatts =
+          data?.usage[0].detail.MonthDetails.firstWeek.totalWattsPerWeek || 0;
+          secondWeekDataWatts =
+          data?.usage[0].detail.MonthDetails.secondWeek.totalWattsPerWeek ||
+          0;
+          thirdWeekDataWatts =
+          data?.usage[0].detail.MonthDetails.thirdweek.totalWattsPerWeek || 0;
+          fourthWeekDataWatts =
+          data?.usage[0].detail.MonthDetails.fourthweek.totalWattsPerWeek ||
+          0;
+          finalDataWatts.push(
+          firstWeekDataWatts,
+          secondWeekDataWatts,
+          thirdWeekDataWatts,
+          fourthWeekDataWatts
+        );
+        // amperios
+          firstWeekDataAmps =
+          data?.usage[0].detail.MonthDetails.firstWeek.totalAmpsPerWeek || 0;
+          secondWeekDataAmps =
+          data?.usage[0].detail.MonthDetails.secondWeek.totalAmpsPerWeek || 0;
+          thirdWeekDataAmps =
+          data?.usage[0].detail.MonthDetails.thirdweek.totalAmpsPerWeek || 0;
+          fourthWeekDataAmps =
+          data?.usage[0].detail.MonthDetails.fourthweek.totalAmpsPerWeek || 0;
+          finalDataAmps.push(
+          firstWeekDataAmps,
+          secondWeekDataAmps,
+          thirdWeekDataAmps,
+          fourthWeekDataAmps
+        );
           month.toLocaleDateString("es-Es");
           this.bars = new Chart(ctx, {
             type: "line",
             data: {
-              labels: [""],
+              labels: ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
               datasets: [
                 {
-                  label: "Valor en watts",
-                  data: dataset,
+                  label: "Cantidad Consumida en Kw/h",
+                  data: finalDataKWH,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#05fcf8",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Watts",
+                  data: finalDataWatts,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "rgb(38, 194, 129)",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Amperios",
+                  data: finalDataAmps,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#dd1144",
+                  borderWidth: 3,
                   fill: true,
                 },
               ],
@@ -596,24 +679,24 @@ export class Connexion1Page implements OnInit, OnDestroy {
               responsive: true,
               title: {
                 display: true,
-                text: "Consumo durante este mes",
+                text: "Consumo durante este mes, por semanas",
+              },
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
+                  },
+                ],
+                xAxes: [
+                  {
+                    barPercentage: 0.9,
+                  },
+                ],
               },
             },
-            scales: {
-              xAxes: [
-                {
-                  type: "time",
-                  display: true,
-                  distribution: "series",
-                  time: {
-                    unit: "year",
-                    displayFormats: { year: "YYYY" },
-                    min: "1970",
-                    max: "2022",
-                  },
-                },
-              ],
-            },
+
           });
           const circle = this.circleChart.nativeElement;
           circle.height = 200;
@@ -621,6 +704,27 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.circle = new Chart(circle, {
             type: "pie",
             data: data?.dayNight,
+            options:{
+              responsive:true,
+              title: {
+                display: true,
+                text:`Lecturas del mes en curso de la ${this.connectionName}`
+              }
+            }
+          });
+          const circleKilowatts = this.circleChartKilowatts.nativeElement;
+          circleKilowatts.height = 200;
+          circleKilowatts.width = 200;
+          this.circleKwh = new Chart(circleKilowatts, {
+            type: "pie",
+            data: data?.dayNightKilowatts,
+            options: {
+              responsive: true,
+              title: {
+                display: true,
+                text: `Lecturas del mes en curso de la ${this.connectionName}`
+              },
+            },
           });
         },
         error: async (error) => {
@@ -647,6 +751,24 @@ export class Connexion1Page implements OnInit, OnDestroy {
    *
    */
   async showDetailChartInCurrentYear() {
+    let wattsData = [];
+    let ampsData = [];
+    let KHWData = [];
+    //watts
+    let Q1watts = 0;
+    let Q2watts = 0;
+    let Q3watts = 0;
+    let Q4watts = 0;
+    //kwh/h
+    let Q1kwatts = 0;
+    let Q2kwatts = 0;
+    let Q3kwatts = 0;
+    let Q4kwatts = 0;
+    //amps
+    let Q1Amps = 0;
+    let Q2Amps = 0;
+    let Q3Amps = 0;
+    let Q4Amps = 0;
     if (
       this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Online
     ) {
@@ -656,15 +778,18 @@ export class Connexion1Page implements OnInit, OnDestroy {
         environment.DynamoBDEndPoints.API_PATHS.Connections
           .ConnectionsGetConnectionYearly;
       const ConnectionName = this.connectionName;
-      const fullUrl = urlRoot + urlEndpoint + `/${ConnectionName}`;
+      const fullUrl = urlRoot + urlEndpoint;
       const logger = new LogModel();
       logger.level = "INFO";
       logger.route = fullUrl;
       logger.action = "showDetailChartInCurrentYear";
       logger.timeStamp = new Date();
       logger.userName = "";
+      const postObject = {
+        ConnectionName: this.connectionName
+      }
       await this.logDevice(logger);
-      this.DynamoDBService.genericGetMethods(fullUrl).subscribe({
+      this.DynamoDBService.genericPostMethod(fullUrl, postObject).subscribe({
         next: async (response) => {
           const ctx = this.barChart.nativeElement;
           ctx.height = 200;
@@ -672,16 +797,56 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.totalConsumptionInKhw = response?.usage[0].totalKwh || 0;
           this.totalConsumptionInAmps = response?.usage[0].totalAmps || 0;
           this.totalConsumptionInWatts = response?.usage[0].totalWatts || 0;
+          this.deviceHealth = response?.health.health || 0;
+          this.healthText = response?.health.message || "";
+          //watts
+          Q1watts = response?.usage[0].firstQuater.watts || 0;
+          Q2watts = response?.usage[0].secondQuater.watts || 0;
+          Q3watts = response?.usage[0].thirdQuater.watts || 0;
+          Q4watts = response?.usage[0].FourthQuater.watts || 0;
+          wattsData.push(Q1watts, Q2watts, Q3watts, Q4watts);
+          //kwh/h 
+          Q1kwatts = response?.usage[0].firstQuater.kilowatts || 0;
+          Q2kwatts = response?.usage[0].secondQuater.kilowatts || 0;
+          Q3kwatts = response?.usage[0].thirdQuater.kilowatts || 0;
+          Q4kwatts = response?.usage[0].FourthQuater.kilowatts || 0;
+          KHWData.push(Q1kwatts, Q2kwatts, Q3kwatts, Q4kwatts);
+          //amps
+
+          Q1Amps = response?.usage[0].firstQuater.amps || 0;
+          Q2Amps = response?.usage[0].secondQuater.amps || 0;
+          Q3Amps = response?.usage[0].thirdQuater.amps || 0;
+          Q4Amps = response?.usage[0].FourthQuater.amps || 0;
+          ampsData.push(Q1Amps, Q2Amps, Q3Amps, Q4Amps);
           this.bars = new Chart(ctx, {
             type: "line",
             data: {
-              labels: [""],
+              labels: ["(ene-mar)", "(abr-jun)", "(jul-sept)", "(oct-dic)"],
               datasets: [
                 {
-                  label: "Valor en watts",
-                  data: response.usage[0].timeStamp,
+                  label: "Cantidad Consumida en Watts",
+                  data: wattsData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "rgb(38, 194, 129)",
+                  borderWidth: 3,
                   fill: true,
                 },
+                {
+                  label: "Cantidad Consumida en Kw/h",
+                  data: KHWData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#05fcf8",
+                  borderWidth: 3,
+                  fill: true,
+                },
+                {
+                  label: "Cantidad Consumida en Amperios",
+                  data: ampsData,
+                  backgroundColor: "rgba(0,0,0,0)", // array should have same number of elements as number of dataset
+                  borderColor: "#dd1144",
+                  borderWidth: 3,
+                  fill: true,
+                }
               ],
             },
             options: {
@@ -690,21 +855,20 @@ export class Connexion1Page implements OnInit, OnDestroy {
                 display: true,
                 text: "Consumo durante este año",
               },
-            },
-            scales: {
-              xAxes: [
-                {
-                  type: "time",
-                  display: true,
-                  distribution: "series",
-                  time: {
-                    unit: "year",
-                    displayFormats: { year: "YYYY" },
-                    min: "1970",
-                    max: "2022",
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
                   },
-                },
-              ],
+                ],
+                xAxes: [
+                  {
+                    barPercentage: 0.9,
+                  },
+                ],
+              },
             },
           });
           const circle = this.circleChart.nativeElement;
@@ -713,7 +877,27 @@ export class Connexion1Page implements OnInit, OnDestroy {
           this.circle = new Chart(circle, {
             type: "pie",
             data: response?.dayNight,
+            title: {
+              responsive: true,
+              display: true,
+              text: `Lecturas del mes en curso de la ${this.connectionName}`
+            },
           });
+          const circleKilowatts = this.circleChartKilowatts.nativeElement;
+          circleKilowatts.height = 200;
+          circleKilowatts.width = 200;
+          this.circleKwh = new Chart(circleKilowatts, {
+            type: "pie",
+            data: response?.dayNightKilowatts,
+            options: {
+              responsive: true,
+              title: {
+                display: true,
+                text: `Lecturas del mes en curso de la ${this.connectionName}`
+              },
+            },
+          });
+          this.loading.dismiss();
         },
         error: async (error) => {
           this.loading.dismiss();
@@ -726,7 +910,7 @@ export class Connexion1Page implements OnInit, OnDestroy {
           toast.present();
         },
       });
-      this.loading.dismiss();
+
     } else {
       const toast = await this.ToastController.create({
         message: `Ha ocurrido un error de conexion, intentelo nuevamente`,

@@ -13,6 +13,8 @@ import { MessageService } from "src/app/data-services/messageService/message.ser
 import { ToastService } from "src/app/data-services/ToasterService/toast.service";
 import { TensorflowService } from "src/app/data-services/tensorflow.service";
 import { environment } from "src/environments/environment";
+import { HttpClient } from "@angular/common/http";
+import { delay } from "rxjs/operators";
 @Component({
   selector: "app-connection-one-consumption-comparative",
   templateUrl: "./connection-one-consumption-comparative.page.html",
@@ -36,7 +38,8 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
     public messageService: MessageService,
     public dynamoDBService: DynamoDBAPIService,
     public tensorflowService: TensorflowService,
-    public sdkService: AwsSdkService
+    public sdkService: AwsSdkService,
+    private httpClient: HttpClient
   ) {}
 
   async ngOnInit() {
@@ -68,27 +71,34 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
     const urlPath =
       environment.DynamoBDEndPoints.API_PATHS.Tensorflow.PredictNexMonth;
     const fullUrl = `${url}` + urlPath;
-    await this.dynamoDBService
-      .genericGet(fullUrl)
-      .then((data: any) => {
-        if(data){
-          if (Array.isArray(data.data)) {
-            this.dataToBeProcessed = data.data;
-          } else {
-            this.dataToBeProcessed = [{ y: 0, x: new Date() }];
-          }
-        }else{
-          this.dataToBeProcessed = [{ y: 0, x: new Date() }];
-        }
-        
-      })
-      .catch(async (error) => {
-        const toast = await this.ToastController.create({
-          message: 'ha ocurrido un error consultando la data',
-          duration: 2000,
-        });
-        toast.present();
-      });
+    const data = await this.httpClient
+      .get<any>(fullUrl)
+      .pipe(delay(3000))
+      .toPromise();
+    return data;
+    // await this.dynamoDBService
+    //   .genericGet(fullUrl)
+    //   .then((data: any) => {
+    //     debugger;
+    //     if(data){
+
+    //       if (Array.isArray(data.data)) {
+    //         this.dataToBeProcessed = data.data;
+    //       } else {
+    //         this.dataToBeProcessed = [{ y: 0, x: new Date() }];
+    //       }
+    //     }else{
+    //       this.dataToBeProcessed = [{ y: 0, x: new Date() }];
+    //     }
+
+    //   })
+    //   .catch(async (error) => {
+    //     const toast = await this.ToastController.create({
+    //       message: 'ha ocurrido un error consultando la data',
+    //       duration: 2000,
+    //     });
+    //     toast.present();
+    //   });
   }
   /**
    * @function createModel
@@ -143,8 +153,9 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
     try {
       await this.PresentLoading();
       const model = await this.createModel();
-      await this.fetchData();
-      const tensorData = await this.convertToTensor(this.dataToBeProcessed);
+     const data = await this.fetchData();
+     debugger;
+      const tensorData = await this.convertToTensor(data.data);
       debugger;
       const { inputs, labels } = tensorData;
 

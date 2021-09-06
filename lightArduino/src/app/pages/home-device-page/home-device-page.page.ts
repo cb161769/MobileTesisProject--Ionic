@@ -46,8 +46,8 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
   gaugeLabel = "Amperaje de la instalacion";
   thresholdConfig = {
     0: { color: "green" },
-    40: { color: "orange" },
-    75.5: { color: "red" },
+    4000: { color: "orange" },
+    7500.5: { color: "red" },
   };
   gaugeAppendText = "Watts";
   loading: any;
@@ -642,6 +642,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             type: "pie",
             data: response?.dayNight,
             options:{
+              responsive: true,
               title: {
                 display: true,
                 text: "Lecturas del año en curso",
@@ -655,6 +656,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             type: "pie",
             data: response?.dayNightKilowatts,
             options: {
+              responsive: true,
               title: {
                 display: true,
                 text: "Lecturas del año en curso",
@@ -846,6 +848,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             type: "pie",
             data: data?.dayNight,
             options: {
+              responsive: true,
               title: {
                 display: true,
                 text: "Lecturas del Mes en curso",
@@ -859,6 +862,7 @@ export class HomeDevicePagePage implements OnInit, OnDestroy {
             type: "pie",
             data: data?.dayNightKilowatts,
             options: {
+              responsive: true,
               title: {
                 display: true,
                 text: "Lecturas del Mes en curso",
