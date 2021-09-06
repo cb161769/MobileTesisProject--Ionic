@@ -188,14 +188,6 @@
         >Ultimos 7 dias</ion-card-subtitle
       >
       <ion-card-title>Graficos de consumo</ion-card-title>
-      <ion-item lines="none">
-        <ion-label>Mostrar valores en Kilowatts?</ion-label>
-        <ion-toggle
-          [(ngModel)]="showKlhw"
-          (ionChange)="changeKhw($event)"
-          [checked]="showKlwChekedchek"
-        ></ion-toggle>
-      </ion-item>
     </ion-card-header>
     <ion-card-content>
       <ion-grid fixed>
@@ -234,16 +226,21 @@
       </ion-grid>
     </ion-card-content>
   </ion-card>
-  <br />
-  <ion-card>
+  <ion-card class="card" fixed="true">
     <ion-card-header>
-      Analisis de consumo día vs noche
+      Analisis de consumo día vs noche (watts)
     </ion-card-header>
     <ion-card-content>
-      <ion-item lines="none">
-        <canvas #cicleChart></canvas>
-      </ion-item>
+      <canvas #cicleChart></canvas>
     </ion-card-content>
+  </ion-card>
+  <ion-card class="card" fixed="true">
+    <ion-card-header>
+      Analisis de consumo día vs noche (kwh/h)
+      <ion-card-content>
+        <canvas #circleChartKilowatts></canvas>
+      </ion-card-content>
+    </ion-card-header>
   </ion-card>
 
 </ion-content>
