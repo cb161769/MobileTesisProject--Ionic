@@ -79,7 +79,7 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
     // await this.dynamoDBService
     //   .genericGet(fullUrl)
     //   .then((data: any) => {
-    //     debugger;
+    //
     //     if(data){
 
     //       if (Array.isArray(data.data)) {
@@ -116,7 +116,6 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
    */
   async convertToTensor(data: any) {
     try {
-      debugger;
       return this.tensorflowService.convertToTensor(data);
     } catch (error) {
       console.log(error);
@@ -153,10 +152,10 @@ export class ConnectionOneConsumptionComparativePage implements OnInit {
     try {
       await this.PresentLoading();
       const model = await this.createModel();
-     const data = await this.fetchData();
-     debugger;
+      const data = await this.fetchData();
+
       const tensorData = await this.convertToTensor(data.data);
-      debugger;
+
       const { inputs, labels } = tensorData;
 
       const trainedModel = await this.testModel(
